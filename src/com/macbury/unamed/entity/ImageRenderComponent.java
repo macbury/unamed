@@ -3,8 +3,11 @@ package com.macbury.unamed.entity;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
+import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
+
+import com.macbury.unamed.scenes.BaseScene;
 
 public class ImageRenderComponent extends RenderComponent {
   private Image image;
@@ -16,14 +19,19 @@ public class ImageRenderComponent extends RenderComponent {
 
   @Override
   public void render(GameContainer gc, StateBasedGame sb, Graphics gr) {
-    Vector2f pos = owner.getPosition();
+    Rectangle rect = transformToScreenRect(sb, owner.getRect());
     float scale  = owner.getScale();
-    image.draw(pos.x, pos.y, scale);
+    
+    image.draw(rect.getX(), rect.getY(), scale);
   }
   
   @Override
   public void update(GameContainer gc, StateBasedGame sb, int delta) {
-
+    Rectangle rect = this.owner.getRect();
+    rect.setWidth(this.image.getWidth());
+    rect.setHeight(this.image.getHeight());
+    
+    this.owner.setRect(rect);
   }
 
   public Image getImage() {

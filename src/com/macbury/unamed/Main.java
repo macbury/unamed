@@ -14,7 +14,7 @@ public class Main {
       app.setDisplayMode(1024, 576, false);
       app.setMinimumLogicUpdateInterval(Core.MIN_UPDATES);
       app.setMaximumLogicUpdateInterval(Core.MAX_UPDATES);
-      
+      app.setTargetFrameRate(Core.MAX_FPS);
       app.start();
     } catch (SlickException e) {
       e.printStackTrace();

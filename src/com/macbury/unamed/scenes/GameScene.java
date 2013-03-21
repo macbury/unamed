@@ -7,6 +7,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.Log;
 
 import com.macbury.unamed.entity.Entity;
+import com.macbury.unamed.entity.EntityFactory;
 import com.macbury.unamed.entity.ImageRenderComponent;
 import com.macbury.unamed.entity.TopDownMovement;
 
@@ -20,10 +21,15 @@ public class GameScene extends BaseScene {
   
   @Override
   public void init(GameContainer gc, StateBasedGame sb) throws SlickException {
-    Entity e = new Entity("Test");
-    e.addComponent(new ImageRenderComponent("ImageRender", new Image("res/images/Night.png")));
-    e.addComponent(new TopDownMovement("Movement"));
+    Entity e; 
+    
+    e = new Entity("Test2");
+    e.addComponent(new ImageRenderComponent("ImageRender", new Image("res/images/Tower1.png")));
+    
+    this.addEntity(e);
+    
+    e = EntityFactory.createTest();
+    lookAt(e);
     this.addEntity(e);
   }
-
 }

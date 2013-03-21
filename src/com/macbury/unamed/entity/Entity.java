@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
@@ -11,18 +12,17 @@ import org.newdawn.slick.state.StateBasedGame;
 public class Entity {
   protected String id;
   
-  private Vector2f position;
   private float scale;
   private float rotation;
-  
+  private Rectangle rectangle;
   ArrayList<Component> components = null;
 
   private Component renderComponent;
 
   public Entity(String id) {
-    this.id = id;
+    this.id    = id;
     components = new ArrayList<Component>();
-    setPosition(new Vector2f(0,0));
+    setRect(new Rectangle(0, 0, 1, 1));
     setScale(1);
     setRotation(0);
   }
@@ -44,13 +44,21 @@ public class Entity {
     }
     return null;
   }
-
-  public Vector2f getPosition() {
-    return position;
+  
+  public void removeComponent(String id) {
+    for(Component comp : components) {
+      if(comp.getId().equalsIgnoreCase(id)) {
+        this.components.remove( comp );
+      }
+    }
   }
 
-  public void setPosition(Vector2f position) {
-    this.position = position;
+  public Rectangle getRect() {
+    return rectangle;
+  }
+
+  public void setRect(Rectangle rectangle2) {
+    this.rectangle = rectangle2;
   }
 
   public float getScale() {
