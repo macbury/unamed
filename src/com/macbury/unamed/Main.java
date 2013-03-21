@@ -12,6 +12,9 @@ public class Main {
     try {
       app = new AppGameContainer(core);
       app.setDisplayMode(1024, 576, false);
+      app.setMinimumLogicUpdateInterval(Core.MIN_UPDATES);
+      app.setMaximumLogicUpdateInterval(Core.MAX_UPDATES);
+      
       app.start();
     } catch (SlickException e) {
       e.printStackTrace();

@@ -37,6 +37,7 @@ public abstract class BaseScene extends BasicGameState {
 
   @Override
   public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
+    //Log.info("Delta: "+ delta);
     for(Entity e : this.entities) {
       e.update(gc, sb, delta);
     }

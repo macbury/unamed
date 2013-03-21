@@ -11,6 +11,8 @@ import com.macbury.unamed.scenes.GameScene;
 
 public class Core extends StateBasedGame {
 
+  public static final int MIN_UPDATES = 33;
+  public static final int MAX_UPDATES = 50;
   private static Core coreInstance;
   public static String title = "Unamed";
   static public Core instance() {
