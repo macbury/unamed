@@ -4,6 +4,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
+import org.newdawn.slick.tiled.TiledMap;
 import org.newdawn.slick.util.Log;
 
 import com.macbury.unamed.entity.Entity;
@@ -13,8 +14,9 @@ import com.macbury.unamed.entity.TopDownMovement;
 
 public class GameScene extends BaseScene {
   public final static int STATE_ID = 1;
-  public GameScene() {
-    super();
+  
+  public GameScene(GameContainer gameContainer) {
+    super(gameContainer);
     this.stateID = STATE_ID;
     Log.info("Starting game scene");
   }
@@ -22,6 +24,7 @@ public class GameScene extends BaseScene {
   @Override
   public void init(GameContainer gc, StateBasedGame sb) throws SlickException {
     Entity e; 
+    loadMap("playground");
     
     e = new Entity("Test2");
     e.addComponent(new ImageRenderComponent("ImageRender", new Image("res/images/Tower1.png")));

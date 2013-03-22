@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="100" height="100" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" name="tile001" tilewidth="32" tileheight="32">
+  <image source="../images/tile001.png" width="96" height="128"/>
+ </tileset>
+ <layer name="Background" width="100" height="100">
+  <data encoding="base64" compression="zlib">
+   eJzt2utqwkAQBtB4jbf3f946dD4M+KMRKtviObDsptooO5m9tdPEX7O/l+u9bLs+38umr6u963aVedB3/CTV9xWT6vvj9B2Tqm/92qGvt33Ne1Usdl0nNtX3p+mRF+dFzXtVvyceiUHViUHlxqbLccX9kleXLpu+/7lfq8859GfwuopBcmdNPGq8O02PMfDSv5efzV3W3Itn1Yd5ri8r3p91QZXKg13Xt0V7XnkvnlW/Vm7cuvyk+jq5wO/LWJU5IM9/5pRq17Nescr8c5w8/++S9e5ybq6+Py9KxSF5cZrWzzW8rp73ikXWxdXOvLCfHuvjisdybLuO+LIfIOvfQ7cZq8ajnKM4LxmvciN7PPvz8RKPzOeMlTOszOGMlbOorK8YK2cl2QcyVsaquWvGqhjkbMT+Y7zlubn8GC95UXOH/eB4+VthzkwYK/NHztoZK/9vYn8OAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPB/fAFSzQSW
+  </data>
+ </layer>
+ <objectgroup color="#ff0000" name="Coliders" width="100" height="100">
+  <properties>
+   <property name="solid" value="1"/>
+  </properties>
+  <object x="416" y="32" width="256" height="224"/>
+  <object x="0" y="0" width="448" height="32"/>
+  <object x="0" y="32" width="32" height="160"/>
+  <object x="32" y="160" width="256" height="32"/>
+  <object x="256" y="192" width="32" height="448"/>
+  <object x="256" y="640" width="32" height="192"/>
+  <object x="288" y="800" width="160" height="32"/>
+  <object x="416" y="352" width="32" height="448"/>
+  <object x="448" y="352" width="352" height="32"/>
+  <object x="768" y="224" width="32" height="128"/>
+  <object x="800" y="224" width="256" height="32"/>
+  <object x="1024" y="128" width="32" height="96"/>
+  <object x="672" y="96" width="384" height="32"/>
+ </objectgroup>
+</map>

@@ -87,4 +87,8 @@ public class Entity {
     if(renderComponent != null)
       renderComponent.render(gc, sb, gr);
   }
+  
+  public String getId() {
+    return this.id;
+  }
 }

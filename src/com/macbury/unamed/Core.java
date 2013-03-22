@@ -28,7 +28,7 @@ public class Core extends StateBasedGame {
 
   @Override
   public void initStatesList(GameContainer gameContainer) throws SlickException {
-    this.addState(new GameScene());
+    this.addState(new GameScene(gameContainer));
   }
 
   
