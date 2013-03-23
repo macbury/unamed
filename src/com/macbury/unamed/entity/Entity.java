@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
@@ -27,7 +28,7 @@ public class Entity {
     setRotation(0);
   }
   
-  public void addComponent(Component component) {
+  public void addComponent(Component component) throws SlickException {
     if(RenderComponent.class.isInstance(component)) {
       renderComponent = (RenderComponent)component;
     }
@@ -90,5 +91,21 @@ public class Entity {
   
   public String getId() {
     return this.id;
+  }
+  
+  public float getX() {
+    return this.rectangle.getX();
+  }
+  
+  public float getY() {
+    return this.rectangle.getY();
+  }
+  
+  public void setX(float x) {
+    this.rectangle.setX(x);
+  }
+  
+  public void setY(float y) {
+    this.rectangle.setY(y);
   }
 }

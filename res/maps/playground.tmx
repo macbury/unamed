@@ -1,29 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" width="100" height="100" tilewidth="32" tileheight="32">
- <tileset firstgid="1" name="tile001" tilewidth="32" tileheight="32">
-  <image source="../images/tile001.png" width="96" height="128"/>
+ <tileset firstgid="1" name="debug" tilewidth="32" tileheight="32">
+  <image source="../images/debug.jpg" width="512" height="512"/>
  </tileset>
  <layer name="Background" width="100" height="100">
   <data encoding="base64" compression="zlib">
-   eJzt2utqwkAQBtB4jbf3f946dD4M+KMRKtviObDsptooO5m9tdPEX7O/l+u9bLs+38umr6u963aVedB3/CTV9xWT6vvj9B2Tqm/92qGvt33Ne1Usdl0nNtX3p+mRF+dFzXtVvyceiUHViUHlxqbLccX9kleXLpu+/7lfq8859GfwuopBcmdNPGq8O02PMfDSv5efzV3W3Itn1Yd5ri8r3p91QZXKg13Xt0V7XnkvnlW/Vm7cuvyk+jq5wO/LWJU5IM9/5pRq17Nescr8c5w8/++S9e5ybq6+Py9KxSF5cZrWzzW8rp73ikXWxdXOvLCfHuvjisdybLuO+LIfIOvfQ7cZq8ajnKM4LxmvciN7PPvz8RKPzOeMlTOszOGMlbOorK8YK2cl2QcyVsaquWvGqhjkbMT+Y7zlubn8GC95UXOH/eB4+VthzkwYK/NHztoZK/9vYn8OAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPB/fAFSzQSW
+   eJzt2tEKgyAAhtHobo+9Nx+7i5GlKfrDzoGuRjL8aE1r2wAAAAAAAAAAAADm2gccjPOdz3fHsR/G0bbfyB494xzH+md6ZNEjix5Z7ubxdfO5HmO5PrLokUWPLHpkmd3D+vza1dy0zGHL+VffhXO/8znjfD3KVvSgTI8semTRI8vdfNY8W2r9f0VZTQ9rvnlq1h96zDNi/0OPcfTI0nK/1mM9PbLokUWPLHpkqb3Pe+a01lkP1tEjix5ZSvcP1tAji9+rLK09XD9jPVl/1LzPxTOj9+X16KNHFj2y6JFFjyx6ZNEjix5Z9MiiRxY9suiR5cl+of1EAAAAAAAAAAAAWn0At7V1mg==
   </data>
  </layer>
  <objectgroup color="#ff0000" name="Coliders" width="100" height="100">
   <properties>
    <property name="solid" value="1"/>
   </properties>
-  <object x="416" y="32" width="256" height="224"/>
-  <object x="0" y="0" width="448" height="32"/>
-  <object x="0" y="32" width="32" height="160"/>
-  <object x="32" y="160" width="256" height="32"/>
-  <object x="256" y="192" width="32" height="448"/>
-  <object x="256" y="640" width="32" height="192"/>
-  <object x="288" y="800" width="160" height="32"/>
-  <object x="416" y="352" width="32" height="448"/>
-  <object x="448" y="352" width="352" height="32"/>
-  <object x="768" y="224" width="32" height="128"/>
-  <object x="800" y="224" width="256" height="32"/>
-  <object x="1024" y="128" width="32" height="96"/>
-  <object x="672" y="96" width="384" height="32"/>
+  <object x="768" y="832" width="32" height="416"/>
+  <object x="256" y="832" width="512" height="32"/>
+  <object x="256" y="864" width="32" height="384"/>
+  <object x="288" y="1216" width="192" height="32"/>
+  <object x="544" y="1216" width="224" height="32"/>
+  <object x="448" y="1248" width="32" height="352"/>
+  <object x="480" y="1568" width="256" height="32"/>
+  <object x="544" y="1248" width="32" height="256"/>
+  <object x="576" y="1472" width="160" height="32"/>
+  <object x="704" y="1408" width="32" height="64"/>
+  <object x="736" y="1408" width="256" height="32"/>
+  <object x="960" y="1216" width="32" height="192"/>
+  <object x="832" y="1216" width="128" height="32"/>
+  <object x="832" y="864" width="32" height="352"/>
+  <object x="864" y="864" width="544" height="32"/>
+  <object x="1376" y="896" width="32" height="320"/>
+  <object x="1152" y="1184" width="224" height="32"/>
+  <object x="1056" y="1216" width="128" height="32"/>
+  <object x="1056" y="1248" width="32" height="192"/>
+  <object x="1088" y="1408" width="96" height="32"/>
+  <object x="1152" y="1440" width="32" height="320"/>
+  <object x="1024" y="1728" width="128" height="32"/>
+  <object x="1024" y="1760" width="32" height="256"/>
+  <object x="1056" y="1984" width="384" height="32"/>
+  <object x="1408" y="2016" width="32" height="416"/>
+  <object x="768" y="2400" width="640" height="32"/>
+  <object x="768" y="1984" width="32" height="416"/>
+  <object x="800" y="1984" width="128" height="32"/>
+  <object x="896" y="1728" width="32" height="256"/>
+  <object x="704" y="1728" width="192" height="32"/>
+  <object x="704" y="1600" width="32" height="128"/>
+ </objectgroup>
+ <objectgroup name="Events" width="100" height="100">
+  <object x="576" y="800"/>
+  <object name="PlayerSpawn" type="PlayerSpawn" gid="9" x="512" y="1056"/>
  </objectgroup>
 </map>

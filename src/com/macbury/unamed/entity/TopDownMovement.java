@@ -9,13 +9,14 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.Log;
 
 public class TopDownMovement extends Component {
+  public TopDownMovement(String id) {
+    super(id);
+    // TODO Auto-generated constructor stub
+  }
+
   float direction;
   float speed;
-   
-  public TopDownMovement( String id )
-  {
-      this.id = id;
-  }
+
    
   public float getSpeed()
   {
@@ -32,12 +33,11 @@ public class TopDownMovement extends Component {
     
       float rotation     = owner.getRotation();
       float scale        = owner.getScale();
-      Rectangle rect     = owner.getRect();
       
       
       float diff = 0.1f * delta;
-      float x   = rect.getX();
-      float y   = rect.getY();
+      float x   = owner.getX();
+      float y   = owner.getY();
       
       Input input = gc.getInput();
         
@@ -57,8 +57,8 @@ public class TopDownMovement extends Component {
         x += diff;
       }
       
-      rect.setLocation(x, y);
-      owner.setRect(rect);
+      owner.setX(x);
+      owner.setY(y);
       owner.setRotation(rotation);
       owner.setScale(scale);
   }

@@ -7,10 +7,11 @@ import org.newdawn.slick.state.StateBasedGame;
 import com.macbury.unamed.scenes.BaseScene;
 
 public abstract class RenderComponent extends Component {
-  public RenderComponent(String id) {
-    this.id = id;
-  }
   
+  public RenderComponent(String id) {
+    super(id);
+  }
+
   public BaseScene getScene(StateBasedGame sb) {
     return (BaseScene)sb.getCurrentState();
   }

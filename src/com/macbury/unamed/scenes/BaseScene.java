@@ -1,7 +1,6 @@
 package com.macbury.unamed.scenes;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -9,26 +8,32 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
-import org.newdawn.slick.tiled.TiledMap;
+import org.newdawn.slick.tiled.GroupObject;
+import org.newdawn.slick.tiled.ObjectGroup;
 import org.newdawn.slick.tiled.TiledMapPlus;
 import org.newdawn.slick.util.Log;
 
+import com.macbury.unamed.Core;
 import com.macbury.unamed.entity.Entity;
+import com.macbury.unamed.entity.EntityFactory;
 
 public abstract class BaseScene extends BasicGameState {
-  public final static int LAYER_BACKGROUND = 0;
+  public final static int LAYER_BACKGROUND    = 0;
+  private static final String LAYER_EVENTS    = "Events";
+  private static final String LAYER_COLLIDERS = "Colliders";
   private ArrayList<Entity> entities;
   int stateID                = -1;
   private Rectangle viewPort = null;
   
-  int tileWidth           = 32;
-  int tileHeight          = 32;
+  int tileWidth           = Core.TILE_SIZE;
+  int tileHeight          = Core.TILE_SIZE;
   int tileCountHorizontal = 5;
   int tileCountVertical   = 5;
   
-  TiledMap      map;
+  TiledMapPlus  map;
   Entity        cameraTarget;
   GameContainer gameContainer;
+  private Entity player;
   
   public BaseScene(GameContainer gc) {
     this.entities = new ArrayList<Entity>();
@@ -53,14 +58,16 @@ public abstract class BaseScene extends BasicGameState {
     int shiftTileX = getShiftTileX();
     int shiftTileY = getShiftTileY();
     
-    int viewportTileOffsetX = (int) (( shiftTileX * this.tileWidth ) - this.getShiftX()) - this.tileWidth / 2;
-    int viewportTileOffsetY = (int) (( shiftTileY * this.tileHeight ) - this.getShiftY()) - this.tileHeight / 2;
+    int viewportTileOffsetX = (int) (( shiftTileX * this.tileWidth ) - this.getShiftX()) - this.tileWidth;
+    int viewportTileOffsetY = (int) (( shiftTileY * this.tileHeight ) - this.getShiftY()) - this.tileHeight;
 
-    renderMapLayer(viewportTileOffsetX,viewportTileOffsetY, shiftTileX, shiftTileY, LAYER_BACKGROUND);
+    renderMapLayer(gr, viewportTileOffsetX, viewportTileOffsetY, shiftTileX, shiftTileY, LAYER_BACKGROUND);
     
     // rendering layer entities
+    float shiftX = -getShiftX() - this.tileWidth;
+    float shiftY = -getShiftY() - this.tileHeight;
     gr.pushTransform();
-    gr.translate(-Math.round(getShiftX()), -Math.round(getShiftY()));
+    gr.translate(shiftX, shiftY);
     for(Entity e : this.entities) {
       if (getViewPort().intersects(e.getRect())) {
         e.render(gc, sb, gr);
@@ -69,7 +76,7 @@ public abstract class BaseScene extends BasicGameState {
     gr.popTransform();
   }
 
-  private void renderMapLayer(int viewportTileOffsetX, int viewportTileOffsetY, int shiftTileX, int shiftTileY, int layer) {
+  private void renderMapLayer(Graphics gr, int viewportTileOffsetX, int viewportTileOffsetY, int shiftTileX, int shiftTileY, int layer) {
     if(map != null) {
       map.render(viewportTileOffsetX,viewportTileOffsetY, shiftTileX, shiftTileY, this.tileCountHorizontal, this.tileCountVertical, layer, false);
     }
@@ -80,6 +87,7 @@ public abstract class BaseScene extends BasicGameState {
     for(Entity e : this.entities) {
       e.update(gc, sb, delta);
     }
+    //Log.info("Player pos: "+ getShiftTileX() + "x" + getShiftTileY());
   }
 
   private void setupViewport(GameContainer gc) {
@@ -128,7 +136,7 @@ public abstract class BaseScene extends BasicGameState {
   
   public void loadMap(String name) throws SlickException {
     String filePath = "res/maps/"+name+".tmx";
-    this.map        = new TiledMap(filePath);
+    this.map        = new TiledMapPlus(filePath);
     Log.info("Loading map from: "+ filePath);
     
     this.tileHeight = this.map.getTileHeight();
@@ -136,9 +144,27 @@ public abstract class BaseScene extends BasicGameState {
     
     Log.info("Tile size is: "+ this.tileWidth + "x" + this.tileHeight);
     
-    this.tileCountHorizontal =  Math.round((this.viewPort.getWidth() / this.tileWidth) + 1);
-    this.tileCountVertical   =  Math.round((this.viewPort.getHeight() / this.tileHeight) + 1);
+    this.tileCountHorizontal =  Math.round((this.viewPort.getWidth() / this.tileWidth) + 2);
+    this.tileCountVertical   =  Math.round((this.viewPort.getHeight() / this.tileHeight) + 2);
     
     Log.info("Tile count is: "+ this.tileCountHorizontal + "x" + this.tileCountVertical);
+    
+    //ObjectGroup colidersGroup = this.map.getObjectGroup(LAYER_COLLIDERS);
+    ObjectGroup eventsGroup = this.map.getObjectGroup(LAYER_EVENTS);
+
+    if (eventsGroup == null) {
+      throw new SlickException("There is no events layer in the map!");
+    } else {
+      GroupObject spawnPosition = eventsGroup.getObject("PlayerSpawn");
+      player = EntityFactory.createPlayer();
+      player.setX(spawnPosition.x);
+      player.setY(spawnPosition.y-this.tileHeight); // fix position for object y is allways 1 tile height bigger than on map!
+      
+      Log.info("Player spawn position is "+ spawnPosition.x + "x" + spawnPosition.y);
+      
+      //e.setX()
+      lookAt(player);
+      this.addEntity(player);
+    }
   }
 }

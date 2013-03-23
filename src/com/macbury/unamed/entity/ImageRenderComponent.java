@@ -19,10 +19,10 @@ public class ImageRenderComponent extends RenderComponent {
 
   @Override
   public void render(GameContainer gc, StateBasedGame sb, Graphics gr) {
-    Rectangle rect = owner.getRect();
-    float scale    = owner.getScale();
+    //float scale    = owner.getScale();
     
-    image.draw(rect.getX(), rect.getY(), scale);
+    gr.drawImage(image, owner.getX(), owner.getY());
+    //image.draw(owner.getX(), owner.getY(), scale);
   }
   
   @Override

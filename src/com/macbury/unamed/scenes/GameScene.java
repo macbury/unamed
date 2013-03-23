@@ -15,7 +15,7 @@ import com.macbury.unamed.entity.TopDownMovement;
 public class GameScene extends BaseScene {
   public final static int STATE_ID = 1;
   
-  public GameScene(GameContainer gameContainer) {
+  public GameScene(GameContainer gameContainer) throws SlickException {
     super(gameContainer);
     this.stateID = STATE_ID;
     Log.info("Starting game scene");
@@ -23,16 +23,6 @@ public class GameScene extends BaseScene {
   
   @Override
   public void init(GameContainer gc, StateBasedGame sb) throws SlickException {
-    Entity e; 
     loadMap("playground");
-    
-    e = new Entity("Test2");
-    e.addComponent(new ImageRenderComponent("ImageRender", new Image("res/images/Tower1.png")));
-    
-    this.addEntity(e);
-    
-    e = EntityFactory.createTest();
-    lookAt(e);
-    this.addEntity(e);
   }
 }

@@ -14,6 +14,7 @@ public class Core extends StateBasedGame {
   public static final int MIN_UPDATES = 20;
   public static final int MAX_UPDATES = 10;
   public static final int MAX_FPS     = 60;
+  public final static int TILE_SIZE   = 32;
   private static Core coreInstance;
   public static String title = "Unamed";
   static public Core instance() {
