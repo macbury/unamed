@@ -8,14 +8,11 @@ import org.newdawn.slick.state.StateBasedGame;
 
 public class KeyboardMovement extends Component {
   TileBasedMovement tileMovement; 
-  public KeyboardMovement(String id) throws SlickException {
-    super(id);
-  }
   
   public void setOwnerEntity(Entity owner) throws SlickException {
     super.setOwnerEntity(owner);
     
-    tileMovement = (TileBasedMovement) this.owner.getComponent(TileBasedMovement.NAME);
+    tileMovement = (TileBasedMovement) this.owner.getComponent(TileBasedMovement.class);
     if (tileMovement == null) {
       throw new SlickException("Entity must implement tile based movement first");
     }
@@ -24,22 +21,31 @@ public class KeyboardMovement extends Component {
   @Override
   public void update(GameContainer gc, StateBasedGame sb, int delta) {
     if (tileMovement != null && !tileMovement.isMoving()) {
-      Input input = gc.getInput();
-      
+      Input input    = gc.getInput();
+      boolean move   = false;
+      byte direction = TileBasedMovement.DIRECTION_DOWN;
       if(input.isKeyDown(Input.KEY_DOWN)) {
-        tileMovement.move(TileBasedMovement.DIRECTION_DOWN);
+        move      = true;
+        direction = TileBasedMovement.DIRECTION_DOWN;
       }
 
       if(input.isKeyDown(Input.KEY_UP)) {
-        tileMovement.move(TileBasedMovement.DIRECTION_TOP);
+        move      = true;
+        direction = TileBasedMovement.DIRECTION_TOP;
       }
        
       if(input.isKeyDown(Input.KEY_LEFT)) {
-        tileMovement.move(TileBasedMovement.DIRECTION_LEFT);
+        move      = true;
+        direction = TileBasedMovement.DIRECTION_LEFT;
       }
       
       if(input.isKeyDown(Input.KEY_RIGHT)) {
-        tileMovement.move(TileBasedMovement.DIRECTION_RIGHT);
+        move      = true;
+        direction = TileBasedMovement.DIRECTION_RIGHT;
+      }
+      
+      if (move && this.owner.getLevel().canMoveTo(tileMovement.computeTargetRectForDirection(direction), this.owner)) {
+        tileMovement.move(direction);
       }
     }
   }

@@ -23,49 +23,53 @@ public class TileBasedMovement extends Component {
   private Vector2f targetPosition;
   private Vector2f basePosition;
   
-  public TileBasedMovement(String id) {
-    super(id);
-  }
-  
   public boolean isMoving() {
     return moveInProgress;
+  }
+  
+  public Vector2f computeTargetPositionForDirection(byte inDirection) {
+    float x             = this.owner.getX();
+    float y             = this.owner.getY();
+    
+    switch (inDirection) {
+      case DIRECTION_DOWN:
+        y += this.owner.getLevel().tileHeight;
+      break;
+  
+      case DIRECTION_TOP:
+        y -= this.owner.getLevel().tileHeight;
+      break;
+      
+      case DIRECTION_LEFT:
+        x -= this.owner.getLevel().tileWidth;
+      break;
+      
+      case DIRECTION_RIGHT:
+        x += this.owner.getLevel().tileWidth;
+      break;
+      
+      default:
+        
+      break;
+    }
+  
+    return new Vector2f(x,y);
+  }
+  
+  public Rectangle computeTargetRectForDirection(byte inDirection) {
+    Vector2f pos = computeTargetPositionForDirection(inDirection);
+    return new Rectangle(pos.x, pos.y, this.owner.getWidth() - 1, this.owner.getHeight() -1);
   }
   
   public boolean move(byte inDirection) {
     if(this.isMoving()) {
       return false;
     } else {
-      float x             = this.owner.getX();
-      float y             = this.owner.getY();
-      
       this.direction      = inDirection;
-      this.basePosition   = new Vector2f(x, y);
+      this.basePosition   = new Vector2f(this.owner.getX(), this.owner.getY());
       this.moveInProgress = true;
       this.totalMoveTime  = 0.0f;
-      
-      switch (inDirection) {
-        case DIRECTION_DOWN:
-          y += Core.TILE_SIZE;
-        break;
-
-        case DIRECTION_TOP:
-          y -= Core.TILE_SIZE;
-        break;
-        
-        case DIRECTION_LEFT:
-          x -= Core.TILE_SIZE;
-        break;
-        
-        case DIRECTION_RIGHT:
-          x += Core.TILE_SIZE;
-        break;
-        
-        default:
-          
-        break;
-      }
-      
-      this.targetPosition = new Vector2f(x, y);
+      this.targetPosition = computeTargetPositionForDirection(inDirection);
       
       return true;
     }

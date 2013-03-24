@@ -9,14 +9,8 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.Log;
 
 public class TopDownMovement extends Component {
-  public TopDownMovement(String id) {
-    super(id);
-    // TODO Auto-generated constructor stub
-  }
-
   float direction;
   float speed;
-
    
   public float getSpeed()
   {

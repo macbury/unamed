@@ -23,6 +23,12 @@ public class GameScene extends BaseScene {
   
   @Override
   public void init(GameContainer gc, StateBasedGame sb) throws SlickException {
-    loadMap("playground");
+    this.level.loadMap("playground");
+  }
+
+  @Override
+  public int getID() {
+    // TODO Auto-generated method stub
+    return STATE_ID;
   }
 }

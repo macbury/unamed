@@ -12,8 +12,7 @@ import com.macbury.unamed.scenes.BaseScene;
 public class ImageRenderComponent extends RenderComponent {
   private Image image;
   
-  public ImageRenderComponent(String id, Image image) {
-    super(id);
+  public ImageRenderComponent(Image image) {
     this.setImage(image);
   }
 

@@ -10,7 +10,7 @@ import org.newdawn.slick.util.Log;
 import com.macbury.unamed.scenes.GameScene;
 
 public class Core extends StateBasedGame {
-
+  public static final boolean DEBUG   = true;
   public static final int MIN_UPDATES = 20;
   public static final int MAX_UPDATES = 10;
   public static final int MAX_FPS     = 60;
@@ -25,7 +25,6 @@ public class Core extends StateBasedGame {
     super(title);
     Core.coreInstance = this;
   }
-
 
   @Override
   public void initStatesList(GameContainer gameContainer) throws SlickException {

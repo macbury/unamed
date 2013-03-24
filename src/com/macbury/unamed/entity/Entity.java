@@ -9,6 +9,8 @@ import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
+import com.macbury.unamed.level.Level;
+
 
 public class Entity {
   protected String id;
@@ -16,10 +18,13 @@ public class Entity {
   private float scale;
   private float rotation;
   private Rectangle rectangle;
+  public boolean solid = false;
   ArrayList<Component> components = null;
 
   private Component renderComponent;
-
+  
+  private Level level;
+  
   public Entity(String id) {
     this.id    = id;
     components = new ArrayList<Component>();
@@ -37,18 +42,18 @@ public class Entity {
     components.add(component);
   }
   
-  public Component getComponent(String id) {
+  public Component getComponent(Class id) {
     for(Component comp : components) {
-      if(comp.getId().equalsIgnoreCase(id)) {
+      if(comp.getClass().equals(id)) {
         return comp;
       }
     }
     return null;
   }
   
-  public void removeComponent(String id) {
+  public void removeComponent(Class id) {
     for(Component comp : components) {
-      if(comp.getId().equalsIgnoreCase(id)) {
+      if(comp.getClass().equals(id)) {
         this.components.remove( comp );
       }
     }
@@ -85,8 +90,9 @@ public class Entity {
   }
 
   public void render(GameContainer gc, StateBasedGame sb, Graphics gr) {
-    if(renderComponent != null)
-      renderComponent.render(gc, sb, gr);
+    for(Component component : components) {
+      component.render(gc, sb, gr);
+    }
   }
   
   public String getId() {
@@ -101,11 +107,35 @@ public class Entity {
     return this.rectangle.getY();
   }
   
+  public float getWidth() {
+    return this.rectangle.getWidth();
+  }
+  
+  public float getHeight() {
+    return this.rectangle.getHeight();
+  }
+  
+  public void setWidth(float width) {
+    this.rectangle.setWidth(width);
+  }
+  
+  public void setHeight(float height) {
+    this.rectangle.setHeight(height);
+  }
+  
   public void setX(float x) {
     this.rectangle.setX(x);
   }
   
   public void setY(float y) {
     this.rectangle.setY(y);
+  }
+
+  public Level getLevel() {
+    return level;
+  }
+
+  public void setLevel(Level level) {
+    this.level = level;
   }
 }
