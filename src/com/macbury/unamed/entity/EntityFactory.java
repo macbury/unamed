@@ -9,9 +9,11 @@ public class EntityFactory {
   
   static public Entity createPlayer() throws SlickException {
     Entity e = new Entity("Player");
-    e.addComponent(new ImageRenderComponent(new Image("res/images/player.png")));
     e.addComponent(new TileBasedMovement());
     e.addComponent(new KeyboardMovement());
+    CharacterAnimation characterAnimationComponent = new CharacterAnimation();
+    e.addComponent(characterAnimationComponent);
+    characterAnimationComponent.loadCharacterImage("base");
     e.solid = true;
     if (Core.DEBUG) {
       e.addComponent(new HitBox());

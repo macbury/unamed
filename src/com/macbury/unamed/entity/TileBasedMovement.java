@@ -97,4 +97,5 @@ public class TileBasedMovement extends Component {
   public void render(GameContainer gc, StateBasedGame sb, Graphics gr) {
     
   }
+
 }

@@ -18,4 +18,5 @@ public class HitBox extends Component {
     gr.fillRect(this.owner.getX(), this.owner.getY(), this.owner.getWidth(), this.owner.getHeight());
   }
 
+
 }
