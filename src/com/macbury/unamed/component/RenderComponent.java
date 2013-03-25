@@ -1,4 +1,4 @@
-package com.macbury.unamed.entity;
+package com.macbury.unamed.component;
 
 public abstract class RenderComponent extends Component {
 

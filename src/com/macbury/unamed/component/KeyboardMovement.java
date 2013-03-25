@@ -1,10 +1,12 @@
-package com.macbury.unamed.entity;
+package com.macbury.unamed.component;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
+
+import com.macbury.unamed.entity.Entity;
 
 public class KeyboardMovement extends Component {
   TileBasedMovement tileMovement; 
@@ -44,8 +46,12 @@ public class KeyboardMovement extends Component {
         direction = TileBasedMovement.DIRECTION_RIGHT;
       }
       
-      if (move && this.owner.getLevel().canMoveTo(tileMovement.computeTargetRectForDirection(direction), this.owner)) {
-        tileMovement.move(direction);
+      if (move) {
+        if (this.owner.getLevel().canMoveTo(tileMovement.computeTargetRectForDirection(direction), this.owner)) {
+          tileMovement.move(direction);
+        } else {
+          tileMovement.lookIn(direction);
+        }
       }
     }
   }

@@ -9,7 +9,10 @@ import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
+import com.macbury.unamed.component.Component;
+import com.macbury.unamed.component.RenderComponent;
 import com.macbury.unamed.level.Level;
+import com.macbury.unamed.monkey.GroupObject;
 
 
 public class Entity {
@@ -18,6 +21,7 @@ public class Entity {
   private float scale;
   private float rotation;
   private Rectangle rectangle;
+  private Vector2f futurePosition = null; // this is future position of entity
   public boolean solid = false;
   ArrayList<Component> components = null;
 
@@ -99,6 +103,14 @@ public class Entity {
     return this.id;
   }
   
+  public int getRoundX() {
+    return Math.round(this.getX());
+  }
+  
+  public int getRoundY() {
+    return Math.round(this.getY());
+  }
+  
   public float getX() {
     return this.rectangle.getX();
   }
@@ -137,5 +149,28 @@ public class Entity {
 
   public void setLevel(Level level) {
     this.level = level;
+  }
+  
+  public void setPositionUsing(GroupObject spawnPosition) {
+    this.setX(spawnPosition.x);
+    this.setY(spawnPosition.y-this.getLevel().tileHeight); // fix position for object y is allways 1 tile height bigger than on map!
+  }
+
+  public Vector2f getFuturePosition() {
+    return futurePosition;
+  }
+  
+  public Rectangle getFutureRect() {
+    Vector2f pos = getFuturePosition();
+    
+    if (pos == null) {
+      return null;
+    } else {
+      return new Rectangle(pos.x, pos.y, this.getWidth(), this.getHeight());
+    }
+  }
+
+  public void setFuturePosition(Vector2f futurePosition) {
+    this.futurePosition = futurePosition;
   }
 }

@@ -1,4 +1,4 @@
-package com.macbury.unamed.entity;
+package com.macbury.unamed.component;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -15,12 +15,12 @@ public class TileBasedMovement extends Component {
   public final static byte DIRECTION_RIGHT = 1;
   public final static byte DIRECTION_TOP   = 2;
   public final static byte DIRECTION_DOWN  = 3;
+  public final static byte DIRECTION_NONE  = 4;
   public  byte  direction           = DIRECTION_DOWN;
   public  float speed               = 0.0035f;
   private float totalMoveTime       = 0.0f;
   
   private boolean moveInProgress = false;
-  private Vector2f targetPosition;
   private Vector2f basePosition;
   
   public boolean isMoving() {
@@ -65,11 +65,11 @@ public class TileBasedMovement extends Component {
     if(this.isMoving()) {
       return false;
     } else {
-      this.direction      = inDirection;
+      this.lookIn(inDirection);
       this.basePosition   = new Vector2f(this.owner.getX(), this.owner.getY());
       this.moveInProgress = true;
       this.totalMoveTime  = 0.0f;
-      this.targetPosition = computeTargetPositionForDirection(inDirection);
+      this.owner.setFuturePosition(computeTargetPositionForDirection(inDirection));
       
       return true;
     }
@@ -79,15 +79,15 @@ public class TileBasedMovement extends Component {
   public void update(GameContainer gc, StateBasedGame sb, int delta) {
     if (this.isMoving()) {
       totalMoveTime += speed * (float)delta;
-      float x = Util.lerp(basePosition.x, targetPosition.x, totalMoveTime);
-      float y = Util.lerp(basePosition.y, targetPosition.y, totalMoveTime);
+      float x = Math.round(Util.lerp(basePosition.x, this.owner.getFuturePosition().x, totalMoveTime));
+      float y = Math.round(Util.lerp(basePosition.y, this.owner.getFuturePosition().y, totalMoveTime));
       this.owner.setX(x);
       this.owner.setY(y);
       
       if (this.totalMoveTime > 1.0) {
         moveInProgress = false;
         totalMoveTime  = 0.0f;
-        targetPosition = null;
+        this.owner.setFuturePosition(null);
         basePosition   = null;
       }
     }
@@ -98,4 +98,15 @@ public class TileBasedMovement extends Component {
     
   }
 
+  public void lookIn(byte inDirection) {
+    this.direction      = inDirection;
+  }
+  
+  public byte randomDirection() {
+    return (byte) Math.round(Math.random() * DIRECTION_DOWN);
+  }
+  
+  public void moveInRandomDirection() {
+    move(randomDirection());
+  }
 }

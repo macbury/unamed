@@ -1,4 +1,4 @@
-package com.macbury.unamed.entity;
+package com.macbury.unamed.component;
 
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.GameContainer;
@@ -11,7 +11,7 @@ import org.newdawn.slick.state.StateBasedGame;
 public class CharacterAnimation extends RenderComponent {
   public final static int SPRITE_TILE_WIDTH  = 32;
   public final static int SPRITE_TILE_HEIGHT = 32;
-  public final static int ANIMATION_SPEED    = 250;
+  public final static int ANIMATION_SPEED    = 150;
   
   public final static byte FRAME_IDLE        = 1;
   public final static byte FRAME_LEFT_LEG    = 0;
@@ -44,6 +44,11 @@ public class CharacterAnimation extends RenderComponent {
     walkingLeft  = new Animation(getFramesForRow(1), ANIMATION_SPEED);
     walkingRight = new Animation(getFramesForRow(2), ANIMATION_SPEED);
     walkingTop   = new Animation(getFramesForRow(3), ANIMATION_SPEED);
+    
+    walkingDown.setAutoUpdate(false);
+    walkingLeft.setAutoUpdate(false);
+    walkingRight.setAutoUpdate(false);
+    walkingTop.setAutoUpdate(false);
   }
   
   public Image[] getFramesForRow(int y) {
@@ -88,7 +93,7 @@ public class CharacterAnimation extends RenderComponent {
       }
       
       currentAnimation = targetAnimation;
-      currentAnimation.start();
+      currentAnimation.restart();
     }
     
     if(lastMovingStatus == false && tileBasedMovement.isMoving()) {
@@ -96,6 +101,7 @@ public class CharacterAnimation extends RenderComponent {
       lastMovingStatus = tileBasedMovement.isMoving();
     } else if(lastMovingStatus == true && !tileBasedMovement.isMoving()) {
       currentAnimation.stop();
+      currentAnimation.setCurrentFrame(0);
       lastMovingStatus = tileBasedMovement.isMoving();
     }
     

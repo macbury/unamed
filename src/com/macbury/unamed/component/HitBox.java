@@ -1,4 +1,4 @@
-package com.macbury.unamed.entity;
+package com.macbury.unamed.component;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
