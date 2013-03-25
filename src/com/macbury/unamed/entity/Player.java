@@ -12,7 +12,8 @@ import com.macbury.unamed.component.KeyboardMovement;
 import com.macbury.unamed.component.TileBasedMovement;
 
 public class Player extends Entity {
-  public final static int FOG_OF_WAR_RADIUS = 5;
+  public final static int FOG_OF_WAR_RADIUS          = 5;
+  public final static int FOG_OF_WAR_STEP_BY_DEGREES = 10;
   TileBasedMovement tileMovement;
   KeyboardMovement  keyboardMovement;
   public Player(String id) throws SlickException {

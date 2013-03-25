@@ -6,11 +6,13 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Point;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.Log;
 
+import com.macbury.unamed.BresenhamLine;
 import com.macbury.unamed.Core;
 import com.macbury.unamed.component.CharacterAnimation;
 import com.macbury.unamed.component.HitBox;
@@ -129,23 +131,63 @@ public class Level {
     }
     
     updateFogOfWarFor(player);
-    //Log.info("Player pos: "+ getShiftTileX() + "x" + getShiftTileY());
   }
 
   private void updateFogOfWarFor(Entity entity) {
     int cx = entity.getTileX();
     int cy = entity.getTileY();
-    int sx = cordToBound(cx - Player.FOG_OF_WAR_RADIUS, this.mapTileWidth);
+    /*int sx = cordToBound(cx - Player.FOG_OF_WAR_RADIUS, this.mapTileWidth);
     int sy = cordToBound(cy - Player.FOG_OF_WAR_RADIUS, this.mapTileHeight);
     
     int ex = cordToBound(cx + Player.FOG_OF_WAR_RADIUS, this.mapTileWidth);
-    int ey = cordToBound(cy + Player.FOG_OF_WAR_RADIUS, this.mapTileHeight);
+    int ey = cordToBound(cy + Player.FOG_OF_WAR_RADIUS, this.mapTileHeight);*/
+    Block block = null;
     
-    for (int x = sx; x < ex; x++) {
-      for (int y = sy; y < ey; y++) {
-        this.world[x][y].visited = true;
+    int radius = 0;
+    
+    ArrayList<Integer> skipAngle = new ArrayList<Integer>();
+    
+    while(radius < Player.FOG_OF_WAR_RADIUS) {
+      int angle = 0;
+      
+      while(angle <= 360) {
+        if (skipAngle.contains(angle)) {
+          angle += Player.FOG_OF_WAR_STEP_BY_DEGREES;
+          continue;
+        }
+        double radiants = angle * Math.PI / 180.0f;
+        int x = (int)Math.round(cx + radius * Math.cos(radiants));
+        int y = (int)Math.round(cy + radius * Math.sin(radiants));
+        angle += Player.FOG_OF_WAR_STEP_BY_DEGREES;
+        
+        block = this.world[x][y];
+        if (block.solid) {
+          //skipAngle.add(angle);
+        }
+        block.visited = true;
       }
+      
+      radius++;
     }
+    
+   /* while(angle <= 360) {
+      double radiants = angle * Math.PI / 180.0f;
+      int x = (int)Math.round(cx + Player.FOG_OF_WAR_RADIUS * Math.cos(radiants));
+      int y = (int)Math.round(cy + Player.FOG_OF_WAR_RADIUS * Math.sin(radiants));
+      angle += Player.FOG_OF_WAR_STEP_BY_DEGREES;
+      
+      
+      //Log.debug("Fog: "+ x+"x"+y + " angle: " + angle);
+      
+      /*for (Point p : BresenhamLine.line(cx, cy, x, y)) {
+        block = this.world[(int) p.getX()][(int) p.getY()];
+        block.visited = true;
+        if (block.solid) {
+          break;
+        }
+      }
+    }*/
+      
   }
 
   public void setupViewport(GameContainer gc) {
