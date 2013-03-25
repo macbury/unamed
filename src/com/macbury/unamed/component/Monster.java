@@ -17,6 +17,8 @@ public class Monster extends Component {
     if (tileMovement == null) {
       throw new SlickException("Entity must implement tile based movement first");
     }
+    
+    tileMovement.speed = 0.0020f;
   }
   @Override
   public void update(GameContainer gc, StateBasedGame sb, int delta) {

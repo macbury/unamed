@@ -115,6 +115,14 @@ public class Entity {
     return this.rectangle.getX();
   }
   
+  public int getTileX() {
+    return Math.round(getX() / this.level.tileWidth);
+  }
+  
+  public int getTileY() {
+    return Math.round(getY() / this.level.tileHeight);
+  }
+  
   public float getY() {
     return this.rectangle.getY();
   }
