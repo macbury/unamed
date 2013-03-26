@@ -28,7 +28,9 @@ public class Level {
   public final static int LAYER_BACKGROUND    = 0;
   private static final String LAYER_EVENTS    = "Events";
   private static final String LAYER_COLLIDERS = "Colliders";
-  
+  private static final float FULL_CIRCLE_IN_RADIANTS     = 6.28f;
+  private static final float FOG_OF_WAR_STEP_IN_RADIANTS = 0.08f;
+  private static final int   FOG_OF_WAR_MAX_SKIP_ANGLES  = Math.round(FULL_CIRCLE_IN_RADIANTS/FOG_OF_WAR_STEP_IN_RADIANTS);
   Block[][] world;
   
   int stateID                = -1;
@@ -46,9 +48,11 @@ public class Level {
   Entity        cameraTarget;
   Entity        player;
   private ArrayList<Entity> entities;
+  private ArrayList<Block>  lastVisibleBlocks;
   
   public Level() {
     this.entities = new ArrayList<Entity>();
+    this.lastVisibleBlocks = new ArrayList<Block>();
   }
   
   public void addEntity(Entity e) {
@@ -83,7 +87,11 @@ public class Level {
     gr.pushTransform();
     gr.translate(shiftX, shiftY);
     for(Entity e : this.entities) {
-      if (getViewPort().intersects(e.getRect())) {
+      /*if (getViewPort().intersects(e.getRect())) {
+        e.render(gc, sb, gr);
+      }*/
+      Block block = this.world[e.getTileX()][e.getTileY()];
+      if (block.isVisible()) {
         e.render(gc, sb, gr);
       }
     }
@@ -91,16 +99,26 @@ public class Level {
     
     gr.pushTransform();
     gr.translate(viewportTileOffsetX, viewportTileOffsetY);
-    gr.setColor(new Color(0, 0, 0));
+    
+    Color invisivbleColor = new Color(0,0,0);
+    Color visitedColor    = new Color(0,0,0,210);
     for(int x = 0; x < this.tileCountHorizontal; x++) {
       for(int y = 0; y < this.tileCountVertical; y++) {
         int tx = cordToBound(shiftTileX+x, this.mapTileWidth);
         int ty = cordToBound(shiftTileY+y, this.mapTileHeight);
         
         Block block = this.world[tx][ty];
-        if (!block.visited) {
-          gr.fillRect(x*this.tileWidth, y*this.tileHeight, this.tileWidth, this.tileHeight);
+        if (block.isVisible()) {
+          gr.setColor(new Color(0,0,0,block.lightPower));
+        } else {
+          if (block.haveBeenVisited()) {
+            gr.setColor(visitedColor);
+          } else {
+            gr.setColor(invisivbleColor);
+          }
         }
+        
+        gr.fillRect(x*this.tileWidth, y*this.tileHeight, this.tileWidth, this.tileHeight);
         
       }
     }
@@ -130,63 +148,51 @@ public class Level {
       e.update(gc, sb, delta);
     }
     
-    updateFogOfWarFor(player);
+    updateFogOfWarAndLightingFor(player);
   }
 
-  private void updateFogOfWarFor(Entity entity) {
+  private void updateFogOfWarAndLightingFor(Entity entity) {
     int cx = entity.getTileX();
     int cy = entity.getTileY();
-    /*int sx = cordToBound(cx - Player.FOG_OF_WAR_RADIUS, this.mapTileWidth);
-    int sy = cordToBound(cy - Player.FOG_OF_WAR_RADIUS, this.mapTileHeight);
     
-    int ex = cordToBound(cx + Player.FOG_OF_WAR_RADIUS, this.mapTileWidth);
-    int ey = cordToBound(cy + Player.FOG_OF_WAR_RADIUS, this.mapTileHeight);*/
     Block block = null;
     
-    int radius = 0;
+    int radius             = 0;
+    int i                  = 0;
+    float radiants         = 0;
+    boolean[] skipRadiants = new boolean[FOG_OF_WAR_MAX_SKIP_ANGLES+1];
     
-    ArrayList<Integer> skipAngle = new ArrayList<Integer>();
+    for (int j = 0; j < lastVisibleBlocks.size(); j++) {
+      Block b = lastVisibleBlocks.get(j);
+      b.markAsInvisible();
+    }
+    lastVisibleBlocks.clear();
     
     while(radius < Player.FOG_OF_WAR_RADIUS) {
-      int angle = 0;
+      float lightPower = Math.round((float)(radius) / (float)entity.lightPower * 255.0f);
+      radiants = 0;
+      i        = 0;
       
-      while(angle <= 360) {
-        if (skipAngle.contains(angle)) {
-          angle += Player.FOG_OF_WAR_STEP_BY_DEGREES;
-          continue;
+      while(radiants <= FULL_CIRCLE_IN_RADIANTS) {
+        if (!skipRadiants[i]) {
+          int x = (int)Math.round(cx + radius * Math.cos(radiants));
+          int y = (int)Math.round(cy + radius * Math.sin(radiants));
+          block = this.world[x][y];
+          block.lightPower = (int)lightPower;
+          
+          block.markAsVisible();
+          if (block.solid) {
+            skipRadiants[i] = true;
+          }
+          
+          lastVisibleBlocks.add(block);
         }
-        double radiants = angle * Math.PI / 180.0f;
-        int x = (int)Math.round(cx + radius * Math.cos(radiants));
-        int y = (int)Math.round(cy + radius * Math.sin(radiants));
-        angle += Player.FOG_OF_WAR_STEP_BY_DEGREES;
-        
-        block = this.world[x][y];
-        if (block.solid) {
-          //skipAngle.add(angle);
-        }
-        block.visited = true;
+        i++;
+        radiants += FOG_OF_WAR_STEP_IN_RADIANTS;
       }
       
       radius++;
     }
-    
-   /* while(angle <= 360) {
-      double radiants = angle * Math.PI / 180.0f;
-      int x = (int)Math.round(cx + Player.FOG_OF_WAR_RADIUS * Math.cos(radiants));
-      int y = (int)Math.round(cy + Player.FOG_OF_WAR_RADIUS * Math.sin(radiants));
-      angle += Player.FOG_OF_WAR_STEP_BY_DEGREES;
-      
-      
-      //Log.debug("Fog: "+ x+"x"+y + " angle: " + angle);
-      
-      /*for (Point p : BresenhamLine.line(cx, cy, x, y)) {
-        block = this.world[(int) p.getX()][(int) p.getY()];
-        block.visited = true;
-        if (block.solid) {
-          break;
-        }
-      }
-    }*/
       
   }
 

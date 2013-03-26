@@ -18,6 +18,7 @@ import com.macbury.unamed.monkey.GroupObject;
 public class Entity {
   protected String id;
   
+  public byte lightPower = 0;
   private float scale;
   private float rotation;
   private Rectangle rectangle;
