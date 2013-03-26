@@ -29,8 +29,8 @@ public class Level {
   private static final String LAYER_EVENTS    = "Events";
   private static final String LAYER_COLLIDERS = "Colliders";
   private static final float FULL_CIRCLE_IN_RADIANTS     = 6.28f;
-  private static final float FOG_OF_WAR_STEP_IN_RADIANTS = 0.08f;
-  private static final int   FOG_OF_WAR_MAX_SKIP_ANGLES  = Math.round(FULL_CIRCLE_IN_RADIANTS/FOG_OF_WAR_STEP_IN_RADIANTS);
+  private static final float FOG_OF_WAR_STEP_IN_RADIANTS = 0.017f;
+  private static final int   FOG_OF_WAR_MAX_SKIP_ANGLES  = Math.round(FULL_CIRCLE_IN_RADIANTS/FOG_OF_WAR_STEP_IN_RADIANTS)+1;
   Block[][] world;
   
   int stateID                = -1;
@@ -101,7 +101,7 @@ public class Level {
     gr.translate(viewportTileOffsetX, viewportTileOffsetY);
     
     Color invisivbleColor = new Color(0,0,0);
-    Color visitedColor    = new Color(0,0,0,210);
+    Color visitedColor    = new Color(0,0,0,Block.VISITED_ALPHA);
     for(int x = 0; x < this.tileCountHorizontal; x++) {
       for(int y = 0; y < this.tileCountVertical; y++) {
         int tx = cordToBound(shiftTileX+x, this.mapTileWidth);
@@ -169,7 +169,7 @@ public class Level {
     lastVisibleBlocks.clear();
     
     while(radius < Player.FOG_OF_WAR_RADIUS) {
-      float lightPower = Math.round((float)(radius) / (float)entity.lightPower * 255.0f);
+      float lightPower = Math.min(Math.round((float)(radius) / (float)entity.lightPower * 255), Block.MIN_LIGHT_POWER);
       radiants = 0;
       i        = 0;
       
@@ -183,6 +183,7 @@ public class Level {
           block.markAsVisible();
           if (block.solid) {
             skipRadiants[i] = true;
+            skipRadiants[i+1] = true;
           }
           
           lastVisibleBlocks.add(block);

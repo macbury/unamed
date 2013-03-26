@@ -1,6 +1,8 @@
 package com.macbury.unamed.level;
 
 public class Block {
+  public static final int VISITED_ALPHA = 220;
+  public static final int MIN_LIGHT_POWER = 200;
   public static int gid = 0;
   int id = 0;
   
