@@ -1,64 +1,94 @@
 package com.macbury.unamed.component;
 
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.state.StateBasedGame;
+import org.newdawn.slick.util.Log;
+
+import com.macbury.unamed.level.Block;
+import com.macbury.unamed.level.Level;
 
 public class Light extends Component {
 
-  private int lightPower            = 5;
+  private int power            = 5;
   private boolean needToUpdateLight = true;
+  List<Block> lightedBlocks;
   
-  //Multipliers for transforming the coordinates into sections.
-  protected int[][] multipliers = {
-    {1, 0, 0, -1, -1, 0, 0, 1},
-    {0, 1, -1, 0, 0, -1, 1, 0},
-    {0, 1, 1, 0, 0, -1, -1, 0},
-    {1, 0, 0, 1, -1, 0, 0, -1}
-  };
+  private static final float FULL_CIRCLE_IN_RADIANTS     = 6.28f;
+  private static final float CIRCLE_STEP_IN_RADIANT      = 0.087266462599716f;
+  private static final int   MAX_SKIP_RADIANT            = Math.round(FULL_CIRCLE_IN_RADIANTS/CIRCLE_STEP_IN_RADIANT)+1;
   
+  private static int gid = 0;
+  private int id = 1;
   
-  /**
-   * Casts the shadow.
-   * @param sx The x-coordinate where to start casting the shadow from.
-   * @param sy The y-coordinate where to start casting the shadow from.
-   * @param row T
-   * @param startSlope The slope to start at.
-   * @param endSlope The slope to end at.
-   * @param radius The radius of the field of view.
-   * @param xx The xx multiplier.
-   * @param xy The xy multiplier.
-   * @param yx The yx multiplier.
-   * @param yy The yy multiplier.
-   * @param depth The current recursion depth.
-   */
-  
-  private void castShadow(int sx, int sy, int row, double startSlope, double endSlope, int radius, int xx, int xy, int yx, int yy, int depth) {
-    
+  public Light() {
+    this.lightedBlocks = new ArrayList<Block>();
+    this.id = ++Light.gid;
+    Log.info("New light with id: "+ this.getId());
   }
   
-  /**
-   * Updates the field of view.
-   */
-  
-  public void refresh() {
-    int section = 0;
-    int cx      = this.owner.getTileX();
-    int cy      = this.owner.getTileY();
+  private void refresh() {
+    int cx = owner.getTileX();
+    int cy = owner.getTileY();
     
-    //TODO: fix boundary for objects
+    Block block = null;
     
-    while (section < 8) {
-      castShadow(cx, cy, 1, 1.0, 0.0, lightPower, multipliers[0][section], multipliers[1][section],
-          multipliers[2][section], multipliers[3][section], 0);
+    int radius             = 0;
+    int i                  = 0;
+    float radiants         = 0;
+    boolean[] skipRadiants = new boolean[MAX_SKIP_RADIANT+1];
+    
+    for (int j = 0; j < lightedBlocks.size(); j++) {
+      block = lightedBlocks.get(j);
+      block.popLight(this);
+      block.markByLightPower();
     }
+    lightedBlocks.clear();
+    
+    while(radius < power) {
+      float lightPower = Math.min(Math.round((float)(radius) / (float)power * 255), Block.MIN_LIGHT_POWER);
+      //float lightPower = Math.round((float)(radius) / (float)power * 255);
+      radiants = 0;
+      i        = 0;
+      
+      while(radiants <= FULL_CIRCLE_IN_RADIANTS) {
+        if (!skipRadiants[i]) {
+          int x = (int)Math.round(cx + radius * Math.cos(radiants));
+          int y = (int)Math.round(cy + radius * Math.sin(radiants));
+          block = this.owner.getLevel().getBlockForPosition(x, y);
+          
+          
+          if (block.solid) {
+            //if (i >= 1) {
+            //  skipRadiants[i-1] = true;
+            //}
+            
+            skipRadiants[i] = true;
+           // skipRadiants[i+1] = true;
+          }
+          
+          lightedBlocks.add(block);
+          block.applyLight(this, (int) lightPower);
+          block.markByLightPower();
+        }
+        i++;
+        radiants += CIRCLE_STEP_IN_RADIANT;
+      }
+      
+      radius++;
+    }
+      
   }
   
   @Override
   public void update(GameContainer gc, StateBasedGame sb, int delta) {
     if (this.needToUpdateLight) {
       refresh();
-      this.needToUpdateLight = true;
+      this.needToUpdateLight = false;
     }
   }
 
@@ -69,15 +99,23 @@ public class Light extends Component {
   }
 
   public int getLightPower() {
-    return lightPower;
+    return power;
   }
 
   public void setLightPower(int lightPower) {
-    this.lightPower = lightPower;
+    this.power = lightPower;
   }
   
+  
+  /**
+   * Mark to recalculate light in next update
+   */
   public void updateLight() {
     this.needToUpdateLight = true;
+  }
+
+  public Integer getId() {
+    return new Integer(this.id);
   }
 
 }

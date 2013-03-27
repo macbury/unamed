@@ -20,12 +20,11 @@ import com.macbury.unamed.monkey.GroupObject;
 public class Entity {
   protected String id;
   
-  public  byte      lightPower = 0;
   private Rectangle rectangle;
   private Vector2f  futurePosition = null; // this is future position of entity
   public  boolean   solid = false;
   
-  Light lightComponent            = null;
+  private Light lightComponent    = null;
   ArrayList<Component> components = null;
   
   private Level level;
@@ -37,12 +36,12 @@ public class Entity {
   }
   
   public void addComponent(Component component) throws SlickException {
-    /*if (component.class == Light.class) {
-      if (lightComponent == null) {
+    if(Light.class.isInstance(component)){
+      if (lightComponent != null) {
         throw new SlickException("You can only assign one light component to entity");
       }
-      lightComponent = component;
-    }*/
+      lightComponent = (Light) component;
+    }
     
     component.setOwnerEntity(this);
     components.add(component);
@@ -174,5 +173,13 @@ public class Entity {
 
   public void setFuturePosition(Vector2f futurePosition) {
     this.futurePosition = futurePosition;
+  }
+  
+  public Light getLight() {
+    return this.lightComponent;
+  }
+
+  public boolean haveLight() {
+    return this.lightComponent != null;
   }
 }

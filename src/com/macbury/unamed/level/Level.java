@@ -16,6 +16,7 @@ import com.macbury.unamed.BresenhamLine;
 import com.macbury.unamed.Core;
 import com.macbury.unamed.component.CharacterAnimation;
 import com.macbury.unamed.component.HitBox;
+import com.macbury.unamed.component.Light;
 import com.macbury.unamed.component.Monster;
 import com.macbury.unamed.component.TileBasedMovement;
 import com.macbury.unamed.entity.Entity;
@@ -28,9 +29,7 @@ public class Level {
   public final static int LAYER_BACKGROUND    = 0;
   private static final String LAYER_EVENTS    = "Events";
   private static final String LAYER_COLLIDERS = "Colliders";
-  private static final float FULL_CIRCLE_IN_RADIANTS     = 6.28f;
-  private static final float FOG_OF_WAR_STEP_IN_RADIANTS = 0.017f;
-  private static final int   FOG_OF_WAR_MAX_SKIP_ANGLES  = Math.round(FULL_CIRCLE_IN_RADIANTS/FOG_OF_WAR_STEP_IN_RADIANTS)+1;
+
   Block[][] world;
   
   int stateID                  = -1;
@@ -49,11 +48,9 @@ public class Level {
   Entity        cameraTarget;
   Entity        player;
   private ArrayList<Entity> entities;
-  private ArrayList<Block>  lastVisibleBlocks;
   
   public Level() {
     this.entities = new ArrayList<Entity>();
-    this.lastVisibleBlocks = new ArrayList<Block>();
   }
   
   public void addEntity(Entity e) {
@@ -109,7 +106,7 @@ public class Level {
         
         Block block = this.world[tx][ty];
         if (block.isVisible()) {
-          gr.setColor(new Color(0,0,0,block.lightPower));
+          gr.setColor(new Color(0,0,0,block.getLightPower()));
         } else {
           if (block.haveBeenVisited()) {
             gr.setColor(visitedColor);
@@ -137,6 +134,10 @@ public class Level {
     }
   }
   
+  public boolean checkIfInBounds(int x, int y) {
+    return (x > 0 && y > 0 && x < mapTileWidth && y < mapTileHeight);
+  }
+  
   private void renderMapLayer(Graphics gr, int viewportTileOffsetX, int viewportTileOffsetY, int shiftTileX, int shiftTileY, int layer) {
     if(map != null) {
       map.render(viewportTileOffsetX,viewportTileOffsetY, shiftTileX, shiftTileY, this.tileCountHorizontal, this.tileCountVertical, layer, false);
@@ -150,59 +151,13 @@ public class Level {
       }
     }
     
-    updateFogOfWarAndLightingFor(player);
   }
   
-  private void updateFogOfWarAndLightingFor(Entity entity) {
-    int cx = entity.getTileX();
-    int cy = entity.getTileY();
-    
-    Block block = null;
-    
-    int radius             = 0;
-    int i                  = 0;
-    float radiants         = 0;
-    boolean[] skipRadiants = new boolean[FOG_OF_WAR_MAX_SKIP_ANGLES+1];
-    
-    for (int j = 0; j < lastVisibleBlocks.size(); j++) {
-      Block b = lastVisibleBlocks.get(j);
-      b.markAsInvisible();
-    }
-    lastVisibleBlocks.clear();
-    
-    while(radius < Player.FOG_OF_WAR_RADIUS) {
-      float lightPower = Math.min(Math.round((float)(radius) / (float)entity.lightPower * 255), Block.MIN_LIGHT_POWER);
-      radiants = 0;
-      i        = 0;
-      
-      while(radiants <= FULL_CIRCLE_IN_RADIANTS) {
-        if (!skipRadiants[i]) {
-          int x = (int)Math.round(cx + radius * Math.cos(radiants));
-          int y = (int)Math.round(cy + radius * Math.sin(radiants));
-          block = this.world[x][y];
-          block.lightPower = (int)lightPower;
-          
-          block.markAsVisible();
-          if (block.solid) {
-            skipRadiants[i] = true;
-            skipRadiants[i+1] = true;
-          }
-          
-          lastVisibleBlocks.add(block);
-        }
-        i++;
-        radiants += FOG_OF_WAR_STEP_IN_RADIANTS;
-      }
-      
-      radius++;
-    }
-      
-  }
 
   public void setupViewport(GameContainer gc) {
     if (getViewPort() == null) {
       this.viewPort   = new Rectangle(0, 0, gc.getWidth()+this.tileWidth, gc.getHeight()+this.tileHeight);
-      this.updateArea = new Rectangle(0, 0, this.viewPort.getWidth()*2, this.viewPort.getHeight()*2);
+      this.updateArea = new Rectangle(0, 0, Math.round(this.viewPort.getWidth()*1.4), Math.round(this.viewPort.getHeight()*1.4));
       Log.info("Viewport size is: " + this.viewPort.getWidth() + "x" + this.viewPort.getHeight() );
       Log.info("Update area size is: " + this.updateArea.getWidth() + "x" + this.updateArea.getHeight() );
     }
@@ -319,7 +274,6 @@ public class Level {
     for (int x = 0; x < this.mapTileWidth; x++) {
       for (int y = 0; y < this.mapTileHeight; y++) {
         Block block      = new Block();
-        block.visited    = false;
         this.world[x][y] = block;
         
         //Log.debug("Building block: "+ x + "x" +y + " with id: "+ block.id);
@@ -378,6 +332,10 @@ public class Level {
       animation.loadCharacterImage("monster");
       e.addComponent(new Monster());
       e.setPositionUsing(spawnPosition);
+      
+      Light light = new Light();
+      light.setLightPower(10);
+      e.addComponent(light);
     }
   }
 
@@ -389,5 +347,15 @@ public class Level {
     lookAt(player);
     player.setPositionUsing(spawnPosition);
     Log.info("Player spawn position is "+ spawnPosition.x + "x" + spawnPosition.y);
+  }
+  
+  public boolean isSolid(int x, int y) {
+    Block block = getBlockForPosition(x, y);
+    
+    if (block == null) {
+      return false;
+    } else {
+      return block.solid;
+    }
   }
 }

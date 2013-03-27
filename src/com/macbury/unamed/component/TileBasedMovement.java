@@ -89,6 +89,9 @@ public class TileBasedMovement extends Component {
         totalMoveTime  = 0.0f;
         this.owner.setFuturePosition(null);
         basePosition   = null;
+        if (this.owner.haveLight()) {
+          this.owner.getLight().updateLight();
+        }
       }
     }
   }

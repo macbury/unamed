@@ -6,6 +6,7 @@ import com.macbury.unamed.Core;
 import com.macbury.unamed.component.CharacterAnimation;
 import com.macbury.unamed.component.HitBox;
 import com.macbury.unamed.component.KeyboardMovement;
+import com.macbury.unamed.component.Light;
 import com.macbury.unamed.component.TileBasedMovement;
 
 public class Player extends Entity {
@@ -29,7 +30,11 @@ public class Player extends Entity {
     if (Core.DEBUG) {
       addComponent(new HitBox());
     }
-    this.lightPower = FOG_OF_WAR_RADIUS-1;
+    
+    Light light = new Light();
+    light.setLightPower(10);
+    light.updateLight();
+    addComponent(light);
   }
 
 }
