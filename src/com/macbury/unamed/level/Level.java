@@ -87,12 +87,11 @@ public class Level {
     gr.pushTransform();
     gr.translate(shiftX, shiftY);
     for(Entity e : this.entities) {
-      /*if (getViewPort().intersects(e.getRect())) {
-        e.render(gc, sb, gr);
-      }*/
-      Block block = this.world[e.getTileX()][e.getTileY()];
+      Block block = e.getBlock();
       if (block.isVisible()) {
-        e.render(gc, sb, gr);
+        if (this.viewPort.intersects(e.getRect())) {
+          e.render(gc, sb, gr);
+        }
       }
     }
     gr.popTransform();
@@ -235,6 +234,10 @@ public class Level {
   
   public Rectangle getViewPort() {
     return viewPort;
+  }
+  
+  public Block getBlockForPosition(int tx, int ty) {
+    return this.world[tx][ty];
   }
   
   public void loadMap(String name) throws SlickException {

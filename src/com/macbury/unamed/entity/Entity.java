@@ -11,6 +11,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import com.macbury.unamed.component.Component;
 import com.macbury.unamed.component.RenderComponent;
+import com.macbury.unamed.level.Block;
 import com.macbury.unamed.level.Level;
 import com.macbury.unamed.monkey.GroupObject;
 
@@ -18,15 +19,14 @@ import com.macbury.unamed.monkey.GroupObject;
 public class Entity {
   protected String id;
   
-  public byte lightPower = 0;
-  private float scale;
-  private float rotation;
+  public  byte      lightPower = 0;
+  private float     scale;
+  private float     rotation;
   private Rectangle rectangle;
-  private Vector2f futurePosition = null; // this is future position of entity
-  public boolean solid = false;
+  private Vector2f  futurePosition = null; // this is future position of entity
+  public  boolean   solid = false;
+  
   ArrayList<Component> components = null;
-
-  private Component renderComponent;
   
   private Level level;
   
@@ -39,10 +39,6 @@ public class Entity {
   }
   
   public void addComponent(Component component) throws SlickException {
-    if(RenderComponent.class.isInstance(component)) {
-      renderComponent = (RenderComponent)component;
-    }
-    
     component.setOwnerEntity(this);
     components.add(component);
   }
@@ -122,6 +118,10 @@ public class Entity {
   
   public int getTileY() {
     return Math.round(getY() / this.level.tileHeight);
+  }
+  
+  public Block getBlock() {
+    return this.level.getBlockForPosition(this.getTileX(), this.getTileY());
   }
   
   public float getY() {

@@ -1,7 +1,5 @@
 package com.macbury.unamed;
 
-import java.util.logging.Logger;
-
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.SlickException;
 
@@ -11,7 +9,7 @@ public class Main {
     AppGameContainer app;
     try {
       app = new AppGameContainer(core);
-      app.setDisplayMode(1024, 576, false);
+      app.setDisplayMode(1280, 720, false);
       app.setMinimumLogicUpdateInterval(Core.MIN_UPDATES);
       app.setMaximumLogicUpdateInterval(Core.MAX_UPDATES);
       app.setTargetFrameRate(Core.MAX_FPS);
