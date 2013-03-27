@@ -3,9 +3,12 @@
  <tileset firstgid="1" name="debug" tilewidth="32" tileheight="32">
   <image source="../images/debug.jpg" width="512" height="512"/>
  </tileset>
+ <tileset firstgid="257" name="terrain" tilewidth="32" tileheight="32">
+  <image source="../images/terrain.png" width="512" height="512"/>
+ </tileset>
  <layer name="Background" width="100" height="100">
   <data encoding="base64" compression="zlib">
-   eJzt2kFOwzAQQNGmO47dm6MuKpXgScaOk8ziPckCCkXIH9sk5fEAAAAAAAAAAAAAuNZzwmCe93y+kmNpPPb8+j7aHrfXYwneb/XIdo2GHv/ncT3nrQZ6nKfVY2usv0aPufbWR7SH6XGO9xy01sBn/Dz0uNLo+nB+nKOnR2sN6TFX5jy3Pq7Tmse9PUuP8xydx94ers+3bc1Nzxz2PH/rZ6FtPZ9XPF+P2B09iOlRix616FHL3nxmXlvq/fuKWKaHa77rZK4/9LjOjPsfesyjxz2WYNiv7vGe+9F51WO+z3p4BW+jz+lxDuujlq21sfVWj3McWR+Zc95rTn2iMyO7Tvb2MfPfZwnG95y2GmT3MT36jO5X2XNejz7RfjVyxkc9NMlrrY/smdFqp8cxez3Wc946Z/bWB3mZHuvHo49Helg/f7V+53vGyPVH5v+5GDP7vrwex+hRix616FGLHrXoUYsetehRix616FGLHrXoUcvI/UL3EwEAAAAAAAAAAOj1C+SKpwA=
+   eJzt2clOwzAUQNHCjmX//2cRi0oQeXge4j6Jc6QIEC0g3ziOw+MBAAAAAAAAAAAAcNbzY/1gn5/x/Awepde+euzoqm2/x7PyealHtGvrd/1313Hsfa3HvUrj3zpKryn9HD3mjM4HPe5VmwOv4+uhx0mz88P6cY+RHqU5pMdekfXc/DinN96uV2etjuNoD/vztt5eIzqGI+9v/S2Ula5Jd79fj7p39KBOj1z0yEWPXHrj2bvnmrm/oi7Sw57vnMj+Q49zdjz/0GMfPd5j5XmJHvutjKse+/0+10sfW9/TYz/zI5fe+W9+nLUyrpF1vvb/Espqa8bs/Cj1IC56jl/HOtpJjzG79316rJm5x23Nidr6QUxpfoxci2rrjR5zej2uY91r4Hq1JtKjNdar64f581drHzF7RPcptYN5d9yfMU+PXPTIRY9c9MhFj1z0yEWPXPTIRY9c9MhFj1zueB4JAAAAAAAAAAAAV9/jNyZ9
   </data>
  </layer>
  <objectgroup color="#ff0000" name="Colliders" width="100" height="100">

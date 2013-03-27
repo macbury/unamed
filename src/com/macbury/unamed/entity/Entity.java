@@ -10,6 +10,7 @@ import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.macbury.unamed.component.Component;
+import com.macbury.unamed.component.Light;
 import com.macbury.unamed.component.RenderComponent;
 import com.macbury.unamed.level.Block;
 import com.macbury.unamed.level.Level;
@@ -20,25 +21,29 @@ public class Entity {
   protected String id;
   
   public  byte      lightPower = 0;
-  private float     scale;
-  private float     rotation;
   private Rectangle rectangle;
   private Vector2f  futurePosition = null; // this is future position of entity
   public  boolean   solid = false;
   
+  Light lightComponent            = null;
   ArrayList<Component> components = null;
   
   private Level level;
   
   public Entity(String id) {
-    this.id    = id;
-    components = new ArrayList<Component>();
+    this.id         = id;
+    this.components = new ArrayList<Component>();
     setRect(new Rectangle(0, 0, 1, 1));
-    setScale(1);
-    setRotation(0);
   }
   
   public void addComponent(Component component) throws SlickException {
+    /*if (component.class == Light.class) {
+      if (lightComponent == null) {
+        throw new SlickException("You can only assign one light component to entity");
+      }
+      lightComponent = component;
+    }*/
+    
     component.setOwnerEntity(this);
     components.add(component);
   }
@@ -56,6 +61,10 @@ public class Entity {
     for(Component comp : components) {
       if(comp.getClass().equals(id)) {
         this.components.remove( comp );
+        
+        if (lightComponent == comp) {
+          lightComponent = null;
+        }
       }
     }
   }
@@ -66,22 +75,6 @@ public class Entity {
 
   public void setRect(Rectangle rectangle2) {
     this.rectangle = rectangle2;
-  }
-
-  public float getScale() {
-    return scale;
-  }
-
-  public void setScale(float scale) {
-    this.scale = scale;
-  }
-
-  public float getRotation() {
-    return rotation;
-  }
-
-  public void setRotation(float rotation) {
-    this.rotation = rotation;
   }
   
   public void update(GameContainer gc, StateBasedGame sb, int delta) {

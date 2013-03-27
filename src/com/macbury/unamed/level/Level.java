@@ -33,8 +33,9 @@ public class Level {
   private static final int   FOG_OF_WAR_MAX_SKIP_ANGLES  = Math.round(FULL_CIRCLE_IN_RADIANTS/FOG_OF_WAR_STEP_IN_RADIANTS)+1;
   Block[][] world;
   
-  int stateID                = -1;
-  private Rectangle viewPort = null;
+  int stateID                  = -1;
+  private Rectangle viewPort   = null;
+  private Rectangle updateArea = null;
   
   public int tileWidth           = Core.TILE_SIZE;
   public int tileHeight          = Core.TILE_SIZE;
@@ -144,12 +145,14 @@ public class Level {
 
   public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
     for(Entity e : this.entities) {
-      e.update(gc, sb, delta);
+      if (this.updateArea.intersects(e.getRect())) {
+        e.update(gc, sb, delta);
+      }
     }
     
     updateFogOfWarAndLightingFor(player);
   }
-
+  
   private void updateFogOfWarAndLightingFor(Entity entity) {
     int cx = entity.getTileX();
     int cy = entity.getTileY();
@@ -198,16 +201,22 @@ public class Level {
 
   public void setupViewport(GameContainer gc) {
     if (getViewPort() == null) {
-      this.viewPort = new Rectangle(0, 0, gc.getWidth()+this.tileWidth, gc.getHeight()+this.tileHeight);
+      this.viewPort   = new Rectangle(0, 0, gc.getWidth()+this.tileWidth, gc.getHeight()+this.tileHeight);
+      this.updateArea = new Rectangle(0, 0, this.viewPort.getWidth()*2, this.viewPort.getHeight()*2);
       Log.info("Viewport size is: " + this.viewPort.getWidth() + "x" + this.viewPort.getHeight() );
+      Log.info("Update area size is: " + this.updateArea.getWidth() + "x" + this.updateArea.getHeight() );
     }
   }
 
   public void updateCamera() {
     if (cameraTarget != null) {
-      this.viewPort.setCenterX(cameraTarget.getRect().getCenterX());
-      this.viewPort.setCenterY(cameraTarget.getRect().getCenterY());
-      //Log.debug("Viewport pos is: " + this.viewPort.getX() + "x" + this.viewPort.getY() );
+      float cx = cameraTarget.getRect().getCenterX();
+      float cy = cameraTarget.getRect().getCenterY();
+      this.viewPort.setCenterX(cx);
+      this.viewPort.setCenterY(cy);
+      this.updateArea.setCenterX(cx);
+      this.updateArea.setCenterY(cy);
+      //Log.debug("Viewport pos is: " + cx + "x" + cy );
     }
   }
   
@@ -271,7 +280,7 @@ public class Level {
   }
   
   public void buildBlockForGroupObject(GroupObject object) {
-    Log.info("Transforming group object: " + object.x + "x" + object.y + " size: " + object.width + "x" + object.height );
+    //Log.info("Transforming group object: " + object.x + "x" + object.y + " size: " + object.width + "x" + object.height );
     int startX = this.transformXToTile(object.x);
     int startY = this.transformYToTile(object.y);
     
@@ -280,7 +289,7 @@ public class Level {
     
     for (int x = startX; x < width; x++) {
       for (int y = startY; y < height; y++) {
-        Log.debug("Building block: "+ x + "x" +y);
+        //Log.debug("Building block: "+ x + "x" +y);
         this.world[x][y].solid = true;
       }
     }
@@ -313,7 +322,7 @@ public class Level {
         block.visited    = false;
         this.world[x][y] = block;
         
-        Log.debug("Building block: "+ x + "x" +y + " with id: "+ block.id);
+        //Log.debug("Building block: "+ x + "x" +y + " with id: "+ block.id);
       }
     }
   }
