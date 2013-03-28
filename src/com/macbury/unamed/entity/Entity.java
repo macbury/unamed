@@ -18,20 +18,25 @@ import com.macbury.unamed.level.Level;
 import com.macbury.unamed.monkey.GroupObject;
 
 
-public class Entity {
-  protected String id;
+public class Entity implements Comparable<Entity> {
+  protected static final int ENTITY_BASE_LAYER = 0;
+
+  private static int gid = 0;
+
+  protected int id;
   
   private Rectangle rectangle;
   private Vector2f  futurePosition = null; // this is future position of entity
   public  boolean   solid = false;
   
+  public int z = ENTITY_BASE_LAYER;
   private Light lightComponent    = null;
   ArrayList<Component> components = null;
   
   private Level level;
   
-  public Entity(String id) {
-    this.id         = id;
+  public Entity() {
+    this.id = Entity.gid++;
     this.components = new ArrayList<Component>();
     setRect(new Rectangle(0, 0, 1, 1));
   }
@@ -77,7 +82,7 @@ public class Entity {
     this.rectangle = rectangle2;
   }
   
-  public void update(GameContainer gc, StateBasedGame sb, int delta) {
+  public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
     for(Component component : components) {
       component.update(gc, sb, delta);
     }
@@ -89,7 +94,7 @@ public class Entity {
     }
   }
   
-  public String getId() {
+  public int getId() {
     return this.id;
   }
   
@@ -188,5 +193,16 @@ public class Entity {
     this.setX(entity.getTileX() * this.getLevel().tileWidth);
     this.setY(entity.getTileY() * this.getLevel().tileHeight);
     Log.debug("Placed entity at position: " + this.getX()  + "x" + this.getY());
+  }
+
+  @Override
+  public int compareTo(Entity otherEntity) {
+    if (otherEntity.z > this.z) {
+      return -1;
+    } else if (otherEntity.z == this.z) {
+      return 0;
+    } else {
+      return 1;
+    }
   }
 }

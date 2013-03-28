@@ -10,12 +10,15 @@ import com.macbury.unamed.component.Light;
 import com.macbury.unamed.component.TileBasedMovement;
 
 public class Player extends Entity {
-  public final static int FOG_OF_WAR_RADIUS          = 10;
+  public final static int FOG_OF_WAR_RADIUS = 10;
+  private static final int ENTITY_ZINDEX    = Entity.ENTITY_BASE_LAYER+1;
+  private static final int LIGHT_POWER      = 6;
   TileBasedMovement tileMovement;
   KeyboardMovement  keyboardMovement;
-  public Player(String id) throws SlickException {
-    super(id);
+  public Player() throws SlickException {
+    super();
     
+    this.z = ENTITY_ZINDEX;
     tileMovement = new TileBasedMovement();
     addComponent(tileMovement);
     
@@ -32,7 +35,7 @@ public class Player extends Entity {
     }
     
     Light light = new Light();
-    light.setLightPower(10);
+    light.setLightPower(LIGHT_POWER);
     light.updateLight();
     addComponent(light);
   }

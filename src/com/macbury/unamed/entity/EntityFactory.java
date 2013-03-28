@@ -12,7 +12,7 @@ import com.macbury.unamed.component.TileBasedMovement;
 public class EntityFactory {
   
   static public Entity createPlayer() throws SlickException {
-    Entity e = new Entity("Player");
+    Entity e = new Entity();
     e.addComponent(new TileBasedMovement());
     e.addComponent(new KeyboardMovement());
     CharacterAnimation characterAnimationComponent = new CharacterAnimation();

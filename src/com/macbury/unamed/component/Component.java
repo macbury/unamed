@@ -17,6 +17,6 @@ public abstract class Component {
     this.owner = owner;
   }
 
-  public abstract void update(GameContainer gc, StateBasedGame sb, int delta);
+  public abstract void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException;
   public abstract void render(GameContainer gc, StateBasedGame sb, Graphics gr);
 }

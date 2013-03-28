@@ -1,6 +1,10 @@
 package com.macbury.unamed.level;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -48,6 +52,7 @@ public class Level {
   Entity        cameraTarget;
   Entity        player;
   private ArrayList<Entity> entities;
+  private boolean refreshEntityList = true;
   
   public Level() {
     this.entities = new ArrayList<Entity>();
@@ -57,6 +62,7 @@ public class Level {
     if (this.entities.indexOf(e) == -1) {
       e.setLevel(this);
       this.entities.add(e);
+      refreshEntityList  = true;
     } else {
       Log.info("Entity already added to entity stack!");
     }
@@ -148,6 +154,12 @@ public class Level {
   }
 
   public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
+    if (refreshEntityList) {
+      Collections.sort(this.entities);
+      refreshEntityList = false;
+      Log.debug("Refreshing order of entities");
+    }
+    
     for (int i = 0; i < this.entities.size(); i++) {
       Entity e    = this.entities.get(i);
       if (this.updateArea.intersects(e.getRect())) {
@@ -325,7 +337,7 @@ public class Level {
 
   private void loadMonstersAndSpawn(ObjectGroup eventsGroup) throws SlickException {
     for (GroupObject spawnPosition : eventsGroup.getObjectsOfType("MonsterSpawn")) {
-      Entity e = new Entity("Monster");
+      Entity e = new Entity();
       this.addEntity(e);
       
       e.addComponent(new TileBasedMovement());
@@ -335,16 +347,12 @@ public class Level {
       animation.loadCharacterImage("monster");
       e.addComponent(new Monster());
       e.setPositionUsing(spawnPosition);
-      
-      Light light = new Light();
-      light.setLightPower(10);
-      e.addComponent(light);
     }
   }
 
   private void loadPlayerAndSpawn(ObjectGroup eventsGroup) throws SlickException {
     GroupObject spawnPosition = eventsGroup.getObject("PlayerSpawn");
-    player = new Player("Player 1");
+    player = new Player();
     this.addEntity(player);
     
     lookAt(player);

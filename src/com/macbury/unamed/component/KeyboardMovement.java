@@ -7,6 +7,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.macbury.unamed.entity.Entity;
+import com.macbury.unamed.entity.Torch;
 
 public class KeyboardMovement extends Component {
   TileBasedMovement tileMovement; 
@@ -25,38 +26,32 @@ public class KeyboardMovement extends Component {
   }
   
   @Override
-  public void update(GameContainer gc, StateBasedGame sb, int delta) {
+  public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
+    Input input    = gc.getInput();
+    
+    if (pressedZ) {
+      buttonThrottle += delta;
+    }
+    
+    if (buttonThrottle > MAX_THROTTLE_TIME) {
+      pressedZ = false;
+    }
+    
+    if(input.isKeyDown(Input.KEY_Z) && !pressedZ) {
+      pressedZ = true;
+      buttonThrottle = 0;
+      Torch torch = new Torch();
+      this.owner.getLevel().addEntity(torch);
+      
+      torch.setX(this.owner.getX());
+      torch.setY(this.owner.getY());
+    }
+    
     if (tileMovement != null && !tileMovement.isMoving()) {
-      Input input    = gc.getInput();
+      
       boolean move   = false;
       byte direction = TileBasedMovement.DIRECTION_DOWN;
-      
-      if (pressedZ) {
-        buttonThrottle += delta;
-      }
-      
-      if (buttonThrottle > MAX_THROTTLE_TIME) {
-        pressedZ = false;
-      }
-      
-      if(input.isKeyDown(Input.KEY_Z) && !pressedZ) {
-        pressedZ = true;
-        buttonThrottle = 0;
-        Entity e = new Entity("Light");
-        this.owner.getLevel().addEntity(e);
-        try {
-          Light l = new Light();
-          l.setLightPower(20);
-          e.addComponent(l);
-        } catch (SlickException e1) {
-          // TODO Auto-generated catch block
-          e1.printStackTrace();
-        }
-        e.setX(this.owner.getX());
-        e.setY(this.owner.getY());
-        e.getLight().updateLight();
-      }
-      
+
       if(input.isKeyDown(Input.KEY_DOWN)) {
         move      = true;
         direction = TileBasedMovement.DIRECTION_DOWN;
