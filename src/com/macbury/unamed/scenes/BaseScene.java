@@ -15,7 +15,12 @@ public abstract class BaseScene extends BasicGameState {
   protected Level level;
   
   public BaseScene(GameContainer gc) {
-    this.level = new Level();
+    try {
+      this.level = new Level();
+    } catch (SlickException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
     this.level.setupViewport(gc);
   }
 

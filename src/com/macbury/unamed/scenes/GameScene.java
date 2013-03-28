@@ -5,6 +5,8 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.Log;
 
+import com.macbury.unamed.level.Level;
+
 
 public class GameScene extends BaseScene {
   public final static int STATE_ID = 1;
@@ -17,7 +19,7 @@ public class GameScene extends BaseScene {
   
   @Override
   public void init(GameContainer gc, StateBasedGame sb) throws SlickException {
-    this.level.loadMap("playground");
+    this.level.generateWorld(Level.SMALL);
   }
 
   @Override

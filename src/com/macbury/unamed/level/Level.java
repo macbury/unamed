@@ -33,12 +33,14 @@ public class Level {
   public final static int LAYER_BACKGROUND    = 0;
   private static final String LAYER_EVENTS    = "Events";
   private static final String LAYER_COLLIDERS = "Colliders";
+  public static final int SMALL = 100;
 
   Block[][] world;
   
   int stateID                  = -1;
   private Rectangle viewPort   = null;
   private Rectangle updateArea = null;
+  private BlockResources blockResources;
   
   public int tileWidth           = Core.TILE_SIZE;
   public int tileHeight          = Core.TILE_SIZE;
@@ -54,8 +56,10 @@ public class Level {
   private ArrayList<Entity> entities;
   private boolean refreshEntityList = true;
   
-  public Level() {
-    this.entities = new ArrayList<Entity>();
+  
+  public Level() throws SlickException {
+    this.entities       = new ArrayList<Entity>();
+    this.blockResources = new BlockResources();
   }
   
   public void addEntity(Entity e) {
@@ -83,7 +87,7 @@ public class Level {
     int viewportTileOffsetY = (( shiftTileY * this.tileHeight ) - shiftYRound) - this.tileHeight;
     
     
-    renderMapLayer(gr, viewportTileOffsetX, viewportTileOffsetY, shiftTileX, shiftTileY, LAYER_BACKGROUND);
+    //renderMapLayer(gr, viewportTileOffsetX, viewportTileOffsetY, shiftTileX, shiftTileY, LAYER_BACKGROUND);
     
     // rendering layer entities
     int shiftX = -shiftXRound - this.tileWidth;
@@ -101,6 +105,7 @@ public class Level {
       }
     }
     
+    /*
     gr.popTransform();
     
     gr.pushTransform();
@@ -128,7 +133,7 @@ public class Level {
         
       }
     }
-    gr.popTransform();
+    gr.popTransform();*/
   }
   
   private int cordToBound(int x, int max) {
@@ -145,12 +150,6 @@ public class Level {
   
   public boolean checkIfInBounds(int x, int y) {
     return (x > 0 && y > 0 && x < mapTileWidth && y < mapTileHeight);
-  }
-  
-  private void renderMapLayer(Graphics gr, int viewportTileOffsetX, int viewportTileOffsetY, int shiftTileX, int shiftTileY, int layer) {
-    if(map != null) {
-      map.render(viewportTileOffsetX,viewportTileOffsetY, shiftTileX, shiftTileY, this.tileCountHorizontal, this.tileCountVertical, layer, false);
-    }
   }
 
   public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
@@ -233,8 +232,6 @@ public class Level {
     this.tileCountVertical   =  Math.round((this.viewPort.getHeight() / this.tileHeight) + 2);
     
     Log.info("Tile count is: "+ this.tileCountHorizontal + "x" + this.tileCountVertical);
-    
-    ObjectGroup colidersGroup = this.map.getObjectGroup(LAYER_COLLIDERS);
     loadEvents();
     loadColliders();
     
@@ -267,7 +264,7 @@ public class Level {
   
   private void loadColliders() throws SlickException {
     ObjectGroup collidersGroup = this.map.getObjectGroup(LAYER_COLLIDERS);
-    fillWorldWithBlocks();
+    //fillWorldWithBlocks();
     
     if(collidersGroup == null) {
       throw new SlickException("There is no colliders layer in the map!");
@@ -279,22 +276,7 @@ public class Level {
       }
     }
   }
-  
-  private void fillWorldWithBlocks() {
-    this.mapTileWidth  = this.map.getWidth();
-    this.mapTileHeight = this.map.getHeight();
-    this.world = new Block[mapTileWidth][mapTileHeight];
-    Log.info("Initializing world size: "+this.map.getWidth() + "x" + this.map.getHeight());
-    
-    for (int x = 0; x < this.mapTileWidth; x++) {
-      for (int y = 0; y < this.mapTileHeight; y++) {
-        Block block      = new Block();
-        this.world[x][y] = block;
-        
-        //Log.debug("Building block: "+ x + "x" +y + " with id: "+ block.id);
-      }
-    }
-  }
+
 
   public boolean canMoveTo(Vector2f targetPosition, Entity mover) {
     return canMoveTo(new Rectangle(targetPosition.x, targetPosition.y, this.tileWidth, this.tileHeight), mover);
@@ -367,6 +349,32 @@ public class Level {
       return false;
     } else {
       return block.solid;
+    }
+  }
+
+  public void generateWorld(int size) {
+    Log.info("Tile size is: "+ this.tileWidth + "x" + this.tileHeight);
+    
+    this.tileCountHorizontal =  Math.round((this.viewPort.getWidth() / this.tileWidth) + 2);
+    this.tileCountVertical   =  Math.round((this.viewPort.getHeight() / this.tileHeight) + 2);
+    
+    Log.info("Tile count is: "+ this.tileCountHorizontal + "x" + this.tileCountVertical);
+    fillWorldWithBlocks(size);
+  }
+  
+  private void fillWorldWithBlocks(int size) {
+    this.mapTileWidth  = size;
+    this.mapTileHeight = size;
+    this.world = new Block[mapTileWidth][mapTileHeight];
+    Log.info("Initializing world size: "+this.mapTileWidth + "x" + this.mapTileHeight);
+    
+    for (int x = 0; x < this.mapTileWidth; x++) {
+      for (int y = 0; y < this.mapTileHeight; y++) {
+        Sidewalk block      = new Sidewalk();
+        this.world[x][y] = block;
+        
+        //Log.debug("Building block: "+ x + "x" +y + " with id: "+ block.id);
+      }
     }
   }
 }

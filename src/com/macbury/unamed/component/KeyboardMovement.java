@@ -43,8 +43,8 @@ public class KeyboardMovement extends Component {
       Torch torch = new Torch();
       this.owner.getLevel().addEntity(torch);
       
-      torch.setX(this.owner.getX());
-      torch.setY(this.owner.getY());
+      torch.setX(this.owner.getSnappedToTileX());
+      torch.setY(this.owner.getSnappedToTileY());
     }
     
     if (tileMovement != null && !tileMovement.isMoving()) {

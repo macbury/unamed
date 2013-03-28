@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.newdawn.slick.SpriteSheet;
+
 import com.macbury.unamed.component.Light;
 
 public class Block {
@@ -12,7 +14,7 @@ public class Block {
   public static int gid                   = 0;
   int id                                  = 0;
   
-  public boolean solid       = false;
+  public boolean  solid       = false;
   private boolean visited     = false;
   private boolean visible     = false;
   private int     lightPower  = 255;
@@ -84,4 +86,5 @@ public class Block {
     }
     calculateLightPower();
   }
+  
 }

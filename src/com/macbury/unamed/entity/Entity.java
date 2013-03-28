@@ -205,4 +205,12 @@ public class Entity implements Comparable<Entity> {
       return 1;
     }
   }
+
+  public float getSnappedToTileX() {
+    return this.getTileX() * this.getLevel().tileWidth;
+  }
+
+  public float getSnappedToTileY() {
+    return this.getTileY() * this.getLevel().tileHeight;
+  }
 }
