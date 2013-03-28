@@ -85,7 +85,7 @@ public class Light extends Component {
     cleanLightedBlocks();
     
     while(radius < power) {
-      float lightPower = Math.min(Math.round((float)(radius) / (float)power * 255), Block.MIN_LIGHT_POWER);
+      float lightPower = Math.min(Math.round((float)(radius * radius) / (float)(power * power) * 255), Block.MIN_LIGHT_POWER);
       radiants         = 0;
       i                = 0;
       while(radiants <= FULL_CIRCLE_IN_RADIANTS) {
@@ -94,11 +94,14 @@ public class Light extends Component {
           int y = (int)Math.round(cy + radius * Math.sin(radiants));
           block = this.owner.getLevel().getBlockForPosition(x, y);
           
-          if (block.solid) {
-            skipRadiants[i] = true;
+          if (block != null) {
+            if (block.solid) {
+              skipRadiants[i] = true;
+            }
+            
+            lightBlock(block, (int) lightPower);
           }
           
-          lightBlock(block, (int) lightPower);
         }
         
         radiants  += CIRCLE_STEP_IN_RADIANT;

@@ -17,12 +17,17 @@ public class Block {
   public boolean  solid       = false;
   private boolean visited     = false;
   private boolean visible     = false;
+  protected short hardness      = -1;
   private int     lightPower  = 255;
   
   HashMap<Light,Integer> lightMapping;
+  public int x;
+  public int y;
   
-  public Block() {
+  public Block(int x, int y) {
     this.id = Block.gid++;
+    this.x = x;
+    this.y = y;
   }
   
   public void markAsVisible() {
@@ -32,6 +37,14 @@ public class Block {
 
   public boolean isVisible() {
     return this.visible;
+  }
+  
+  public boolean isVisited() {
+    return this.visited;
+  }
+  
+  public boolean isVisibleOrVisited() {
+    return isVisible() || isVisited();
   }
 
   public void markAsInvisibleBlock() {

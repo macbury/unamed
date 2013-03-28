@@ -11,10 +11,7 @@ import com.macbury.unamed.entity.Torch;
 
 public class KeyboardMovement extends Component {
   TileBasedMovement tileMovement; 
-  final static int MAX_THROTTLE_TIME = 500;
-  
-  int buttonThrottle = 0;
-  boolean pressedZ = false;
+
   
   public void setOwnerEntity(Entity owner) throws SlickException {
     super.setOwnerEntity(owner);
@@ -28,24 +25,6 @@ public class KeyboardMovement extends Component {
   @Override
   public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
     Input input    = gc.getInput();
-    
-    if (pressedZ) {
-      buttonThrottle += delta;
-    }
-    
-    if (buttonThrottle > MAX_THROTTLE_TIME) {
-      pressedZ = false;
-    }
-    
-    if(input.isKeyDown(Input.KEY_Z) && !pressedZ) {
-      pressedZ = true;
-      buttonThrottle = 0;
-      Torch torch = new Torch();
-      this.owner.getLevel().addEntity(torch);
-      
-      torch.setX(this.owner.getSnappedToTileX());
-      torch.setY(this.owner.getSnappedToTileY());
-    }
     
     if (tileMovement != null && !tileMovement.isMoving()) {
       

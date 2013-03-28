@@ -2,6 +2,7 @@ package com.macbury.unamed.entity;
 
 import java.util.ArrayList;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
@@ -212,5 +213,23 @@ public class Entity implements Comparable<Entity> {
 
   public float getSnappedToTileY() {
     return this.getTileY() * this.getLevel().tileHeight;
+  }
+
+  public void setPosition(int x, int y) {
+    setX(x);
+    setY(y);
+  }
+  
+  public void setTileX(int x) {
+    setX(x * this.getLevel().tileWidth);
+  }
+  
+  public void setTileY(int y) {
+    setY(y * this.getLevel().tileHeight);
+  }
+
+  public void setTilePosition(int x, int y) {
+    setTileX(x);
+    setTileY(y);
   }
 }

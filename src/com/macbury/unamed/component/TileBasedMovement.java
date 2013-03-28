@@ -17,7 +17,7 @@ public class TileBasedMovement extends Component {
   public final static byte DIRECTION_DOWN  = 3;
   public final static byte DIRECTION_NONE  = 4;
   public  byte  direction           = DIRECTION_DOWN;
-  public  float speed               = 0.0035f;
+  public  float speed               = 0.01f;//0.0035f;
   private float totalMoveTime       = 0.0f;
   
   private boolean moveInProgress = false;

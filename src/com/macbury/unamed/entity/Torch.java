@@ -21,4 +21,7 @@ public class Torch extends Entity {
     addComponent(animatedSprite);
   }
 
+
+  
+
 }

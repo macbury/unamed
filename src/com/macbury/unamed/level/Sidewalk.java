@@ -1,9 +1,9 @@
 package com.macbury.unamed.level;
 
 public class Sidewalk extends Block {
-  public Sidewalk() {
-    super();
-    this.solid = true;
+  public Sidewalk(int x, int y) {
+    super(x,y);
+    this.solid = false;
   }
   
 }

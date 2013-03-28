@@ -9,6 +9,7 @@ import java.util.List;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Point;
 import org.newdawn.slick.geom.Rectangle;
@@ -50,7 +51,6 @@ public class Level {
   int tileCountHorizontal        = 5;
   int tileCountVertical          = 5;
   
-  TiledMapPlus  map;
   Entity        cameraTarget;
   Entity        player;
   private ArrayList<Entity> entities;
@@ -76,64 +76,71 @@ public class Level {
     updateCamera();
     gr.setAntiAlias(false);
     
-    int shiftTileX = getShiftTileX();
-    int shiftTileY = getShiftTileY();
+    Color visitedColor   = new Color(50,50,50);
+    
+    int shiftTileX       = Math.max(getShiftTileX(), 0);
+    int shiftTileY       = Math.max(getShiftTileY(), 0);
     
     int shiftXRound      = Math.round(this.getShiftX());
     int shiftYRound      = Math.round(this.getShiftY());
-
+    
+    //int horizontalTileFileCount = Math.min(tileCountHorizontal + shiftTileX, mapTileWidth);
+    //int verticalTileFileCount   = Math.min(tileCountVertical + shiftTileY, mapTileHeight);
     
     int viewportTileOffsetX = (( shiftTileX * this.tileWidth ) - shiftXRound) - this.tileWidth;
     int viewportTileOffsetY = (( shiftTileY * this.tileHeight ) - shiftYRound) - this.tileHeight;
     
-    
-    //renderMapLayer(gr, viewportTileOffsetX, viewportTileOffsetY, shiftTileX, shiftTileY, LAYER_BACKGROUND);
-    
-    // rendering layer entities
     int shiftX = -shiftXRound - this.tileWidth;
     int shiftY = -shiftYRound - this.tileHeight;
+    
+    ArrayList<Block> visibleBlocks = new ArrayList<Block>();
+    
+    gr.pushTransform();
+    gr.translate(viewportTileOffsetX, viewportTileOffsetY);
+    
+    for(int x = 0; x < tileCountHorizontal; x++) {
+      for(int y = 0; y < tileCountVertical; y++) {
+        int tx = x * this.tileWidth;
+        int ty = y * this.tileHeight;
+        Block block = this.getBlockForPosition(shiftTileX + x, shiftTileY + y);
+        
+        if (block != null && block.isVisibleOrVisited()) {
+          Image image = this.blockResources.imageForBlock(block);
+          if (image != null) {
+            if (block.isVisible()) {
+              visibleBlocks.add(block);
+              image.draw(tx,ty);
+            } else if (block.isVisited()) {
+              image.draw(tx,ty, visitedColor);
+            }
+          }
+        }
+      }
+    }
+    
+    gr.popTransform();
+    
     gr.pushTransform();
     gr.translate(shiftX, shiftY);
     
     for (int i = 0; i < this.entities.size(); i++) {
       Entity e    = this.entities.get(i);
       Block block = e.getBlock();
-      if (block.isVisible()) {
+      if (block != null && block.isVisible()) {
         if (this.viewPort.intersects(e.getRect())) {
           e.render(gc, sb, gr);
         }
       }
     }
+
+    for( Block block : visibleBlocks ) {
+      gr.setColor(new Color(0,0,0,block.getLightPower()));
+      gr.fillRect(block.x*this.tileWidth, block.y*this.tileHeight, this.tileWidth, this.tileHeight);
+    }
     
-    /*
     gr.popTransform();
     
-    gr.pushTransform();
-    gr.translate(viewportTileOffsetX, viewportTileOffsetY);
-    
-    Color invisivbleColor = new Color(0,0,0);
-    Color visitedColor    = new Color(0,0,0,Block.VISITED_ALPHA);
-    for(int x = 0; x < this.tileCountHorizontal; x++) {
-      for(int y = 0; y < this.tileCountVertical; y++) {
-        int tx = cordToBound(shiftTileX+x, this.mapTileWidth);
-        int ty = cordToBound(shiftTileY+y, this.mapTileHeight);
-        
-        Block block = this.world[tx][ty];
-        if (block.isVisible()) {
-          gr.setColor(new Color(0,0,0,block.getLightPower()));
-        } else {
-          if (block.haveBeenVisited()) {
-            gr.setColor(visitedColor);
-          } else {
-            gr.setColor(invisivbleColor);
-          }
-        }
-        
-        gr.fillRect(x*this.tileWidth, y*this.tileHeight, this.tileWidth, this.tileHeight);
-        
-      }
-    }
-    gr.popTransform();*/
+    ((Player) player).drawInterface(gr);
   }
   
   private int cordToBound(int x, int max) {
@@ -215,27 +222,11 @@ public class Level {
   }
   
   public Block getBlockForPosition(int tx, int ty) {
-    return this.world[tx][ty];
-  }
-  
-  public void loadMap(String name) throws SlickException {
-    String filePath = "res/maps/"+name+".tmx";
-    this.map        = new TiledMapPlus(filePath);
-    Log.info("Loading map from: "+ filePath);
-    
-    this.tileHeight = this.map.getTileHeight();
-    this.tileWidth  = this.map.getTileWidth();
-    
-    Log.info("Tile size is: "+ this.tileWidth + "x" + this.tileHeight);
-    
-    this.tileCountHorizontal =  Math.round((this.viewPort.getWidth() / this.tileWidth) + 2);
-    this.tileCountVertical   =  Math.round((this.viewPort.getHeight() / this.tileHeight) + 2);
-    
-    Log.info("Tile count is: "+ this.tileCountHorizontal + "x" + this.tileCountVertical);
-    loadEvents();
-    loadColliders();
-    
-    Log.info("Total entities: "+this.entities.size());
+    try {
+      return this.world[tx][ty];
+    } catch(ArrayIndexOutOfBoundsException e) {
+      return null;
+    }
   }
   
   public int transformXToTile(float x) {
@@ -245,37 +236,6 @@ public class Level {
   public int transformYToTile(float y) {
     return Math.round(y / this.tileHeight);
   }
-  
-  public void buildBlockForGroupObject(GroupObject object) {
-    //Log.info("Transforming group object: " + object.x + "x" + object.y + " size: " + object.width + "x" + object.height );
-    int startX = this.transformXToTile(object.x);
-    int startY = this.transformYToTile(object.y);
-    
-    int width  = startX + this.transformXToTile(object.width);
-    int height = startY + this.transformXToTile(object.height);
-    
-    for (int x = startX; x < width; x++) {
-      for (int y = startY; y < height; y++) {
-        //Log.debug("Building block: "+ x + "x" +y);
-        this.world[x][y].solid = true;
-      }
-    }
-  }
-  
-  private void loadColliders() throws SlickException {
-    ObjectGroup collidersGroup = this.map.getObjectGroup(LAYER_COLLIDERS);
-    //fillWorldWithBlocks();
-    
-    if(collidersGroup == null) {
-      throw new SlickException("There is no colliders layer in the map!");
-    } else {
-      Log.info("Colliders: " +Integer.toString(collidersGroup.getObjects().size()));
-
-      for (GroupObject object : collidersGroup.objects) {
-        buildBlockForGroupObject(object);
-      }
-    }
-  }
 
 
   public boolean canMoveTo(Vector2f targetPosition, Entity mover) {
@@ -283,11 +243,11 @@ public class Level {
   }
   
   public boolean canMoveTo(Rectangle targetRect, Entity mover) {
-    int tx = cordToBound(this.transformXToTile(targetRect.getCenterX()), this.mapTileWidth);
-    int ty = cordToBound(this.transformYToTile(targetRect.getCenterY()), this.mapTileHeight);
+    int tx = this.transformXToTile(targetRect.getCenterX());
+    int ty = this.transformYToTile(targetRect.getCenterY());
     
-    Block targetBlock = this.world[tx][ty];
-    if (targetBlock != null && targetBlock.solid) {
+    Block targetBlock = this.getBlockForPosition(tx, ty);
+    if (targetBlock == null || targetBlock.solid) {
       return false;
     }
     
@@ -306,42 +266,7 @@ public class Level {
     
     return true;
   }
-  
-  private void loadEvents() throws SlickException {
-    ObjectGroup eventsGroup = this.map.getObjectGroup(LAYER_EVENTS);
-    if (eventsGroup == null) {
-      throw new SlickException("There is no events layer in the map!");
-    } else {
-      loadPlayerAndSpawn(eventsGroup);
-      loadMonstersAndSpawn(eventsGroup);
-    }
-  }
 
-  private void loadMonstersAndSpawn(ObjectGroup eventsGroup) throws SlickException {
-    for (GroupObject spawnPosition : eventsGroup.getObjectsOfType("MonsterSpawn")) {
-      Entity e = new Entity();
-      this.addEntity(e);
-      
-      e.addComponent(new TileBasedMovement());
-      CharacterAnimation animation = new CharacterAnimation();
-      e.addComponent(animation);
-      e.solid = true;
-      animation.loadCharacterImage("monster");
-      e.addComponent(new Monster());
-      e.setPositionUsing(spawnPosition);
-    }
-  }
-
-  private void loadPlayerAndSpawn(ObjectGroup eventsGroup) throws SlickException {
-    GroupObject spawnPosition = eventsGroup.getObject("PlayerSpawn");
-    player = new Player();
-    this.addEntity(player);
-    
-    lookAt(player);
-    player.setPositionUsing(spawnPosition);
-    Log.info("Player spawn position is "+ spawnPosition.x + "x" + spawnPosition.y);
-  }
-  
   public boolean isSolid(int x, int y) {
     Block block = getBlockForPosition(x, y);
     
@@ -352,7 +277,7 @@ public class Level {
     }
   }
 
-  public void generateWorld(int size) {
+  public void generateWorld(int size) throws SlickException {
     Log.info("Tile size is: "+ this.tileWidth + "x" + this.tileHeight);
     
     this.tileCountHorizontal =  Math.round((this.viewPort.getWidth() / this.tileWidth) + 2);
@@ -360,8 +285,31 @@ public class Level {
     
     Log.info("Tile count is: "+ this.tileCountHorizontal + "x" + this.tileCountVertical);
     fillWorldWithBlocks(size);
+    applyBedrockBorder();
+    
+    player = new Player();
+    this.addEntity(player);
+    lookAt(player);
+    player.setPosition(32,32);
+    
   }
   
+  private void applyBedrockBorder() {
+    int y = mapTileHeight-1;
+    int x = 0;
+    for (x = 0; x < mapTileWidth; x++) {
+      this.world[x][0] = new Bedrock(x,0);
+      this.world[x][y] = new Bedrock(x,y);
+    }
+    
+    x = mapTileWidth-1;
+    
+    for (y = 0; y < mapTileHeight; y++) {
+      this.world[0][y] = new Bedrock(0,y);
+      this.world[x][y] = new Bedrock(x,y);
+    }
+  }
+
   private void fillWorldWithBlocks(int size) {
     this.mapTileWidth  = size;
     this.mapTileHeight = size;
@@ -370,7 +318,7 @@ public class Level {
     
     for (int x = 0; x < this.mapTileWidth; x++) {
       for (int y = 0; y < this.mapTileHeight; y++) {
-        Sidewalk block      = new Sidewalk();
+        Sidewalk block   = new Sidewalk(x,y);
         this.world[x][y] = block;
         
         //Log.debug("Building block: "+ x + "x" +y + " with id: "+ block.id);

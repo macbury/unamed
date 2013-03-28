@@ -19,7 +19,7 @@ public class GameScene extends BaseScene {
   
   @Override
   public void init(GameContainer gc, StateBasedGame sb) throws SlickException {
-    this.level.generateWorld(Level.SMALL);
+    this.level.generateWorld(100);
   }
 
   @Override
