@@ -84,7 +84,9 @@ public class Level {
     int shiftY = -shiftYRound - this.tileHeight;
     gr.pushTransform();
     gr.translate(shiftX, shiftY);
-    for(Entity e : this.entities) {
+    
+    for (int i = 0; i < this.entities.size(); i++) {
+      Entity e    = this.entities.get(i);
       Block block = e.getBlock();
       if (block.isVisible()) {
         if (this.viewPort.intersects(e.getRect())) {
@@ -92,6 +94,7 @@ public class Level {
         }
       }
     }
+    
     gr.popTransform();
     
     gr.pushTransform();
@@ -145,12 +148,12 @@ public class Level {
   }
 
   public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
-    for(Entity e : this.entities) {
+    for (int i = 0; i < this.entities.size(); i++) {
+      Entity e    = this.entities.get(i);
       if (this.updateArea.intersects(e.getRect())) {
         e.update(gc, sb, delta);
       }
     }
-    
   }
   
 

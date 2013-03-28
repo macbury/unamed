@@ -10,6 +10,10 @@ import com.macbury.unamed.entity.Entity;
 
 public class KeyboardMovement extends Component {
   TileBasedMovement tileMovement; 
+  final static int MAX_THROTTLE_TIME = 500;
+  
+  int buttonThrottle = 0;
+  boolean pressedZ = false;
   
   public void setOwnerEntity(Entity owner) throws SlickException {
     super.setOwnerEntity(owner);
@@ -26,6 +30,33 @@ public class KeyboardMovement extends Component {
       Input input    = gc.getInput();
       boolean move   = false;
       byte direction = TileBasedMovement.DIRECTION_DOWN;
+      
+      if (pressedZ) {
+        buttonThrottle += delta;
+      }
+      
+      if (buttonThrottle > MAX_THROTTLE_TIME) {
+        pressedZ = false;
+      }
+      
+      if(input.isKeyDown(Input.KEY_Z) && !pressedZ) {
+        pressedZ = true;
+        buttonThrottle = 0;
+        Entity e = new Entity("Light");
+        this.owner.getLevel().addEntity(e);
+        try {
+          Light l = new Light();
+          l.setLightPower(20);
+          e.addComponent(l);
+        } catch (SlickException e1) {
+          // TODO Auto-generated catch block
+          e1.printStackTrace();
+        }
+        e.setX(this.owner.getX());
+        e.setY(this.owner.getY());
+        e.getLight().updateLight();
+      }
+      
       if(input.isKeyDown(Input.KEY_DOWN)) {
         move      = true;
         direction = TileBasedMovement.DIRECTION_DOWN;

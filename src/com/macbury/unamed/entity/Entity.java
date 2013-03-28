@@ -8,6 +8,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
+import org.newdawn.slick.util.Log;
 
 import com.macbury.unamed.component.Component;
 import com.macbury.unamed.component.Light;
@@ -181,5 +182,11 @@ public class Entity {
 
   public boolean haveLight() {
     return this.lightComponent != null;
+  }
+
+  public void placeOnEntity(Entity entity) {
+    this.setX(entity.getTileX() * this.getLevel().tileWidth);
+    this.setY(entity.getTileY() * this.getLevel().tileHeight);
+    Log.debug("Placed entity at position: " + this.getX()  + "x" + this.getY());
   }
 }

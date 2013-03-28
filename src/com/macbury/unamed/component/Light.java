@@ -31,57 +31,81 @@ public class Light extends Component {
     Log.info("New light with id: "+ this.getId());
   }
   
-  private void refresh() {
-    int cx = owner.getTileX();
-    int cy = owner.getTileY();
-    
+  private void cleanLightedBlocks() {
     Block block = null;
-    
-    int radius             = 0;
-    int i                  = 0;
-    float radiants         = 0;
-    boolean[] skipRadiants = new boolean[MAX_SKIP_RADIANT+1];
-    
     for (int j = 0; j < lightedBlocks.size(); j++) {
       block = lightedBlocks.get(j);
       block.popLight(this);
       block.markByLightPower();
     }
     lightedBlocks.clear();
+  }
+  
+  private void refresh() {
+    cleanLightedBlocks();
+    computeCircleLight();
+  }
+  
+  private void lightPosition(int x, int y, int pow) {
+    Block block = this.owner.getLevel().getBlockForPosition(x, y);
+    lightBlock(block, pow);
+  }
+  
+  private void lightBlock(Block block, int pow) {
+    lightedBlocks.add(block);
+    block.applyLight(this, pow);
+    block.markByLightPower();
+  }
+
+  private void computeDiamondLight() {
+    int cx = owner.getTileX();
+    int cy = owner.getTileY();
+    int ex = cx + power;
+    int ey = cy + power;
+    
+    /*for (int x = cx; x < ex; x++) {
+      for (int y = 0; y < ey; y++) {
+        lightPosition(x,y, 0);
+      }
+    }*/ 
+  }
+  
+
+  private void computeCircleLight() {
+    int cx = owner.getTileX();
+    int cy = owner.getTileY();
+    
+    Block block            = null;
+    
+    int radius             = 0;
+    int i                  = 0;
+    float radiants         = 0;
+    boolean[] skipRadiants = new boolean[MAX_SKIP_RADIANT+1];
+    
+    cleanLightedBlocks();
     
     while(radius < power) {
       float lightPower = Math.min(Math.round((float)(radius) / (float)power * 255), Block.MIN_LIGHT_POWER);
-      //float lightPower = Math.round((float)(radius) / (float)power * 255);
-      radiants = 0;
-      i        = 0;
-      
+      radiants         = 0;
+      i                = 0;
       while(radiants <= FULL_CIRCLE_IN_RADIANTS) {
         if (!skipRadiants[i]) {
           int x = (int)Math.round(cx + radius * Math.cos(radiants));
           int y = (int)Math.round(cy + radius * Math.sin(radiants));
           block = this.owner.getLevel().getBlockForPosition(x, y);
           
-          
           if (block.solid) {
-            //if (i >= 1) {
-            //  skipRadiants[i-1] = true;
-            //}
-            
             skipRadiants[i] = true;
-           // skipRadiants[i+1] = true;
           }
           
-          lightedBlocks.add(block);
-          block.applyLight(this, (int) lightPower);
-          block.markByLightPower();
+          lightBlock(block, (int) lightPower);
         }
+        
+        radiants  += CIRCLE_STEP_IN_RADIANT;
         i++;
-        radiants += CIRCLE_STEP_IN_RADIANT;
       }
-      
       radius++;
     }
-      
   }
   
   @Override

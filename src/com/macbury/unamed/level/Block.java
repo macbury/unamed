@@ -7,7 +7,7 @@ import java.util.Map;
 import com.macbury.unamed.component.Light;
 
 public class Block {
-  public static final int VISITED_ALPHA   = 200;
+  public static final int VISITED_ALPHA   = 210;
   public static final int MIN_LIGHT_POWER = 200;
   public static int gid                   = 0;
   int id                                  = 0;
