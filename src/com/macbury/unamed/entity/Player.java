@@ -19,8 +19,8 @@ import com.macbury.unamed.inventory.InventoryItem;
 import com.macbury.unamed.inventory.TorchItem;
 
 public class Player extends Entity {
-  final static int MIN_INVENTORY_INDEX = 1;
-  final static int MAX_INVENTORY_INDEX = 10;
+  public final static int MIN_INVENTORY_INDEX = 1;
+  public final static int MAX_INVENTORY_INDEX = 10;
   public final static int FOG_OF_WAR_RADIUS = 10;
   private static final int ENTITY_ZINDEX    = Entity.ENTITY_BASE_LAYER+1;
   private static final int LIGHT_POWER      = 10;
@@ -30,7 +30,7 @@ public class Player extends Entity {
   final static int MAX_THROTTLE_TIME = 500;
   
   
-  int currentInventoryIndex = 0;
+  public int currentInventoryIndex = 0;
   
   int buttonThrottle = 0;
   boolean pressedActionKey = false;

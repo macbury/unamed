@@ -5,6 +5,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.state.StateBasedGame;
@@ -16,7 +17,8 @@ import com.macbury.unamed.level.Level;
 public class InGameInterface {
   Level level;
   private UnicodeFont font;
-  private Image hotBarImage;
+  private Image cellImage;
+  private Image selectedCellImage;
   
   public InGameInterface(Level level) throws SlickException {
     this.level = level;
@@ -26,7 +28,10 @@ public class InGameInterface {
     font.getEffects().add(new ColorEffect());
     font.loadGlyphs();
     
-    this.hotBarImage = new Image("res/images/hud/hotbar.png");
+    SpriteSheet spriteSheet = new SpriteSheet("res/images/hud/hotbar_cell.png", 34, 34);
+    
+    this.cellImage         = spriteSheet.getSprite(0, 0);
+    this.selectedCellImage = spriteSheet.getSprite(1, 0);
   }
   
   public void render(GameContainer gc, StateBasedGame sb, Graphics gr) {
@@ -41,7 +46,23 @@ public class InGameInterface {
     }
     
     font.drawString(10, 35, "FPS: "+ gc.getFPS());
-    hotBarImage.drawCentered(gc.getWidth()/2, gc.getHeight() - hotBarImage.getHeight() - 10);
+    
+    int cellCount = Player.MAX_INVENTORY_INDEX - Player.MIN_INVENTORY_INDEX;
+
+    gr.pushTransform();
+    gr.translate(10, gc.getHeight() - 52);
+    
+    for(int x = 0; x <= cellCount; x++) {
+      if (player.currentInventoryIndex == x) {
+        this.selectedCellImage.draw((x * 34), 10);
+      } else {
+        this.cellImage.draw((x * 34), 10);
+      }
+      
+    }
+    
+    gr.popTransform();
+    //hotBarImage.drawCentered(gc.getWidth()/2, gc.getHeight() - hotBarImage.getHeight() - 10);
   }
 
 }
