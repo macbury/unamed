@@ -9,16 +9,20 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.macbury.unamed.SoundManager;
+import com.macbury.unamed.intefrace.InGameInterface;
 import com.macbury.unamed.level.Level;
 
 public abstract class BaseScene extends BasicGameState {
   int stateID                = -1;
   protected Level level;
+  private InGameInterface gameInterface;
   
   public BaseScene(GameContainer gc) {
     try {
-      this.level = new Level();
       SoundManager.shared();
+      this.level         = new Level();
+      this.gameInterface = new InGameInterface(this.level);
+      
     } catch (SlickException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -29,6 +33,7 @@ public abstract class BaseScene extends BasicGameState {
   @Override
   public void render(GameContainer gc, StateBasedGame sb, Graphics gr) throws SlickException {
     level.render(gc, sb, gr);
+    this.gameInterface.render(gc, sb, gr);
   }
 
 

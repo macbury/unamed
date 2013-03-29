@@ -16,7 +16,7 @@ public class TorchItem extends InventoryItem {
   }
 
   @Override
-  public void use() throws SlickException {
+  public boolean use() throws SlickException {
     Vector2f tilePos = this.owner.getTilePositionInFront();
     if (tilePos != null) {
       
@@ -27,10 +27,15 @@ public class TorchItem extends InventoryItem {
         this.owner.getLevel().addEntity(torch);
         
         torch.setTilePosition((int)tilePos.x, (int)tilePos.y);
-        SoundManager.shared().igniteSound.play();
+        SoundManager.shared().placeBlockSound.playAsSoundEffect(1.0f, 1.0f, false);
+        return true;
+      } else {
+        return false;
       }
       
     }
+    
+    return false;
   }
 
   @Override

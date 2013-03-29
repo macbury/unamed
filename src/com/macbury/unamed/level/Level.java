@@ -35,7 +35,7 @@ public class Level {
   int tileCountVertical          = 5;
   
   Entity        cameraTarget;
-  Entity        player;
+  Player        player;
   private ArrayList<Entity> entities;
   private boolean refreshEntityList = true;
   
@@ -129,7 +129,6 @@ public class Level {
     
     gr.popTransform();
     
-    ((Player) player).drawInterface(gr);
   }
   
   public boolean checkIfInBounds(int x, int y) {
@@ -300,5 +299,9 @@ public class Level {
         //Log.debug("Building block: "+ x + "x" +y + " with id: "+ block.id);
       }
     }
+  }
+
+  public Player getPlayer() {
+    return this.player;
   }
 }

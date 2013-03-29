@@ -16,5 +16,5 @@ public abstract class InventoryItem {
   }
   
   public abstract String getName();
-  public abstract void use() throws SlickException;
+  public abstract boolean use() throws SlickException;
 }

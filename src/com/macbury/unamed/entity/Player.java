@@ -9,6 +9,7 @@ import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.macbury.unamed.Core;
+import com.macbury.unamed.SoundManager;
 import com.macbury.unamed.component.CharacterAnimation;
 import com.macbury.unamed.component.HitBox;
 import com.macbury.unamed.component.KeyboardMovement;
@@ -115,7 +116,8 @@ public class Player extends Entity {
       InventoryItem currentItem = getCurrentHotBarItem();
       
       if (currentItem != null) {
-        currentItem.use();
+        if (!currentItem.use())
+          SoundManager.shared().cancelSound.playAsSoundEffect(1.0f, 1.0f, false);
       }
       
       pressedActionKey = true;
@@ -144,17 +146,7 @@ public class Player extends Entity {
       setInventoryIndex(9);
     }
   }
-  
-  
-  public void drawInterface(Graphics gr) {
-    gr.setColor(Color.white);
-    InventoryItem currentItem = getCurrentHotBarItem();
-    if (currentItem != null) {
-      gr.drawString("Selected element: " +currentItem.getName(), 10, 30);
-    } else {
-      gr.drawString("Selected element: None", 10, 30);
-    }
-  }
+
   
   public InventoryItem getCurrentHotBarItem() {
     return this.hotBarItems[this.currentInventoryIndex];

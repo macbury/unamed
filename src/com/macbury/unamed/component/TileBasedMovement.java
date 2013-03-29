@@ -7,6 +7,7 @@ import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.macbury.unamed.Core;
+import com.macbury.unamed.SoundManager;
 import com.macbury.unamed.Util;
 
 public class TileBasedMovement extends Component {
@@ -17,7 +18,7 @@ public class TileBasedMovement extends Component {
   public final static byte DIRECTION_DOWN  = 3;
   public final static byte DIRECTION_NONE  = 4;
   public  byte  direction           = DIRECTION_DOWN;
-  public  float speed               = 0.01f;//0.0035f;
+  public  float speed               = 0.0035f;
   private float totalMoveTime       = 0.0f;
   
   private boolean moveInProgress = false;
@@ -70,7 +71,7 @@ public class TileBasedMovement extends Component {
       this.moveInProgress = true;
       this.totalMoveTime  = 0.0f;
       this.owner.setFuturePosition(computeTargetPositionForDirection(inDirection));
-      
+      SoundManager.shared().playStep();
       return true;
     }
   }
