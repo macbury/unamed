@@ -8,6 +8,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
+import com.macbury.unamed.SoundManager;
 import com.macbury.unamed.level.Level;
 
 public abstract class BaseScene extends BasicGameState {
@@ -17,6 +18,7 @@ public abstract class BaseScene extends BasicGameState {
   public BaseScene(GameContainer gc) {
     try {
       this.level = new Level();
+      SoundManager.shared();
     } catch (SlickException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();

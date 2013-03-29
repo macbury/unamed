@@ -1,10 +1,10 @@
 package com.macbury.unamed.inventory;
 
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.Sound;
 import org.newdawn.slick.geom.Vector2f;
 
 import com.macbury.unamed.SoundManager;
+import com.macbury.unamed.entity.Entity;
 import com.macbury.unamed.entity.Player;
 import com.macbury.unamed.entity.Torch;
 
@@ -20,11 +20,16 @@ public class TorchItem extends InventoryItem {
     Vector2f tilePos = this.owner.getTilePositionInFront();
     if (tilePos != null) {
       
-      Torch torch = new Torch();
-      this.owner.getLevel().addEntity(torch);
+      Entity entityInFront = this.owner.getLevel().getEntityForTilePosition((int)tilePos.x, (int)tilePos.y);
       
-      torch.setTilePosition((int)tilePos.x, (int)tilePos.y);
-      SoundManager.shared().igniteSound.play();
+      if (entityInFront == null) {
+        Torch torch = new Torch();
+        this.owner.getLevel().addEntity(torch);
+        
+        torch.setTilePosition((int)tilePos.x, (int)tilePos.y);
+        SoundManager.shared().igniteSound.play();
+      }
+      
     }
   }
 

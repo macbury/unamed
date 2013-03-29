@@ -1,39 +1,22 @@
 package com.macbury.unamed.level;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.geom.Point;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.Log;
 
-import com.macbury.unamed.BresenhamLine;
 import com.macbury.unamed.Core;
-import com.macbury.unamed.component.CharacterAnimation;
-import com.macbury.unamed.component.HitBox;
-import com.macbury.unamed.component.Light;
-import com.macbury.unamed.component.Monster;
-import com.macbury.unamed.component.TileBasedMovement;
 import com.macbury.unamed.entity.Entity;
 import com.macbury.unamed.entity.Player;
-import com.macbury.unamed.monkey.GroupObject;
-import com.macbury.unamed.monkey.ObjectGroup;
-import com.macbury.unamed.monkey.TiledMapPlus;
-
 public class Level {
-  public final static int LAYER_BACKGROUND    = 0;
-  private static final String LAYER_EVENTS    = "Events";
-  private static final String LAYER_COLLIDERS = "Colliders";
   public static final int SMALL = 100;
 
   Block[][] world;
@@ -62,6 +45,15 @@ public class Level {
     this.blockResources = new BlockResources();
   }
   
+  public Entity getEntityForTilePosition(int x, int y) {
+    for (Entity e : this.entities) {
+      if (e.getTileX() == x && e.getTileY() == y) {
+        return e;
+      }
+    }
+    return null;
+  }
+  
   public void addEntity(Entity e) {
     if (this.entities.indexOf(e) == -1) {
       e.setLevel(this);
@@ -83,9 +75,6 @@ public class Level {
     
     int shiftXRound      = Math.round(this.getShiftX());
     int shiftYRound      = Math.round(this.getShiftY());
-    
-    //int horizontalTileFileCount = Math.min(tileCountHorizontal + shiftTileX, mapTileWidth);
-    //int verticalTileFileCount   = Math.min(tileCountVertical + shiftTileY, mapTileHeight);
     
     int viewportTileOffsetX = (( shiftTileX * this.tileWidth ) - shiftXRound) - this.tileWidth;
     int viewportTileOffsetY = (( shiftTileY * this.tileHeight ) - shiftYRound) - this.tileHeight;
@@ -143,18 +132,6 @@ public class Level {
     ((Player) player).drawInterface(gr);
   }
   
-  private int cordToBound(int x, int max) {
-    if (x < 0) {
-      return 0;
-    } else {
-      if (x > max) {
-        return max;
-      } else {
-        return x;
-      }
-    }
-  }
-  
   public boolean checkIfInBounds(int x, int y) {
     return (x > 0 && y > 0 && x < mapTileWidth && y < mapTileHeight);
   }
@@ -192,7 +169,6 @@ public class Level {
       this.viewPort.setCenterY(cy);
       this.updateArea.setCenterX(cx);
       this.updateArea.setCenterY(cy);
-      //Log.debug("Viewport pos is: " + cx + "x" + cy );
     }
   }
   

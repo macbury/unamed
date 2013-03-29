@@ -2,7 +2,6 @@ package com.macbury.unamed.entity;
 
 import java.util.ArrayList;
 
-import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
@@ -13,7 +12,6 @@ import org.newdawn.slick.util.Log;
 
 import com.macbury.unamed.component.Component;
 import com.macbury.unamed.component.Light;
-import com.macbury.unamed.component.RenderComponent;
 import com.macbury.unamed.level.Block;
 import com.macbury.unamed.level.Level;
 import com.macbury.unamed.monkey.GroupObject;
@@ -35,6 +33,9 @@ public class Entity implements Comparable<Entity> {
   ArrayList<Component> components = null;
   
   private Level level;
+
+  Integer tileX = null;
+  Integer tileY = null;
   
   public Entity() {
     this.id = Entity.gid++;
@@ -112,11 +113,17 @@ public class Entity implements Comparable<Entity> {
   }
   
   public int getTileX() {
-    return Math.round(getX() / this.level.tileWidth);
+    if(tileX == null) {
+      this.tileX = Math.round(getX() / this.level.tileWidth);
+    }
+    return tileX.intValue();
   }
   
   public int getTileY() {
-    return Math.round(getY() / this.level.tileHeight);
+    if(tileY == null) {
+      this.tileY = Math.round(getY() / this.level.tileHeight);
+    }
+    return tileY.intValue();
   }
   
   public Block getBlock() {
@@ -144,10 +151,12 @@ public class Entity implements Comparable<Entity> {
   }
   
   public void setX(float x) {
+    this.tileX = null;
     this.rectangle.setX(x);
   }
   
   public void setY(float y) {
+    this.tileY = null;
     this.rectangle.setY(y);
   }
 
