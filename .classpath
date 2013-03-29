@@ -9,5 +9,6 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="libs/jars/slick.jar"/>
 	<classpathentry kind="lib" path="libs/jars/jinput.jar"/>
+	<classpathentry kind="lib" path="libs/jars/lzma.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

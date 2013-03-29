@@ -14,8 +14,12 @@ import com.macbury.unamed.component.HitBox;
 import com.macbury.unamed.component.KeyboardMovement;
 import com.macbury.unamed.component.Light;
 import com.macbury.unamed.component.TileBasedMovement;
+import com.macbury.unamed.inventory.InventoryItem;
+import com.macbury.unamed.inventory.TorchItem;
 
 public class Player extends Entity {
+  final static int MIN_INVENTORY_INDEX = 1;
+  final static int MAX_INVENTORY_INDEX = 10;
   public final static int FOG_OF_WAR_RADIUS = 10;
   private static final int ENTITY_ZINDEX    = Entity.ENTITY_BASE_LAYER+1;
   private static final int LIGHT_POWER      = 6;
@@ -24,12 +28,19 @@ public class Player extends Entity {
   
   final static int MAX_THROTTLE_TIME = 500;
   
+  
+  int currentInventoryIndex = 0;
+  
   int buttonThrottle = 0;
-  boolean pressedZ = false;
+  boolean pressedActionKey = false;
+  
+  InventoryItem[] hotBarItems;
   
   public Player() throws SlickException {
     super();
     
+    this.hotBarItems = new InventoryItem[MAX_INVENTORY_INDEX];
+    buildInventory();
     this.z = ENTITY_ZINDEX;
     tileMovement = new TileBasedMovement();
     addComponent(tileMovement);
@@ -50,6 +61,10 @@ public class Player extends Entity {
     light.setLightPower(LIGHT_POWER);
     light.updateLight();
     addComponent(light);
+  }
+  
+  private void buildInventory() {
+    this.hotBarItems[0] = new TorchItem(this);
   }
   /*
    * Return position as tiles cordinates
@@ -89,32 +104,65 @@ public class Player extends Entity {
     
     Input input    = gc.getInput();
     
-    if (pressedZ) {
+    if (pressedActionKey) {
       buttonThrottle += delta;
     }
     
     if (buttonThrottle > MAX_THROTTLE_TIME) {
-      pressedZ = false;
+      pressedActionKey = false;
     }
-    
-    if(input.isKeyDown(Input.KEY_Z) && !pressedZ) {
-      Vector2f tilePos = getTilePositionInFront();
-      if (tilePos != null) {
-        pressedZ = true;
-        buttonThrottle = 0;
-        Torch torch = new Torch();
-        this.getLevel().addEntity(torch);
-        
-        torch.setTilePosition((int)tilePos.x, (int)tilePos.y);
+    if(input.isKeyDown(Input.KEY_Z) && !pressedActionKey) {
+      InventoryItem currentItem = getCurrentHotBarItem();
+      
+      if (currentItem != null) {
+        currentItem.use();
       }
       
+      pressedActionKey = true;
+      buttonThrottle   = 0;
+    }
+    
+    if (input.isKeyPressed(Input.KEY_0)) {
+      setInventoryIndex(10);
+    } else if (input.isKeyPressed(Input.KEY_1)) {
+      setInventoryIndex(1);
+    } else if (input.isKeyPressed(Input.KEY_2)) {
+      setInventoryIndex(2);
+    } else if (input.isKeyPressed(Input.KEY_3)) {
+      setInventoryIndex(3);
+    } else if (input.isKeyPressed(Input.KEY_4)) {
+      setInventoryIndex(4);
+    } else if (input.isKeyPressed(Input.KEY_5)) {
+      setInventoryIndex(5);
+    } else if (input.isKeyPressed(Input.KEY_6)) {
+      setInventoryIndex(6);
+    } else if (input.isKeyPressed(Input.KEY_7)) {
+      setInventoryIndex(7);
+    } else if (input.isKeyPressed(Input.KEY_8)) {
+      setInventoryIndex(8);
+    } else if (input.isKeyPressed(Input.KEY_9)) {
+      setInventoryIndex(9);
     }
   }
   
   
   public void drawInterface(Graphics gr) {
     gr.setColor(Color.white);
-    gr.drawString("Selected element: Torch", 10, 30);
-    
+    InventoryItem currentItem = getCurrentHotBarItem();
+    if (currentItem != null) {
+      gr.drawString("Selected element: " +currentItem.getName(), 10, 30);
+    } else {
+      gr.drawString("Selected element: None", 10, 30);
+    }
+  }
+  
+  public InventoryItem getCurrentHotBarItem() {
+    return this.hotBarItems[this.currentInventoryIndex];
+  }
+  
+  public void setInventoryIndex(int index) {
+    index = Math.min(index, MAX_INVENTORY_INDEX);
+    index = Math.max(index, MIN_INVENTORY_INDEX);
+    this.currentInventoryIndex = index-1;
   }
 }
