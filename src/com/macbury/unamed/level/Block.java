@@ -10,6 +10,7 @@ public class Block {
   public static int gid                   = 0;
   int id                                  = 0;
   
+  public  boolean harvestable = false;
   public  boolean solid       = false;
   private boolean visited     = false;
   private boolean visible     = false;

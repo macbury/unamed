@@ -8,7 +8,6 @@ import com.macbury.unamed.component.Light;
 public class Torch extends Entity {
   final static int TORCH_POWER       = 10;
   
-  
   public Torch() throws SlickException {
     super();
     

@@ -1,5 +1,7 @@
 package com.macbury.unamed.intefrace;
 
+import java.util.HashMap;
+
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -12,13 +14,20 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import com.macbury.unamed.entity.Player;
 import com.macbury.unamed.inventory.InventoryItem;
+import com.macbury.unamed.inventory.InventoryManager;
+import com.macbury.unamed.inventory.TorchItem;
 import com.macbury.unamed.level.Level;
 
 public class InGameInterface {
+  final static int HOTBAR_PADDING = 10;
+  final static int HOTBAR_CELL_SIZE = 34;
+  final static int HOTBAR_CELL_TEXT_PADDING = -2;
   Level level;
   private UnicodeFont font;
   private Image cellImage;
   private Image selectedCellImage;
+  private SpriteSheet hotBarSpriteSheet;
+  private HashMap<String, Image> hotBarIconsCache;
   
   public InGameInterface(Level level) throws SlickException {
     this.level = level;
@@ -28,41 +37,77 @@ public class InGameInterface {
     font.getEffects().add(new ColorEffect());
     font.loadGlyphs();
     
-    SpriteSheet spriteSheet = new SpriteSheet("res/images/hud/hotbar_cell.png", 34, 34);
+    SpriteSheet spriteSheet = new SpriteSheet("res/images/hud/hotbar_cell.png", HOTBAR_CELL_SIZE, HOTBAR_CELL_SIZE);
     
     this.cellImage         = spriteSheet.getSprite(0, 0);
     this.selectedCellImage = spriteSheet.getSprite(1, 0);
+    
+    this.hotBarSpriteSheet = spriteSheet;
+    this.hotBarIconsCache  = new HashMap<>();
   }
   
-  public void render(GameContainer gc, StateBasedGame sb, Graphics gr) {
-    Player player = level.getPlayer();
-    gr.setColor(Color.white);
-    InventoryItem currentItem = player.getCurrentHotBarItem();
-    
-    if (currentItem != null) {
-      font.drawString(10, 10, "Selected element: " +currentItem.getName());
-    } else {
-      font.drawString(10, 10, "Selected element: None");
+  public Image getOrLoadInventoryItemImage(Class klass, int x, int y) {
+    Image img = hotBarIconsCache.get(klass.getName());
+    if (img == null) {
+      img = hotBarSpriteSheet.getSubImage(x, y);
+      hotBarIconsCache.put(klass.getName(), img);
+    }
+    return img;
+  }
+  
+  public Image getImageForInventoryItem(InventoryItem item) throws SlickException {
+    if (TorchItem.class.isInstance(item)) {
+      return getOrLoadInventoryItemImage(TorchItem.class, 2, 0);
     }
     
-    font.drawString(10, 35, "FPS: "+ gc.getFPS());
+    throw new SlickException("No image for inventory item: " +item.getClass().getName());    
+  }
+  
+  public void render(GameContainer gc, StateBasedGame sb, Graphics gr) throws SlickException {
+    Player player = level.getPlayer();
+    gr.setColor(Color.white);
     
-    int cellCount = Player.MAX_INVENTORY_INDEX - Player.MIN_INVENTORY_INDEX;
+    font.drawString(10, 10, "FPS: "+ gc.getFPS());
+    
+    int cellCount = InventoryManager.MAX_HOTBAR_INVENTORY_INDEX - InventoryManager.MIN_HOTBAR_INVENTORY_INDEX;
 
     gr.pushTransform();
-    gr.translate(10, gc.getHeight() - 52);
+    gr.translate(HOTBAR_PADDING, gc.getHeight() - HOTBAR_CELL_SIZE - HOTBAR_PADDING); // MOVE origin to left bottom corner of the screem 
     
-    for(int x = 0; x <= cellCount; x++) {
-      if (player.currentInventoryIndex == x) {
-        this.selectedCellImage.draw((x * 34), 10);
+    int x = 0;
+    for(int i = 0; i <= cellCount; i++) {
+      InventoryItem item = player.inventory.getItem(i);
+      if (player.inventory.getCurrentHotBarIndex() == i) {
+        this.selectedCellImage.draw(x, 0);
       } else {
-        this.cellImage.draw((x * 34), 10);
+        this.cellImage.draw(x, 0);
       }
       
+      if (item != null) {
+        String countText    = Integer.toString(item.getCount());
+        int countTextWidth  = font.getWidth(countText);
+        int countTextHeight = font.getHeight(countText);
+        
+        Image icon = getImageForInventoryItem(item);
+        icon.draw(x, 0);
+        
+        int textX = x + HOTBAR_CELL_SIZE - countTextWidth - HOTBAR_CELL_TEXT_PADDING;
+        int textY = HOTBAR_CELL_SIZE - countTextHeight - HOTBAR_CELL_TEXT_PADDING;
+        
+        font.drawString(textX, textY, countText);
+        drawTextWithShadow(textX, textY, countText);
+      }
+      
+      x += HOTBAR_CELL_SIZE + HOTBAR_PADDING;
     }
     
     gr.popTransform();
     //hotBarImage.drawCentered(gc.getWidth()/2, gc.getHeight() - hotBarImage.getHeight() - 10);
+  }
+
+  private void drawTextWithShadow(int textX, int textY, String text) {
+    font.drawString(textX+2, textY+2, text, Color.black);
+    font.drawString(textX, textY, text);
   }
 
 }

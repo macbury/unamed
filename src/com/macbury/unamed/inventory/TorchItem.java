@@ -12,23 +12,28 @@ public class TorchItem extends InventoryItem {
 
   public TorchItem(Player entity) {
     super(entity);
-    // TODO Auto-generated constructor stub
   }
 
   @Override
-  public boolean use() throws SlickException {
-    Vector2f tilePos = this.owner.getTilePositionInFront();
-    if (tilePos != null) {
+  public boolean place() throws SlickException {
+    Vector2f tilePos = this.owner.getNotSolidTilePositionInFront();
+    if (tilePos != null ) {
       
       Entity entityInFront = this.owner.getLevel().getEntityForTilePosition((int)tilePos.x, (int)tilePos.y);
       
       if (entityInFront == null) {
-        Torch torch = new Torch();
-        this.owner.getLevel().addEntity(torch);
-        
-        torch.setTilePosition((int)tilePos.x, (int)tilePos.y);
-        SoundManager.shared().placeBlockSound.playAsSoundEffect(1.0f, 1.0f, false);
-        return true;
+        if(haveItems()) {
+          Torch torch = new Torch();
+          this.owner.getLevel().addEntity(torch);
+          
+          torch.setTilePosition((int)tilePos.x, (int)tilePos.y);
+          SoundManager.shared().placeBlockSound.playAsSoundEffect(1.0f, 1.0f, false);
+          
+          this.popItem();
+          return true;
+        } else {
+         return false; 
+        }
       } else {
         return false;
       }
@@ -43,5 +48,9 @@ public class TorchItem extends InventoryItem {
     return "Torch";
   }
 
+  @Override
+  public int harvestPower() {
+    return InventoryItem.STANDARD_HARVEST_POWER;
+  }
 
 }
