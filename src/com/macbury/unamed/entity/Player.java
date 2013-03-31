@@ -1,17 +1,20 @@
 package com.macbury.unamed.entity;
 
 import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.macbury.unamed.Core;
+import com.macbury.unamed.ImagesManager;
 import com.macbury.unamed.SoundManager;
 import com.macbury.unamed.component.CharacterAnimation;
 import com.macbury.unamed.component.HitBox;
 import com.macbury.unamed.component.KeyboardMovement;
 import com.macbury.unamed.component.Light;
+import com.macbury.unamed.component.Sprite;
 import com.macbury.unamed.component.TileBasedMovement;
 import com.macbury.unamed.inventory.InventoryItem;
 import com.macbury.unamed.inventory.InventoryManager;
@@ -49,6 +52,8 @@ public class Player extends Entity {
     
     keyboardMovement = new KeyboardMovement();
     addComponent(keyboardMovement);
+    
+    addComponent(new Sprite(ImagesManager.shared().getImage("Shadow.png")));
     
     CharacterAnimation characterAnimationComponent = new CharacterAnimation();
     addComponent(characterAnimationComponent);
@@ -222,6 +227,8 @@ public class Player extends Entity {
           SoundManager.shared().loot.playAsSoundEffect(1.0f, 1.0f, false);
         }
       }
+    } else {
+      SoundManager.shared().miss.playAsSoundEffect(1.0f, 1.0f, false);
     }
   }
 

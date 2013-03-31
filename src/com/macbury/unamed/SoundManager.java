@@ -31,6 +31,7 @@ public class SoundManager {
   public Audio dig;
   public Audio theme;
   public Audio loot;
+  public Audio miss;
   
   private Audio loadOgg(String filename) {
     try {
@@ -51,6 +52,7 @@ public class SoundManager {
     this.removeBlock      = loadOgg("RemoveBlock");
     this.dig              = loadOgg("Dig");
     this.loot             = loadOgg("Loot");
+    this.miss             = loadOgg("Miss");
     //this.theme            = loadOgg("Theme");
     this.steps = new ArrayList<Audio>();
     for (int i = 1; i <= 5; i++) {

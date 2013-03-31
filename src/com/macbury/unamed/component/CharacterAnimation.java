@@ -8,6 +8,8 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.state.StateBasedGame;
 
+import com.macbury.unamed.ImagesManager;
+
 public class CharacterAnimation extends RenderComponent {
   public final static int SPRITE_TILE_WIDTH  = 32;
   public final static int SPRITE_TILE_HEIGHT = 32;
@@ -30,7 +32,7 @@ public class CharacterAnimation extends RenderComponent {
   boolean lastMovingStatus           = true;
   
   public void loadCharacterImage(String characteFileName) throws SlickException{
-    spriteSheet = new SpriteSheet("res/images/"+characteFileName+".png", SPRITE_TILE_WIDTH, SPRITE_TILE_HEIGHT);
+    spriteSheet = ImagesManager.shared().getSpriteSheet(characteFileName+".png", SPRITE_TILE_WIDTH, SPRITE_TILE_HEIGHT);
     buildAnimation();
     
     tileBasedMovement = (TileBasedMovement) this.owner.getComponent(TileBasedMovement.class);

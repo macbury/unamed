@@ -12,6 +12,8 @@ import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.state.StateBasedGame;
 
+import com.macbury.unamed.Core;
+import com.macbury.unamed.ImagesManager;
 import com.macbury.unamed.entity.Player;
 import com.macbury.unamed.inventory.InventoryItem;
 import com.macbury.unamed.inventory.InventoryManager;
@@ -37,7 +39,7 @@ public class InGameInterface {
     font.getEffects().add(new ColorEffect());
     font.loadGlyphs();
     
-    SpriteSheet spriteSheet = new SpriteSheet("res/images/hud/hotbar_cell.png", HOTBAR_CELL_SIZE, HOTBAR_CELL_SIZE);
+    SpriteSheet spriteSheet = ImagesManager.shared().getSpriteSheet("hud/hotbar_cell.png", HOTBAR_CELL_SIZE, HOTBAR_CELL_SIZE);
     
     this.cellImage         = spriteSheet.getSprite(0, 0);
     this.selectedCellImage = spriteSheet.getSprite(1, 0);

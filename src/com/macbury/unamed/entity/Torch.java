@@ -7,6 +7,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.state.StateBasedGame;
 
+import com.macbury.unamed.ImagesManager;
 import com.macbury.unamed.component.AnimatedSprite;
 import com.macbury.unamed.component.Light;
 import com.macbury.unamed.component.Sprite;
@@ -27,8 +28,8 @@ public class Torch extends BlockEntity {
     light.setLightPower(TORCH_POWER);
     light.updateLight();
     addComponent(light);
-    
-    SpriteSheet spriteSheet = new SpriteSheet("res/images/torch.png", AnimatedSprite.SPRITE_TILE_WIDTH, AnimatedSprite.SPRITE_TILE_HEIGHT);
+
+    SpriteSheet spriteSheet = ImagesManager.shared().getSpriteSheet("torch.png",  AnimatedSprite.SPRITE_TILE_WIDTH, AnimatedSprite.SPRITE_TILE_HEIGHT);
     Image[] fireSequence    = new Image[] { spriteSheet.getSprite(0, 0), spriteSheet.getSprite(1, 0), spriteSheet.getSprite(2, 0) };
     
     this.animatedSprite = new AnimatedSprite(fireSequence);
