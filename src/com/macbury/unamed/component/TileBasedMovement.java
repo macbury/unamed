@@ -17,9 +17,9 @@ public class TileBasedMovement extends Component {
   public final static byte DIRECTION_TOP   = 2;
   public final static byte DIRECTION_DOWN  = 3;
   public final static byte DIRECTION_NONE  = 4;
-  public  byte  direction           = DIRECTION_DOWN;
-  public  float speed               = 0.0035f;
-  private float totalMoveTime       = 0.0f;
+  public  byte  direction                  = DIRECTION_DOWN;
+  public  float speed                      = 0.0035f;
+  private float totalMoveTime              = 0.0f;
   
   private boolean moveInProgress = false;
   private Vector2f basePosition;
@@ -112,5 +112,9 @@ public class TileBasedMovement extends Component {
   
   public void moveInRandomDirection() {
     move(randomDirection());
+  }
+
+  public byte getDirection() {
+    return this.direction;
   }
 }

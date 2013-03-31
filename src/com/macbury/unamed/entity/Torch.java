@@ -8,6 +8,7 @@ import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.macbury.unamed.ImagesManager;
+import com.macbury.unamed.SoundManager;
 import com.macbury.unamed.component.AnimatedSprite;
 import com.macbury.unamed.component.Light;
 import com.macbury.unamed.component.Sprite;
@@ -54,6 +55,8 @@ public class Torch extends BlockEntity {
       offSprite.enabled      = true;
       animatedSprite.enabled = false;
     }
+    
+    SoundManager.shared().igniteSound.playAsSoundEffect(1.0f, 1.0f, false);
     
     return true;
   }

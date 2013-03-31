@@ -10,9 +10,11 @@ import com.macbury.unamed.entity.Entity;
 import com.macbury.unamed.entity.Torch;
 
 public class KeyboardMovement extends Component {
-  TileBasedMovement tileMovement; 
-
-  
+  TileBasedMovement tileMovement;
+  final static int WAIT_TO_MOVE_TOTAL_TIME = 100;
+  int     waitToMoveTime                   = 0;
+  boolean moveKeyPressed                   = false;
+  boolean startMoving                      = false;
   public void setOwnerEntity(Entity owner) throws SlickException {
     super.setOwnerEntity(owner);
     
@@ -26,38 +28,57 @@ public class KeyboardMovement extends Component {
   public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
     Input input    = gc.getInput();
     
-    if (tileMovement != null && !tileMovement.isMoving()) {
+    if (moveKeyPressed) {
+      waitToMoveTime += delta;
+    } else {
+      waitToMoveTime = 0;
+      startMoving    = false;
+    }
+    
+    if (waitToMoveTime >= WAIT_TO_MOVE_TOTAL_TIME) {
+      waitToMoveTime = 0;
       
-      boolean move   = false;
-      byte direction = TileBasedMovement.DIRECTION_DOWN;
+      tryMovingInLookingDirection();
+    }
+    
+    if (tileMovement != null && !tileMovement.isMoving()) {
+      byte direction = tileMovement.getDirection();
 
       if(input.isKeyDown(Input.KEY_DOWN)) {
-        move      = true;
+        moveKeyPressed      = true;
         direction = TileBasedMovement.DIRECTION_DOWN;
-      }
-
-      if(input.isKeyDown(Input.KEY_UP)) {
-        move      = true;
+      } else if(input.isKeyDown(Input.KEY_UP)) {
+        moveKeyPressed      = true;
         direction = TileBasedMovement.DIRECTION_TOP;
-      }
-       
-      if(input.isKeyDown(Input.KEY_LEFT)) {
-        move      = true;
+      } else if(input.isKeyDown(Input.KEY_LEFT)) {
+        moveKeyPressed      = true;
         direction = TileBasedMovement.DIRECTION_LEFT;
-      }
-      
-      if(input.isKeyDown(Input.KEY_RIGHT)) {
-        move      = true;
+      } else if(input.isKeyDown(Input.KEY_RIGHT)) {
+        moveKeyPressed      = true;
         direction = TileBasedMovement.DIRECTION_RIGHT;
+      } else {
+        moveKeyPressed      = false;
+        startMoving         = false;
       }
       
-      if (move) {
-        if (this.owner.getLevel().canMoveTo(tileMovement.computeTargetRectForDirection(direction), this.owner)) {
-          tileMovement.move(direction);
+      if (direction != tileMovement.getDirection()) {
+        startMoving = false;
+      }
+      
+      if (moveKeyPressed) {
+        if (startMoving) {
+          tryMovingInLookingDirection();
         } else {
           tileMovement.lookIn(direction);
         }
       }
+    }
+  }
+
+  private void tryMovingInLookingDirection() {
+    if (this.owner.getLevel().canMoveTo(tileMovement.computeTargetRectForDirection(tileMovement.getDirection()), this.owner)) {
+      tileMovement.move(tileMovement.getDirection());
+      startMoving = true;
     }
   }
 

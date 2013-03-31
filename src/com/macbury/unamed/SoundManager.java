@@ -46,13 +46,13 @@ public class SoundManager {
   }
   
   public SoundManager() {
-    //this.igniteSound = loadOgg("ignite");
     this.cancelSound      = loadOgg("Cancel1");
     this.placeBlockSound  = loadOgg("PlaceBlock");
     this.removeBlock      = loadOgg("RemoveBlock");
     this.dig              = loadOgg("Dig");
     this.loot             = loadOgg("Loot");
     this.miss             = loadOgg("Miss");
+    this.igniteSound      = loadOgg("Ignite");
     //this.theme            = loadOgg("Theme");
     this.steps = new ArrayList<Audio>();
     for (int i = 1; i <= 5; i++) {
