@@ -8,18 +8,22 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.Log;
 
 import com.macbury.unamed.Core;
+import com.macbury.unamed.ImagesManager;
 import com.macbury.unamed.entity.Entity;
 import com.macbury.unamed.entity.Player;
 public class Level {
   public static final int SMALL = 100;
 
   Block[][] world;
+  
+  SpriteSheet shadowMap        = null;
   
   int stateID                  = -1;
   private Rectangle viewPort   = null;
@@ -43,6 +47,7 @@ public class Level {
   public Level() throws SlickException {
     this.entities       = new ArrayList<Entity>();
     this.blockResources = new BlockResources();
+    this.shadowMap      = ImagesManager.shared().getSpriteSheet("shadowmap.bmp", 32, 32);
   }
   
   public Entity getEntityForTilePosition(int x, int y) {

@@ -10,12 +10,13 @@ public class Block {
   public static int gid                   = 0;
   int id                                  = 0;
   
-  public  boolean harvestable = false;
-  public  boolean solid       = false;
-  private boolean visited     = false;
-  private boolean visible     = false;
-  protected short hardness    = -1;
-  private int     lightPower  = 255;
+  public  boolean harvestable         = false;
+  public  boolean solid               = false;
+  private boolean visited             = false;
+  private boolean visible             = false;
+  protected short hardness            = -1;
+  private int     lightPower          = 255;
+  public          byte shadowMapIndex = 0;
   
   HashMap<Light,Integer> lightMapping;
   public int x;
