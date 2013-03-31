@@ -39,8 +39,7 @@ public class Torch extends BlockEntity {
     this.offSprite      = new Sprite(spriteSheet.getSprite(3, 0));
     offSprite.enabled   = false;
     addComponent(offSprite);
-    
-    this.hardness = 3;
+
   }
 
   @Override
@@ -62,13 +61,13 @@ public class Torch extends BlockEntity {
   }
 
   @Override
-  public InventoryItem harvest(int power, Player byPlayer) {
-    hardness -= power;
-    if (hardness <= 0) {
-      return new TorchItem(byPlayer);
-    } else {
-      return null;
-    }
+  public InventoryItem harvestedByPlayer(Player byPlayer) {
+    return new TorchItem(byPlayer);
+  }
+
+  @Override
+  public int getHardness() {
+    return 3;
   }
 
 }

@@ -19,6 +19,9 @@ import com.macbury.unamed.component.TileBasedMovement;
 import com.macbury.unamed.inventory.InventoryItem;
 import com.macbury.unamed.inventory.InventoryManager;
 import com.macbury.unamed.inventory.TorchItem;
+import com.macbury.unamed.level.Block;
+import com.macbury.unamed.level.HarvestableBlock;
+import com.macbury.unamed.level.Sidewalk;
 
 public class Player extends Entity {
   public final static int FOG_OF_WAR_RADIUS = 10;
@@ -36,6 +39,7 @@ public class Player extends Entity {
   public InventoryManager inventory;
   private int buttonPlacingThrottle = 0;
   private int buttonTakingThrottle  = 0;
+  private Sprite punchSprite;
   
   
   public Player() throws SlickException {
@@ -54,6 +58,10 @@ public class Player extends Entity {
     addComponent(keyboardMovement);
     
     addComponent(new Sprite(ImagesManager.shared().getImage("Shadow.png")));
+
+    //punchSprite = new Sprite(ImagesManager.shared().getImage("base_punch.png"));
+    //addComponent(punchSprite);
+   // punchSprite.enabled = true;
     
     CharacterAnimation characterAnimationComponent = new CharacterAnimation();
     addComponent(characterAnimationComponent);
@@ -170,19 +178,27 @@ public class Player extends Entity {
 
   private void placeOrUseElementInFrontOfMe() throws SlickException {
     Vector2f frontTilePosition = getTilePositionInFront();
-    Entity entityInFront       = this.getLevel().getEntityForTilePosition((int)frontTilePosition.x, (int)frontTilePosition.y);
     
-    if (entityInFront != null) {
-      if (BlockEntity.class.isInstance(entityInFront)) {
-        BlockEntity usableEntity = (BlockEntity) entityInFront;
-        if (!usableEntity.use()) {
-          SoundManager.shared().cancelSound.playAsSoundEffect(1.0f, 1.0f, false);
+    Block  blockInFront        = this.getLevel().getBlockForPosition((int)frontTilePosition.x, (int)frontTilePosition.y);
+    if (HarvestableBlock.class.isInstance(blockInFront)) {
+      
+    } else if( Sidewalk.class.isInstance(blockInFront) ) {
+      Entity entityInFront       = this.getLevel().getEntityForTilePosition((int)frontTilePosition.x, (int)frontTilePosition.y);
+      
+      if (entityInFront != null) {
+        if (BlockEntity.class.isInstance(entityInFront)) {
+          BlockEntity usableEntity = (BlockEntity) entityInFront;
+          if (!usableEntity.use()) {
+            SoundManager.shared().cancelSound.playAsSoundEffect(1.0f, 1.0f, false);
+          }
+        } else {
+          placeCurrentInventoryItemInFront(frontTilePosition);
         }
       } else {
         placeCurrentInventoryItemInFront(frontTilePosition);
       }
     } else {
-      placeCurrentInventoryItemInFront(frontTilePosition);
+      SoundManager.shared().cancelSound.playAsSoundEffect(1.0f, 1.0f, false);
     }
   }
   
@@ -213,6 +229,8 @@ public class Player extends Entity {
   private void useElementInFrontOfMe() throws SlickException {
     Vector2f frontTilePosition = getTilePositionInFront();
     Entity entityInFront       = this.getLevel().getEntityForTilePosition((int)frontTilePosition.x, (int)frontTilePosition.y);
+    
+    //punchSprite.enabled = true;
     
     if (entityInFront != null) {
       if (BlockEntity.class.isInstance(entityInFront)) {
