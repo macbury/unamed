@@ -14,8 +14,9 @@ import com.macbury.unamed.level.Level;
 
 public class Light extends Component {
 
-  private int power            = 5;
+  private int power                 = 5;
   private boolean needToUpdateLight = true;
+  private boolean enabled           = true;
   List<Block> lightedBlocks;
   
   private static final float FULL_CIRCLE_IN_RADIANTS     = 6.28f;
@@ -31,7 +32,7 @@ public class Light extends Component {
     Log.info("New light with id: "+ this.getId());
   }
   
-  private void cleanLightedBlocks() {
+  public void cleanLightedBlocks() {
     Block block = null;
     for (int j = 0; j < lightedBlocks.size(); j++) {
       block = lightedBlocks.get(j);
@@ -43,7 +44,10 @@ public class Light extends Component {
   
   private void refresh() {
     cleanLightedBlocks();
-    computeCircleLight();
+    
+    if (this.enabled) {
+      computeCircleLight();
+    }
   }
   
   private void lightPosition(int x, int y, int pow) {
@@ -143,6 +147,15 @@ public class Light extends Component {
 
   public Integer getId() {
     return new Integer(this.id);
+  }
+  
+  public void setEnabled(boolean isEnabled) {
+    this.enabled = isEnabled;
+    updateLight();
+  }
+  
+  public boolean getEnabled() {
+    return this.enabled;
   }
 
 }

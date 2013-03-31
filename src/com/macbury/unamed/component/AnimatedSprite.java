@@ -12,13 +12,11 @@ public class AnimatedSprite extends RenderComponent {
   public final static int SPRITE_TILE_WIDTH  = 32;
   public final static int SPRITE_TILE_HEIGHT = 32;
   public final static int ANIMATION_SPEED    = 150;
-  private SpriteSheet spriteSheet;
   private Animation currentAnimation = null;
   
   
-  public AnimatedSprite(String spriteName) throws SlickException {
-    spriteSheet      = new SpriteSheet("res/images/"+spriteName+".png", SPRITE_TILE_WIDTH, SPRITE_TILE_HEIGHT);
-    currentAnimation = new Animation(new Image[] { spriteSheet.getSprite(0, 0), spriteSheet.getSprite(1, 0), spriteSheet.getSprite(2, 0) }, ANIMATION_SPEED);
+  public AnimatedSprite(Image[] images) throws SlickException {
+    currentAnimation = new Animation(images, ANIMATION_SPEED);
     currentAnimation.setAutoUpdate(false);
   }
   

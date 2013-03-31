@@ -1,6 +1,7 @@
 package com.macbury.unamed.inventory;
 
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Vector2f;
 
 import com.macbury.unamed.entity.Entity;
 import com.macbury.unamed.entity.Player;
@@ -18,7 +19,7 @@ public abstract class InventoryItem {
   }
   
   public abstract String getName();
-  public abstract boolean place() throws SlickException;
+  public abstract boolean place(Vector2f tilePos) throws SlickException;
   public abstract int harvestPower();
   public int getCount() {
     if (isInfinity()) {
@@ -34,6 +35,12 @@ public abstract class InventoryItem {
     }
   }
   
+  public void setItemCount(int quantity) {
+    if (!isInfinity()) {
+      this.elementCount = quantity;
+    }
+  }
+  
   public void popItem() {
     if (!isInfinity()) {
       this.elementCount--;
@@ -46,5 +53,9 @@ public abstract class InventoryItem {
   
   public boolean haveItems() {
     return elementCount > 0 || isInfinity() ;
+  }
+
+  public int getQuantity() {
+    return elementCount;
   }
 }

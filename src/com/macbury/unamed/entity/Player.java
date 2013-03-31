@@ -25,12 +25,14 @@ public class Player extends Entity {
   KeyboardMovement  keyboardMovement;
   
   final static int MAX_PLACING_TIME = 250;
+  private static final int MAX_TAKING_TIME = 300;
   
-  int buttonThrottle = 0;
   private boolean pressedPlaceKey   = false;
   private boolean pressedTakeKey    = false;
   
   public InventoryManager inventory;
+  private int buttonPlacingThrottle = 0;
+  private int buttonTakingThrottle  = 0;
   
   
   public Player() throws SlickException {
@@ -109,33 +111,32 @@ public class Player extends Entity {
     Input input    = gc.getInput();
     
     if (pressedPlaceKey) {
-      buttonThrottle += delta;
+      buttonPlacingThrottle += delta;
     }
     
-    if (buttonThrottle > MAX_PLACING_TIME) {
+    if (pressedTakeKey) {
+      buttonTakingThrottle += delta;
+    }
+    
+    if (buttonPlacingThrottle > MAX_PLACING_TIME) {
       pressedPlaceKey = false;
     }
     
-    /*if (input.isKeyDown(Input.KEY_X) && !pressedHarvestKey) {
-      pressedHarvestKey = true;
-      buttonThrottle = 0;
-    }*/
+    if (buttonTakingThrottle > MAX_TAKING_TIME) {
+      pressedTakeKey = false;
+    }
+    
+    if (input.isKeyDown(Input.KEY_X) && !pressedTakeKey) {
+      pressedTakeKey       = true;
+      buttonTakingThrottle = 0;
+      
+      useElementInFrontOfMe();
+    }
     
     if(input.isKeyDown(Input.KEY_Z) && !pressedPlaceKey) {
-      InventoryItem currentItem = inventory.getCurrentHotBarItem();
-      
-      if (currentItem != null) {
-        if (currentItem.place()) {
-          if (!currentItem.haveItems()) {
-            inventory.remove(currentItem);
-          }
-        } else {
-          SoundManager.shared().cancelSound.playAsSoundEffect(1.0f, 1.0f, false);
-        }
-      }
-      
-      pressedPlaceKey = true;
-      buttonThrottle   = 0;
+      pressedPlaceKey         = true;
+      buttonPlacingThrottle   = 0;
+      placeOrUseElementInFrontOfMe();
     }
     
     if (input.isKeyPressed(Input.KEY_0)) {
@@ -158,6 +159,69 @@ public class Player extends Entity {
       inventory.setInventoryIndex(8);
     } else if (input.isKeyPressed(Input.KEY_9)) {
       inventory.setInventoryIndex(9);
+    }
+  }
+
+
+  private void placeOrUseElementInFrontOfMe() throws SlickException {
+    Vector2f frontTilePosition = getTilePositionInFront();
+    Entity entityInFront       = this.getLevel().getEntityForTilePosition((int)frontTilePosition.x, (int)frontTilePosition.y);
+    
+    if (entityInFront != null) {
+      if (BlockEntity.class.isInstance(entityInFront)) {
+        BlockEntity usableEntity = (BlockEntity) entityInFront;
+        if (!usableEntity.use()) {
+          SoundManager.shared().cancelSound.playAsSoundEffect(1.0f, 1.0f, false);
+        }
+      } else {
+        placeCurrentInventoryItemInFront(frontTilePosition);
+      }
+    } else {
+      placeCurrentInventoryItemInFront(frontTilePosition);
+    }
+  }
+  
+  private void placeCurrentInventoryItemInFront(Vector2f frontTilePosition) throws SlickException {
+    InventoryItem currentItem = inventory.getCurrentHotBarItem();
+    
+    if (currentItem != null) {
+      if (currentItem.place(frontTilePosition)) {
+        if (!currentItem.haveItems()) {
+          inventory.remove(currentItem);
+        }
+      } else {
+        SoundManager.shared().cancelSound.playAsSoundEffect(1.0f, 1.0f, false);
+      }
+    }
+  }
+  
+  private int currentHarvestPower() {
+    InventoryItem currentItem = inventory.getCurrentHotBarItem();
+    
+    if (currentItem == null) {
+      return InventoryItem.STANDARD_HARVEST_POWER;
+    } else {
+      return currentItem.harvestPower();
+    }
+  }
+
+  private void useElementInFrontOfMe() throws SlickException {
+    Vector2f frontTilePosition = getTilePositionInFront();
+    Entity entityInFront       = this.getLevel().getEntityForTilePosition((int)frontTilePosition.x, (int)frontTilePosition.y);
+    
+    if (entityInFront != null) {
+      if (BlockEntity.class.isInstance(entityInFront)) {
+        BlockEntity usableEntity = (BlockEntity) entityInFront;
+        
+        InventoryItem item = usableEntity.harvest(currentHarvestPower(), this);
+        if (item == null) {
+          SoundManager.shared().dig.playAsSoundEffect(1.0f, 1.0f, false);
+        } else {
+          this.inventory.addItem(item);
+          this.getLevel().removeEntity(entityInFront);
+          SoundManager.shared().loot.playAsSoundEffect(1.0f, 1.0f, false);
+        }
+      }
     }
   }
 

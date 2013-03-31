@@ -68,8 +68,6 @@ public class Level {
     updateCamera();
     gr.setAntiAlias(false);
     
-    Color visitedColor   = new Color(50,50,50);
-    
     int shiftTileX       = Math.max(getShiftTileX(), 0);
     int shiftTileY       = Math.max(getShiftTileY(), 0);
     
@@ -96,12 +94,8 @@ public class Level {
         if (block != null && block.isVisibleOrVisited()) {
           Image image = this.blockResources.imageForBlock(block);
           if (image != null) {
-            if (block.isVisible()) {
-              visibleBlocks.add(block);
-              image.draw(tx,ty);
-            } else if (block.isVisited()) {
-              image.draw(tx,ty, visitedColor);
-            }
+            visibleBlocks.add(block);
+            image.draw(tx,ty);
           }
         }
       }
@@ -115,7 +109,8 @@ public class Level {
     for (int i = 0; i < this.entities.size(); i++) {
       Entity e    = this.entities.get(i);
       Block block = e.getBlock();
-      if (block != null && block.isVisible()) {
+      
+      if (block != null && (block.isVisible() || (block.isVisited() && e.visibleUnderTheFog))) {
         if (this.viewPort.intersects(e.getRect())) {
           e.render(gc, sb, gr);
         }
@@ -123,7 +118,12 @@ public class Level {
     }
 
     for( Block block : visibleBlocks ) {
-      gr.setColor(new Color(0,0,0,block.getLightPower()));
+      if (block.isVisible()) {
+        gr.setColor(new Color(0,0,0,block.getLightPower()));
+      } else {
+        gr.setColor(new Color(0,0,0, Block.VISITED_ALPHA));
+      }
+      
       gr.fillRect(block.x*this.tileWidth, block.y*this.tileHeight, this.tileWidth, this.tileHeight);
     }
     
@@ -303,5 +303,11 @@ public class Level {
 
   public Player getPlayer() {
     return this.player;
+  }
+
+  public void removeEntity(Entity entity) {
+    this.entities.remove(entity);
+    entity.afterRemove();
+    entity = null;
   }
 }

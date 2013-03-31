@@ -34,4 +34,15 @@ public class InventoryManager extends ArrayList<InventoryItem> {
       return null;
     }
   }
+  
+  public void addItem(InventoryItem item) {
+    for (InventoryItem inBackPack : this) {
+      if (item.getClass().isInstance(inBackPack)) {
+        inBackPack.addItem(item.getQuantity());
+        return;
+      }
+    }
+    
+    add(item);
+  }
 }

@@ -15,32 +15,19 @@ public class TorchItem extends InventoryItem {
   }
 
   @Override
-  public boolean place() throws SlickException {
-    Vector2f tilePos = this.owner.getNotSolidTilePositionInFront();
-    if (tilePos != null ) {
+  public boolean place(Vector2f tilePos) throws SlickException {
+    if(haveItems()) {
+      Torch torch = new Torch();
+      this.owner.getLevel().addEntity(torch);
       
-      Entity entityInFront = this.owner.getLevel().getEntityForTilePosition((int)tilePos.x, (int)tilePos.y);
+      torch.setTilePosition((int)tilePos.x, (int)tilePos.y);
+      SoundManager.shared().placeBlockSound.playAsSoundEffect(1.0f, 1.0f, false);
       
-      if (entityInFront == null) {
-        if(haveItems()) {
-          Torch torch = new Torch();
-          this.owner.getLevel().addEntity(torch);
-          
-          torch.setTilePosition((int)tilePos.x, (int)tilePos.y);
-          SoundManager.shared().placeBlockSound.playAsSoundEffect(1.0f, 1.0f, false);
-          
-          this.popItem();
-          return true;
-        } else {
-         return false; 
-        }
-      } else {
-        return false;
-      }
-      
+      this.popItem();
+      return true;
+    } else {
+     return false; 
     }
-    
-    return false;
   }
 
   @Override

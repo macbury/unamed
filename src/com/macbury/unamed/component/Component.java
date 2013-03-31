@@ -9,6 +9,7 @@ import com.macbury.unamed.entity.Entity;
 
 public abstract class Component {
   protected Entity owner;
+  public boolean enabled = true;
   
   public Component() {
   }

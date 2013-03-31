@@ -5,6 +5,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.Log;
 
+import com.macbury.unamed.SoundManager;
 import com.macbury.unamed.level.Level;
 
 
@@ -20,6 +21,7 @@ public class GameScene extends BaseScene {
   @Override
   public void init(GameContainer gc, StateBasedGame sb) throws SlickException {
     this.level.generateWorld(100);
+    //SoundManager.shared().theme.playAsMusic(1.0f, 1.0f, true);
   }
 
   @Override

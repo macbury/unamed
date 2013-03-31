@@ -26,9 +26,10 @@ public class Entity implements Comparable<Entity> {
   
   private Rectangle rectangle;
   private Vector2f  futurePosition = null; // this is future position of entity
-  public  boolean   solid = false;
+  public  boolean   solid              = false;
+  public  boolean   visibleUnderTheFog = false;
   
-  public int z = ENTITY_BASE_LAYER;
+  public int z                    = ENTITY_BASE_LAYER;
   private Light lightComponent    = null;
   ArrayList<Component> components = null;
   
@@ -86,13 +87,17 @@ public class Entity implements Comparable<Entity> {
   
   public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
     for(Component component : components) {
-      component.update(gc, sb, delta);
+      if (component.enabled) {
+        component.update(gc, sb, delta);
+      }
     }
   }
 
   public void render(GameContainer gc, StateBasedGame sb, Graphics gr) {
     for(Component component : components) {
-      component.render(gc, sb, gr);
+      if (component.enabled) {
+        component.render(gc, sb, gr);
+      }
     }
   }
   
@@ -240,5 +245,11 @@ public class Entity implements Comparable<Entity> {
   public void setTilePosition(int x, int y) {
     setTileX(x);
     setTileY(y);
+  }
+  
+  public void afterRemove() {
+    if (this.getLight() != null) {
+      this.getLight().cleanLightedBlocks();
+    }
   }
 }

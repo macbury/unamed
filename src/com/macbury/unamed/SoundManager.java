@@ -25,8 +25,12 @@ public class SoundManager {
   public Audio igniteSound;
   public Audio cancelSound;
   public Audio placeBlockSound;
+  public Audio removeBlock;
   private ArrayList<Audio> steps;
   int lastIndex = 0;
+  public Audio dig;
+  public Audio theme;
+  public Audio loot;
   
   private Audio loadOgg(String filename) {
     try {
@@ -44,7 +48,10 @@ public class SoundManager {
     //this.igniteSound = loadOgg("ignite");
     this.cancelSound      = loadOgg("Cancel1");
     this.placeBlockSound  = loadOgg("PlaceBlock");
-    
+    this.removeBlock      = loadOgg("RemoveBlock");
+    this.dig              = loadOgg("Dig");
+    this.loot             = loadOgg("Loot");
+    //this.theme            = loadOgg("Theme");
     this.steps = new ArrayList<Audio>();
     for (int i = 1; i <= 5; i++) {
       this.steps.add(loadOgg("FootGrass"+i));
@@ -63,6 +70,6 @@ public class SoundManager {
     
     lastIndex = index;
     
-    this.steps.get(index).playAsSoundEffect(1.0f, 1.0f, false);
+    this.steps.get(index).playAsSoundEffect(1.0f, 0.5f, false);
   }
 }
