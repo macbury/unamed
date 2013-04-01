@@ -53,7 +53,7 @@ public class Player extends Entity {
     this.inventory.add(item);
     
     BlockItem blockItem = new BlockItem(this, Rock.class);
-    blockItem.addItem(9);
+    blockItem.addItem(98);
     this.inventory.add(blockItem);
     
     this.z = ENTITY_ZINDEX;
