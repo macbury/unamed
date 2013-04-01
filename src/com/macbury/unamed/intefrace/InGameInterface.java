@@ -15,6 +15,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import com.macbury.unamed.Core;
 import com.macbury.unamed.ImagesManager;
 import com.macbury.unamed.entity.Player;
+import com.macbury.unamed.inventory.BlockItem;
 import com.macbury.unamed.inventory.InventoryItem;
 import com.macbury.unamed.inventory.InventoryManager;
 import com.macbury.unamed.inventory.TorchItem;
@@ -60,6 +61,8 @@ public class InGameInterface {
   public Image getImageForInventoryItem(InventoryItem item) throws SlickException {
     if (TorchItem.class.isInstance(item)) {
       return getOrLoadInventoryItemImage(TorchItem.class, 2, 0);
+    } else if (BlockItem.class.isInstance(item)) {
+      return getOrLoadInventoryItemImage(BlockItem.class, 0, 1);
     }
     
     throw new SlickException("No image for inventory item: " +item.getClass().getName());    

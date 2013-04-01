@@ -252,4 +252,8 @@ public class Entity implements Comparable<Entity> {
       this.getLight().cleanLightedBlocks();
     }
   }
+
+  public void destroy() {
+    this.getLevel().removeEntity(this);
+  }
 }

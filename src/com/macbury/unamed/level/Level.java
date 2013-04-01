@@ -315,4 +315,19 @@ public class Level {
     entity.afterRemove();
     entity = null;
   }
+  
+  /*
+   * Set block for position and update lighting for that position
+   */
+  
+  public void setBlockForPosition(Block sidewalk, int x, int y) {
+    Block oldBlock      = getBlockForPosition(x, y);
+    sidewalk.x          = x;
+    sidewalk.y          = y;
+    this.world[x][y] = sidewalk;
+    
+    if (oldBlock != null) {
+      sidewalk.copyLightsFromBlock(oldBlock);
+    }
+  }
 }

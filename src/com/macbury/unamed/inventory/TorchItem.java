@@ -40,4 +40,9 @@ public class TorchItem extends InventoryItem {
     return InventoryItem.STANDARD_HARVEST_POWER;
   }
 
+  @Override
+  public String getKey() {
+    return "ITEM_TORCH_TYPE";
+  }
+
 }

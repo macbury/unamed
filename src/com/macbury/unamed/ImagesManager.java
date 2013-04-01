@@ -8,6 +8,7 @@ import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.util.Log;
 
 public class ImagesManager {
+  private static int MAX_BREAKING_BLOCK_SIZE = 9;
   public static ImagesManager sharedInstance = null;
   private HashMap<String, Image> imagesCache;
   private HashMap<String, SpriteSheet> spriteSheetCache;
@@ -49,5 +50,10 @@ public class ImagesManager {
     }
     
     return image;
+  }
+  
+  public Image getDestroyBlockEffectForProgress(float progress) throws SlickException {
+    SpriteSheet sheet = getSpriteSheet("effects/breaking_block_animation.png", 32, 32);
+    return sheet.getSprite(Math.round(MAX_BREAKING_BLOCK_SIZE * progress), 0);
   }
 }

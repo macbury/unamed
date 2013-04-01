@@ -53,6 +53,17 @@ public class Block {
     return this.visited;
   }
   
+  public HashMap<Light, Integer> getLightMapping() {
+    return lightMapping;
+  }
+  
+  public void copyLightsFromBlock(Block block) {
+    this.lightMapping = block.getLightMapping();
+    for(Light light : this.lightMapping.keySet()) {
+      light.updateLight();
+    }
+  }
+  
   public void markByLightPower() {
     if(lightMapping == null || lightMapping.size() == 0) {
       markAsInvisibleBlock();
@@ -98,4 +109,7 @@ public class Block {
     calculateLightPower();
   }
   
+  public int getId() {
+    return this.id;
+  }
 }

@@ -16,11 +16,13 @@ import com.macbury.unamed.component.KeyboardMovement;
 import com.macbury.unamed.component.Light;
 import com.macbury.unamed.component.Sprite;
 import com.macbury.unamed.component.TileBasedMovement;
+import com.macbury.unamed.inventory.BlockItem;
 import com.macbury.unamed.inventory.InventoryItem;
 import com.macbury.unamed.inventory.InventoryManager;
 import com.macbury.unamed.inventory.TorchItem;
 import com.macbury.unamed.level.Block;
 import com.macbury.unamed.level.HarvestableBlock;
+import com.macbury.unamed.level.Rock;
 import com.macbury.unamed.level.Sidewalk;
 
 public class Player extends Entity {
@@ -49,6 +51,10 @@ public class Player extends Entity {
     TorchItem item = new TorchItem(this);
     item.addItem(9);
     this.inventory.add(item);
+    
+    BlockItem blockItem = new BlockItem(this, Rock.class);
+    blockItem.addItem(9);
+    this.inventory.add(blockItem);
     
     this.z = ENTITY_ZINDEX;
     tileMovement = new TileBasedMovement();
@@ -230,7 +236,15 @@ public class Player extends Entity {
     Vector2f frontTilePosition = getTilePositionInFront();
     Entity entityInFront       = this.getLevel().getEntityForTilePosition((int)frontTilePosition.x, (int)frontTilePosition.y);
     
-    //punchSprite.enabled = true;
+    if (entityInFront == null) {
+      Block block = this.getLevel().getBlockForPosition((int)frontTilePosition.x, (int)frontTilePosition.y);
+      if (HarvestableBlock.class.isInstance(block)) {
+        HarvestingBlock harvestingEntityAction = new HarvestingBlock();
+        this.getLevel().addEntity(harvestingEntityAction);
+        harvestingEntityAction.setBlock((HarvestableBlock) block);
+        entityInFront = (Entity)harvestingEntityAction;
+      }
+    }
     
     if (entityInFront != null) {
       if (BlockEntity.class.isInstance(entityInFront)) {
@@ -241,7 +255,7 @@ public class Player extends Entity {
           SoundManager.shared().dig.playAsSoundEffect(1.0f, 1.0f, false);
         } else {
           this.inventory.addItem(item);
-          this.getLevel().removeEntity(entityInFront);
+          entityInFront.destroy();
           SoundManager.shared().loot.playAsSoundEffect(1.0f, 1.0f, false);
         }
       }

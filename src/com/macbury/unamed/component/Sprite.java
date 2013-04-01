@@ -7,7 +7,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 public class Sprite extends RenderComponent {
-  Image image;
+  private Image image;
   
   public Sprite(Image image) throws SlickException {
     this.image = image;
@@ -25,6 +25,10 @@ public class Sprite extends RenderComponent {
     if (image != null) {
       image.draw(owner.getX(), owner.getY());
     }
+  }
+  
+  public void setImage(Image newImage) {
+    this.image = newImage;
   }
 
 }

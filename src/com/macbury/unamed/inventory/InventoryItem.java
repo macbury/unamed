@@ -18,6 +18,8 @@ public abstract class InventoryItem {
     this.elementCount = 1;
   }
   
+  public abstract String getKey();
+  
   public abstract String getName();
   public abstract boolean place(Vector2f tilePos) throws SlickException;
   public abstract int harvestPower();

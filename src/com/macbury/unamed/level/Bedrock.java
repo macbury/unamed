@@ -1,12 +1,22 @@
 package com.macbury.unamed.level;
 
-public class Bedrock extends Block {
-  private static final short INDESTRUCTIBLE = -1;
+import com.macbury.unamed.entity.Player;
+import com.macbury.unamed.inventory.InventoryItem;
 
+public class Bedrock extends HarvestableBlock {
   public Bedrock(int x, int y) {
     super(x, y);
-    this.hardness = INDESTRUCTIBLE;
-    this.solid    = true;
+  }
+
+  @Override
+  public int getHardness() {
+    return HarvestableBlock.HARDNESS_INFITNITY;
+  }
+
+  @Override
+  public InventoryItem harvestedByPlayer(Player byPlayer) {
+    // TODO Auto-generated method stub
+    return null;
   }
 
 }
