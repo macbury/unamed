@@ -19,6 +19,7 @@ public class HarvestingBlock extends BlockEntity {
 
   public HarvestingBlock() throws SlickException {
     super();
+    this.solid              = true;
     this.visibleUnderTheFog = true;
     this.breakEffectSprite  = new Sprite(ImagesManager.shared().getDestroyBlockEffectForProgress(0.0f));
     addComponent(breakEffectSprite);

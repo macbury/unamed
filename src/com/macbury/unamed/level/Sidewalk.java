@@ -19,7 +19,7 @@ public class Sidewalk extends Block {
   }
   
   public Image getCurrentShadowMap(SpriteSheet sheet) {
-    return sheet.getSprite(0, 5);
+    return null; //sheet.getSprite(0, 5);
   }
 
   public void computeShadowMapBasedOnLevel(Level level) {

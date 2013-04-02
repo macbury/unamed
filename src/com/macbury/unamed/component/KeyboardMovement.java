@@ -26,6 +26,10 @@ public class KeyboardMovement extends Component {
   
   @Override
   public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
+    
+  }
+  
+  public void processMovement(GameContainer gc, int delta) {
     Input input    = gc.getInput();
     
     if (moveKeyPressed) {
@@ -86,6 +90,10 @@ public class KeyboardMovement extends Component {
   public void render(GameContainer gc, StateBasedGame sb, Graphics gr) {
     // TODO Auto-generated method stub
     
+  }
+
+  public void stop() {
+    moveKeyPressed = false;
   }
 
 }

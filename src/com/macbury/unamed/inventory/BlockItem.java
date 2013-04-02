@@ -4,6 +4,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
 
 import com.macbury.unamed.SoundManager;
+import com.macbury.unamed.entity.Entity;
 import com.macbury.unamed.entity.Player;
 import com.macbury.unamed.level.Block;
 import com.macbury.unamed.level.HarvestableBlock;

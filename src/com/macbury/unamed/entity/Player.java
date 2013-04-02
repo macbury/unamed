@@ -145,18 +145,23 @@ public class Player extends Entity {
       pressedTakeKey = false;
     }
     
-    if (input.isKeyDown(Input.KEY_X) && !pressedTakeKey) {
-      pressedTakeKey       = true;
-      buttonTakingThrottle = 0;
+    if (!tileMovement.isMoving()) {
+      if (input.isKeyDown(Input.KEY_X) && !pressedTakeKey) {
+        pressedTakeKey       = true;
+        buttonTakingThrottle = 0;
+        
+        useElementInFrontOfMe();
+      }
       
-      useElementInFrontOfMe();
+      if(input.isKeyDown(Input.KEY_Z) && !pressedPlaceKey) {
+        pressedPlaceKey         = true;
+        buttonPlacingThrottle   = 0;
+        placeOrUseElementInFrontOfMe();
+      }
     }
+
     
-    if(input.isKeyDown(Input.KEY_Z) && !pressedPlaceKey) {
-      pressedPlaceKey         = true;
-      buttonPlacingThrottle   = 0;
-      placeOrUseElementInFrontOfMe();
-    }
+    keyboardMovement.processMovement(gc, delta);
     
     if (input.isKeyPressed(Input.KEY_0)) {
       inventory.setInventoryIndex(10);
@@ -187,7 +192,7 @@ public class Player extends Entity {
     
     Block  blockInFront        = this.getLevel().getBlockForPosition((int)frontTilePosition.x, (int)frontTilePosition.y);
     if (HarvestableBlock.class.isInstance(blockInFront)) {
-      
+      // Cannot use element because is harvestable block!
     } else if( Sidewalk.class.isInstance(blockInFront) ) {
       Entity entityInFront       = this.getLevel().getEntityForTilePosition((int)frontTilePosition.x, (int)frontTilePosition.y);
       

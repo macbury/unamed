@@ -343,4 +343,6 @@ public class Level {
       sidewalk.copyLightsFromBlock(oldBlock);
     }
   }
+
+  
 }
