@@ -26,10 +26,6 @@ public class KeyboardMovement extends Component {
   
   @Override
   public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
-    
-  }
-  
-  public void processMovement(GameContainer gc, int delta) {
     Input input    = gc.getInput();
     
     if (moveKeyPressed) {
@@ -78,6 +74,7 @@ public class KeyboardMovement extends Component {
       }
     }
   }
+
 
   private void tryMovingInLookingDirection() {
     if (this.owner.getLevel().canMoveTo(tileMovement.computeTargetRectForDirection(tileMovement.getDirection()), this.owner)) {

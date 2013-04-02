@@ -159,9 +159,6 @@ public class Player extends Entity {
         placeOrUseElementInFrontOfMe();
       }
     }
-
-    
-    keyboardMovement.processMovement(gc, delta);
     
     if (input.isKeyPressed(Input.KEY_0)) {
       inventory.setInventoryIndex(10);
