@@ -10,7 +10,7 @@ import com.macbury.unamed.entity.Entity;
 
 public class KeyboardMovement extends Component {
   TileBasedMovement tileMovement;
-  final static int WAIT_TO_MOVE_TOTAL_TIME = 100;
+  final static int WAIT_TO_MOVE_TOTAL_TIME = 90;
   int     waitToMoveTime                   = 0;
   boolean moveKeyPressed                   = false;
   boolean startMoving                      = false;
