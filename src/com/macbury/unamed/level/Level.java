@@ -330,9 +330,8 @@ public class Level {
   }
   
   /*
-   * Set block for position and update lighting for that position
+   * Set block for position and update lighting for that position and shadow map
    */
-  
   public void setBlockForPosition(Block sidewalk, int x, int y) {
     Block oldBlock      = getBlockForPosition(x, y);
     sidewalk.x          = x;
@@ -342,7 +341,22 @@ public class Level {
     if (oldBlock != null) {
       sidewalk.copyLightsFromBlock(oldBlock);
     }
+    
+    tryToRefreshSideWalkForPosition(x-1, y-1); // top left
+    tryToRefreshSideWalkForPosition(x, y-1); // top
+    tryToRefreshSideWalkForPosition(x+1, y-1); //top right
+    tryToRefreshSideWalkForPosition(x+1, y); // right
+    tryToRefreshSideWalkForPosition(x+1, y+1); // bottom right
+    tryToRefreshSideWalkForPosition(x, y+1); // bottom
+    tryToRefreshSideWalkForPosition(x-1, y+1); // bottom left
+    tryToRefreshSideWalkForPosition(x-1, y); // left
+    
   }
 
-  
+  private void tryToRefreshSideWalkForPosition(int x, int y) {
+    Block block = getBlockForPosition(x, y);
+    if (block != null && Sidewalk.class.isInstance(block)) {
+      ((Sidewalk) block).refreshShadowMap();
+    }
+  }
 }

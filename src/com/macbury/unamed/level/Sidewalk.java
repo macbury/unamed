@@ -20,7 +20,14 @@ public class Sidewalk extends Block {
     return this.shadowMapIndex == SHADOW_NEED_TO_REFRESH;
   }
   
+  public void refreshShadowMap() {
+    this.shadowMapIndex = SHADOW_NEED_TO_REFRESH;
+  }
+  
   public Image getCurrentShadowMap(SpriteSheet sheet) {
+    if (isShadowMap(SHADOW_CORNER_TOP_LEFT)) {
+      return sheet.getSprite(0, 0);
+    }
     return null; //sheet.getSprite(0, 5);
   }
 

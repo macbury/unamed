@@ -7,7 +7,6 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.macbury.unamed.entity.Entity;
-import com.macbury.unamed.entity.Torch;
 
 public class KeyboardMovement extends Component {
   TileBasedMovement tileMovement;

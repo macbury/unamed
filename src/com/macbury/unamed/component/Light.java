@@ -102,12 +102,9 @@ public class Light extends Component {
             if (block.solid) {
               skipRadiants[i] = true;
             }
-            
             lightBlock(block, (int) lightPower);
           }
-          
         }
-        
         radiants  += CIRCLE_STEP_IN_RADIANT;
         i++;
       }
