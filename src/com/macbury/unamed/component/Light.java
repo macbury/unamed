@@ -42,7 +42,7 @@ public class Light extends Component {
     lightedBlocks.clear();
   }
   
-  private void refresh() {
+  public void refresh() {
     cleanLightedBlocks();
     
     if (this.enabled) {

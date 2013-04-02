@@ -55,8 +55,8 @@ public class SoundManager {
     this.igniteSound      = loadOgg("Ignite");
     this.theme            = loadOgg("Theme");
     this.steps = new ArrayList<Audio>();
-    for (int i = 1; i <= 5; i++) {
-      this.steps.add(loadOgg("FootGrass"+i));
+    for (int i = 1; i <= 6; i++) {
+      this.steps.add(loadOgg("stone"+i));
     }
     
   }

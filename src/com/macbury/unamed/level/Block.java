@@ -1,14 +1,20 @@
 package com.macbury.unamed.level;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
+
 import com.macbury.unamed.component.Light;
 
 public class Block {
-  public static final int VISITED_ALPHA   = 210;
-  public static final int MIN_LIGHT_POWER = 200;
-  public static int gid                   = 0;
-  int id                                  = 0;
+
+  
+  public static final int VISITED_ALPHA             = 210;
+  public static final int MIN_LIGHT_POWER           = 200;
+  public static int gid                             = 0;
+  int id                                            = 0;
   
   public  boolean harvestable         = false;
   public  boolean solid               = false;
@@ -16,7 +22,6 @@ public class Block {
   private boolean visible             = false;
   protected short hardness            = -1;
   private int     lightPower          = 255;
-  public          byte shadowMapIndex = 0;
   
   HashMap<Light,Integer> lightMapping;
   public int x;
@@ -58,9 +63,13 @@ public class Block {
   }
   
   public void copyLightsFromBlock(Block block) {
-    this.lightMapping = block.getLightMapping();
-    for(Light light : this.lightMapping.keySet()) {
-      light.updateLight();
+    this.lightMapping    = block.getLightMapping();
+    if (lightMapping != null) {
+      Set<Light> lightsSet = this.lightMapping.keySet();
+      List<Light> lights   = new ArrayList<Light>(lightsSet); 
+      for (int i = 0; i < lights.size(); i++) {
+        lights.get(i).refresh();
+      }
     }
   }
   

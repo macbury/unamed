@@ -47,7 +47,7 @@ public class Level {
   public Level() throws SlickException {
     this.entities       = new ArrayList<Entity>();
     this.blockResources = new BlockResources();
-    this.shadowMap      = ImagesManager.shared().getSpriteSheet("shadowmap.bmp", 32, 32);
+    this.shadowMap      = ImagesManager.shared().getSpriteSheet("shadowmap.png", 32, 32);
   }
   
   public Entity getEntityForTilePosition(int x, int y) {
@@ -101,6 +101,19 @@ public class Level {
           if (image != null) {
             visibleBlocks.add(block);
             image.draw(tx,ty);
+            
+            if(Sidewalk.class.isInstance(block)) {
+              Sidewalk walk = (Sidewalk) block;
+              
+              if (walk.shouldRefreshShadowMap()) {
+                walk.computeShadowMapBasedOnLevel(this);
+              }
+              
+              image = walk.getCurrentShadowMap(this.shadowMap);
+              if (image != null) {
+                image.draw(tx, ty);
+              }
+            }
           }
         }
       }
