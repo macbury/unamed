@@ -283,8 +283,11 @@ public class Level {
     player = new Player();
     this.addEntity(player);
     lookAt(player);
-    player.setPosition(32,32);
     
+    player.setTileX(3);
+    player.setTileY(3);
+    
+    createRoom(1,1, 4, 4);
   }
   
   private void applyBedrockBorder() {
@@ -311,7 +314,18 @@ public class Level {
     
     for (int x = 0; x < this.mapTileWidth; x++) {
       for (int y = 0; y < this.mapTileHeight; y++) {
-        this.world[x][y] = new CoalOre(x,y);
+        this.world[x][y] = new Dirt(x,y);
+        //Log.debug("Building block: "+ x + "x" +y + " with id: "+ block.id);
+      }
+    }
+  }
+  
+  private void createRoom(int sx, int sy, int width, int height) {
+    int ex = width  + sx;
+    int ey = height + sy;
+    for (int x = sx; x <= ex; x++) {
+      for (int y = sy; y <= ey; y++) {
+        this.world[x][y] = new Sidewalk(x,y);
         //Log.debug("Building block: "+ x + "x" +y + " with id: "+ block.id);
       }
     }

@@ -37,7 +37,7 @@ public class InventoryManager extends ArrayList<InventoryItem> {
   
   public void addItem(InventoryItem item) {
     for (InventoryItem itemBackPack : this) {
-      if (itemBackPack.getKey().equals(item.getKey())) {
+      if (item.getKey().equals(itemBackPack.getKey())) {
         itemBackPack.addItem(item.getQuantity());
         return;
       }

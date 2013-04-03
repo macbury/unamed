@@ -19,7 +19,7 @@ public class BlockItem extends InventoryItem {
   
   @Override
   public String getKey() {
-    return this.blockType.getClass().getName();
+    return this.blockType.getName();
   }
 
   @Override
