@@ -46,7 +46,7 @@ public class Level {
   
   public Level() throws SlickException {
     this.entities       = new ArrayList<Entity>();
-    this.blockResources = new BlockResources();
+    this.blockResources = BlockResources.shared();
     this.shadowMap      = ImagesManager.shared().getSpriteSheet("shadowmap.png", 32, 32);
   }
   
@@ -311,9 +311,7 @@ public class Level {
     
     for (int x = 0; x < this.mapTileWidth; x++) {
       for (int y = 0; y < this.mapTileHeight; y++) {
-        Sidewalk block   = new Sidewalk(x,y);
-        this.world[x][y] = block;
-        
+        this.world[x][y] = new CoalOre(x,y);
         //Log.debug("Building block: "+ x + "x" +y + " with id: "+ block.id);
       }
     }

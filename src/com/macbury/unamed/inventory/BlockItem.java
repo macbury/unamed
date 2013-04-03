@@ -5,17 +5,18 @@ import org.newdawn.slick.geom.Vector2f;
 
 import com.macbury.unamed.SoundManager;
 import com.macbury.unamed.entity.Player;
+import com.macbury.unamed.level.Dirt;
 import com.macbury.unamed.level.HarvestableBlock;
 import com.macbury.unamed.level.Rock;
 
 public class BlockItem extends InventoryItem {
-  Class<HarvestableBlock> blockType;
+  public Class<HarvestableBlock> blockType;
   
   public BlockItem(Player entity, Class blockType) {
     super(entity);
     this.blockType = blockType;
   }
-
+  
   @Override
   public String getKey() {
     return this.blockType.getClass().getName();
@@ -33,6 +34,10 @@ public class BlockItem extends InventoryItem {
     if(haveItems()) {
       if (Rock.class.equals(blockType)) {
         block = new Rock((int)tilePos.x, (int)tilePos.y);
+      }
+      
+      if (Dirt.class.equals(blockType)) {
+        block = new Dirt((int)tilePos.x, (int)tilePos.y);
       }
     }
     

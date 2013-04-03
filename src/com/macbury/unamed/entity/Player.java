@@ -21,6 +21,7 @@ import com.macbury.unamed.inventory.InventoryItem;
 import com.macbury.unamed.inventory.InventoryManager;
 import com.macbury.unamed.inventory.TorchItem;
 import com.macbury.unamed.level.Block;
+import com.macbury.unamed.level.Dirt;
 import com.macbury.unamed.level.HarvestableBlock;
 import com.macbury.unamed.level.Rock;
 import com.macbury.unamed.level.Sidewalk;
@@ -52,7 +53,11 @@ public class Player extends Entity {
     item.addItem(9);
     this.inventory.add(item);
     
-    BlockItem blockItem = new BlockItem(this, Rock.class);
+    BlockItem blockItem = new BlockItem(this, Dirt.class);
+    blockItem.addItem(98);
+    this.inventory.add(blockItem);
+    
+    blockItem = new BlockItem(this, Rock.class);
     blockItem.addItem(98);
     this.inventory.add(blockItem);
     

@@ -11,25 +11,46 @@ import com.macbury.unamed.component.AnimatedSprite;
 import com.macbury.unamed.component.Light;
 
 public class BlockResources {
+  private static BlockResources shared;
   SpriteSheet spriteSheet;
   Image sidewalkImage;
   Image bedrockImage;
   Image rockImage;
+  Image dirtImage;
+  Image coalImage;
+  
+  public static BlockResources shared() throws SlickException {
+    if (shared == null) {
+      shared = new BlockResources();
+    }
+    
+    return shared;
+  }
   
   public BlockResources() throws SlickException {
     spriteSheet = ImagesManager.shared().getSpriteSheet("terrain.png", Core.TILE_SIZE, Core.TILE_SIZE);
     
-    sidewalkImage = spriteSheet.getSprite(1, 0);
+    sidewalkImage = spriteSheet.getSprite(1, 1);
     bedrockImage  = spriteSheet.getSprite(0, 14);
-    rockImage     = spriteSheet.getSprite(0, 1);
+    rockImage     = spriteSheet.getSprite(1, 0);
+    dirtImage     = spriteSheet.getSprite(3, 1);
+    coalImage     = spriteSheet.getSprite(2, 2);
   }
   
   public Image imageForBlock(Block block) {
-    if (Rock.class.isInstance(block)) {
+    return imageForBlockClass(block.getClass());
+  }
+  
+  public Image imageForBlockClass(Class klass) {
+    if (klass.getName().equals(CoalOre.class.getName())) {
+      return coalImage;
+    } else if (klass.getName().equals(Dirt.class.getName())) {
+      return dirtImage;
+    } else if (klass.getName().equals(Rock.class.getName())) {
       return rockImage;
-    } else if (Bedrock.class.isInstance(block)) {
+    } else if (klass.getName().equals(Bedrock.class.getName())) {
       return bedrockImage;
-    } else if (Sidewalk.class.isInstance(block)) {
+    } else if (klass.getName().equals(Sidewalk.class.getName())) {
       return sidewalkImage;
     } else {
       return null;

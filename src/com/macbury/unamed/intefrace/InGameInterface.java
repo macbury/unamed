@@ -16,9 +16,11 @@ import com.macbury.unamed.Core;
 import com.macbury.unamed.ImagesManager;
 import com.macbury.unamed.entity.Player;
 import com.macbury.unamed.inventory.BlockItem;
+import com.macbury.unamed.inventory.CoalItem;
 import com.macbury.unamed.inventory.InventoryItem;
 import com.macbury.unamed.inventory.InventoryManager;
 import com.macbury.unamed.inventory.TorchItem;
+import com.macbury.unamed.level.BlockResources;
 import com.macbury.unamed.level.Level;
 
 public class InGameInterface {
@@ -59,10 +61,10 @@ public class InGameInterface {
   }
   
   public Image getImageForInventoryItem(InventoryItem item) throws SlickException {
-    if (TorchItem.class.isInstance(item)) {
+    if (CoalItem.class.isInstance(item)) {
+      return getOrLoadInventoryItemImage(CoalItem.class, 1, 1);
+    } if (TorchItem.class.isInstance(item)) {
       return getOrLoadInventoryItemImage(TorchItem.class, 2, 0);
-    } else if (BlockItem.class.isInstance(item)) {
-      return getOrLoadInventoryItemImage(BlockItem.class, 0, 1);
     }
     
     throw new SlickException("No image for inventory item: " +item.getClass().getName());    
@@ -93,8 +95,14 @@ public class InGameInterface {
         int countTextWidth  = font.getWidth(countText);
         int countTextHeight = font.getHeight(countText);
         
-        Image icon = getImageForInventoryItem(item);
-        icon.draw(x, 0);
+        if (BlockItem.class.isInstance(item)) {
+          BlockItem blockItem = (BlockItem) item;
+          Image icon = BlockResources.shared().imageForBlockClass(blockItem.blockType);
+          icon.draw(x+4, 4, 0.8f);
+        } else {
+          Image icon = getImageForInventoryItem(item);
+          icon.draw(x, 0);
+        }
         
         int textX = x + HOTBAR_CELL_SIZE - countTextWidth - HOTBAR_CELL_TEXT_PADDING;
         int textY = HOTBAR_CELL_SIZE - countTextHeight - HOTBAR_CELL_TEXT_PADDING;
