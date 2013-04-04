@@ -68,7 +68,7 @@ public class Player extends Entity {
     keyboardMovement = new KeyboardMovement();
     addComponent(keyboardMovement);
     
-    addComponent(new Sprite(ImagesManager.shared().getImage("Shadow.png")));
+    //addComponent(new Sprite(ImagesManager.shared().getImage("Shadow.png")));
 
     //punchSprite = new Sprite(ImagesManager.shared().getImage("base_punch.png"));
     //addComponent(punchSprite);
@@ -76,7 +76,7 @@ public class Player extends Entity {
     
     CharacterAnimation characterAnimationComponent = new CharacterAnimation();
     addComponent(characterAnimationComponent);
-    characterAnimationComponent.loadCharacterImage("base");
+    characterAnimationComponent.loadCharacterImage("chars/dman");
 
     solid = true;
     if (Core.DEBUG) {

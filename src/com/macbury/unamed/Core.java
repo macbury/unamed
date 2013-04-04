@@ -1,14 +1,11 @@
 package com.macbury.unamed;
 
-import java.util.ArrayList;
-
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.state.StateBasedGame;
-import org.newdawn.slick.util.Log;
 
 import com.macbury.unamed.scenes.GameScene;
+import com.macbury.unamed.scenes.PerlinTestState;
 
 public class Core extends StateBasedGame {
   public static final boolean DEBUG   = false;
@@ -29,7 +26,8 @@ public class Core extends StateBasedGame {
 
   @Override
   public void initStatesList(GameContainer gameContainer) throws SlickException {
-    this.addState(new GameScene(gameContainer));
+    this.addState(new PerlinTestState(gameContainer));
+    //this.addState(new GameScene(gameContainer));
   }
 
   
