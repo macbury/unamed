@@ -26,7 +26,7 @@ public class WorldBuilder {
     for (int x = 0; x < this.size; x++) {
       for (int y = 0; y < this.size; y++) {
         float val        = this.world[x][y];
-        this.world[x][y] = val / resourceCount;
+        this.world[x][y] = Math.round(Math.round(100.0f * val) / resourceCount) ;
       }
     }
   }
