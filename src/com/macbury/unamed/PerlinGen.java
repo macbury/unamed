@@ -3,8 +3,8 @@ package com.macbury.unamed;
 import java.util.Random;
 
 public class PerlinGen {
-  int xOffset = 0;
-  int yOffset = 0;
+  public int xOffset = 0;
+  public int yOffset = 0;
   public PerlinGen(int x, int y)
   {
     xOffset = x;
@@ -27,7 +27,7 @@ public class PerlinGen {
      }
 
       float[][] perlinNoise = GetEmptyArray(width, height);
-      float amplitude = 1.0f;
+      float amplitude      = 1.0f;
       float totalAmplitude = 0.0f;
 
       //blend noise together
@@ -104,7 +104,7 @@ public class PerlinGen {
 
   float[][] GenerateWhiteNoise(int width, int height, int seed)
   {
-    Random random = new Random(seed);
+      Random random = new Random(seed);
       float[][] noise = GetEmptyArray(width, height);
 
       for (int i = 0; i < width; i++)

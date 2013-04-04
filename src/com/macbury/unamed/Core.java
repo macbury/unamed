@@ -4,8 +4,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
-import com.macbury.unamed.scenes.GameScene;
-import com.macbury.unamed.scenes.PerlinTestState;
+import com.macbury.unamed.level.WorldBuilder;
 
 public class Core extends StateBasedGame {
   public static final boolean DEBUG   = false;
@@ -26,9 +25,12 @@ public class Core extends StateBasedGame {
 
   @Override
   public void initStatesList(GameContainer gameContainer) throws SlickException {
-    this.addState(new PerlinTestState(gameContainer));
+    //this.addState(new PerlinTestState(gameContainer));
     //this.addState(new GameScene(gameContainer));
+    
+    WorldBuilder world = new WorldBuilder(1024, (int) Math.round(1000));
+    world.dumpTo("screenshot.png");
+    System.exit(0);
   }
 
-  
 }

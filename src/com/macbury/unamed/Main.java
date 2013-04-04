@@ -3,9 +3,12 @@ package com.macbury.unamed;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.SlickException;
 
+import com.macbury.unamed.level.WorldBuilder;
+
 public class Main {
   public static void main(String[] args) {
     Core core = new Core(Core.title);
+   
     AppGameContainer app;
     try {
       app = new AppGameContainer(core);
@@ -16,6 +19,7 @@ public class Main {
       //app.setFullscreen(true);
       app.setShowFPS(false);
       app.start();
+      System.exit(0);
     } catch (SlickException e) {
       e.printStackTrace();
     }
