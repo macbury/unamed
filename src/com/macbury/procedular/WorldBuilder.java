@@ -1,7 +1,12 @@
 package com.macbury.procedular;
 
 import java.awt.List;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 import javax.security.auth.callback.Callback;
@@ -18,8 +23,19 @@ import com.macbury.unamed.PerlinGen;
 public class WorldBuilder implements Runnable {
   private static final int SEED_THROTTLE = 1000;
   private static final int ROOM_COUNT    = 60;
+  
+  private static final int RESOURCE_AIR     = 0;
+  private static final int RESOURCE_COPPER  = 1;
+  private static final int RESOURCE_SAND    = 2;
+  private static final int RESOURCE_WATER   = 3;
+  private static final int RESOURCE_STONE   = 4;
+  private static final int RESOURCE_LAVA    = 5;
+  private static final int RESOURCE_COAL    = 6;
+  private static final int RESOURCE_DIAMOND = 7;
+  private static final int RESOURCE_GOLD    = 8;
+  
   public float perlinNoise[][];
-  public Color map[][];
+  public int map[][];
   public int size;
   private PerlinGen pg;
   private int seed;
@@ -31,7 +47,7 @@ public class WorldBuilder implements Runnable {
   public WorldBuilder(int size, int seed) {
     this.seed          = seed;
     this.size          = size;
-    this.map           = new Color[size][size];
+    this.map           = new int[size][size];
     this.pg            = new PerlinGen(0, 0);
     this.rooms         = new ArrayList<Room>();
   }
@@ -42,31 +58,31 @@ public class WorldBuilder implements Runnable {
   
   private void applyCopper() {
     this.perlinNoise   = pg.generate(size, 5, getSeed());
-    applyDataFromPerlinNoise(0.0f,0.3f, new Color(127,0,0));
+    applyDataFromPerlinNoise(0.0f,0.3f, RESOURCE_COPPER);
   }
 
   private void applySandAndWater() {
     this.perlinNoise   = pg.generate(size, 6, getSeed());
-    applyDataFromPerlinNoise(0.0f,0.35f, new Color(255,148,0));
-    applyDataFromPerlinNoise(0.0f,0.2f, new Color(0,148,255)); //water
+    applyDataFromPerlinNoise(0.0f,0.35f, RESOURCE_SAND);
+    applyDataFromPerlinNoise(0.0f,0.2f, RESOURCE_WATER); //water
   }
   
   
   private void applyStone() {
     this.perlinNoise   = pg.generate(size, 7, getSeed());
-    applyDataFromPerlinNoise(0.0f,0.4f, Color.gray);
-    applyDataFromPerlinNoise(0.1f,0.2f, Color.red); //lava
+    applyDataFromPerlinNoise(0.0f,0.4f, RESOURCE_STONE);
+    applyDataFromPerlinNoise(0.1f,0.2f, RESOURCE_LAVA); //lava
   }
 
   private void applyCoal() {
     this.perlinNoise   = pg.generate(size, 5, getSeed());
-    applyDataFromPerlinNoise(0.0f,0.3f, Color.darkGray);
-    applyDataFromPerlinNoise(0.0f,0.05f, Color.white); // diamond
+    applyDataFromPerlinNoise(0.0f,0.3f, RESOURCE_COAL);
+    applyDataFromPerlinNoise(0.0f,0.05f, RESOURCE_DIAMOND); // diamond
   }
 
   private void applyGold() {
     this.perlinNoise   = pg.generate(size, 7, getSeed());
-    applyDataFromPerlinNoise(0.0f,0.1f, Color.yellow);
+    applyDataFromPerlinNoise(0.0f,0.1f, RESOURCE_GOLD);
   }
   
   private int getSeed() {
@@ -77,12 +93,12 @@ public class WorldBuilder implements Runnable {
   private void fillWithGround() {
     for (int x = 0; x < this.size; x++) {
       for (int y = 0; y < this.size; y++) {
-        this.map[x][y] = Color.black;
+        this.map[x][y] = RESOURCE_AIR;
       }
     }
   }
   
-  public void applyDataFromPerlinNoise(float start, float end, Color color) {
+  public void applyDataFromPerlinNoise(float start, float end, int color) {
     for (int x = 0; x < this.size; x++) {
       for (int y = 0; y < this.size; y++) {
         float val = this.perlinNoise[x][y];
@@ -103,13 +119,55 @@ public class WorldBuilder implements Runnable {
     Log.info("Creating bitmap");
     for (int x = 0; x < this.size; x++) {
       for (int y = 0; y < this.size; y++) {
-        Color color = this.map[x][y];
-        localImgG.setColor(color);
-        localImgG.drawRect(x, y, 1, 1);
+        int resourceType = this.map[x][y];
+        boolean render   = true;
+        Color color      = null;
+        
+        switch (resourceType) {
+          case RESOURCE_COPPER:
+            color = new Color(127,0,0); 
+          break;
+
+          case RESOURCE_COAL:
+            color = Color.darkGray; 
+          break;
+          
+          case RESOURCE_GOLD:
+            color = Color.yellow; 
+          break;
+          
+          case RESOURCE_WATER:
+            color = Color.blue; 
+          break;
+          
+          case RESOURCE_DIAMOND:
+            color = Color.white; 
+          break;
+          
+          case RESOURCE_LAVA:
+            color = Color.red; 
+          break;
+          
+          case RESOURCE_SAND:
+            color = Color.green; 
+          break;
+          
+          case RESOURCE_STONE:
+            color = Color.gray; 
+          break;
+          
+          default:
+            render = false;
+          break;
+        }
+        
+        if (render) {
+          localImgG.setColor(color);
+          localImgG.drawRect(x, y, 1, 1);
+        }
+        
       }
     }
-    
-    
     
     for(Room room : this.rooms) {
       localImgG.setColor(Color.black);
@@ -128,7 +186,8 @@ public class WorldBuilder implements Runnable {
   public void run() {
     applyResources();
     applyRooms();
-    
+
+    save();
     this.progress = 100;
     Log.info("Finished...");
     this.listener.onWorldBuildingFinish();
@@ -138,13 +197,27 @@ public class WorldBuilder implements Runnable {
     Random random = new Random(getSeed());
     
     int roomCount = random.nextInt(ROOM_COUNT) + ROOM_COUNT;
-    while(roomCount-- >= 0) {
+    int stepBy    = (100 - this.progress) / roomCount;
+    while(roomCount >= 0) {
+      boolean generateNewRoom = false;
       int rx      = random.nextInt(this.size);
       int ry      = random.nextInt(this.size);
-      int rWidth  = 20 + random.nextInt(20);
-      int rHeight = 15 + random.nextInt(15);
+      int rWidth  = 20 + random.nextInt(50);
+      int rHeight = 15 + random.nextInt(50);
       
-      this.rooms.add(new Room(rx, ry, rWidth, rHeight));
+      Room room   = new Room(rx, ry, rWidth, rHeight);
+      
+      for (Room stackRoom : this.rooms) {
+        if (stackRoom.intersects(room)) {
+          generateNewRoom = true;
+        }
+      }
+      
+      if (!generateNewRoom) {
+        this.rooms.add(room);
+        roomCount--;
+        this.progress += stepBy;
+      }
     }
   }
 
@@ -167,6 +240,20 @@ public class WorldBuilder implements Runnable {
     Log.info("Building gold");
     this.progress = 35;
     applyGold();
+  }
+  
+  public void save() {
+    ObjectOutputStream objOut = null;
+    
+    try {
+      objOut = new ObjectOutputStream(new FileOutputStream("maps/"+this.seed+".dungeon"));
+      objOut.writeObject(this.map);
+      objOut.writeObject(this.rooms);
+      //objOut.writeObject(this.perlinNoise);  
+      objOut.close(); 
+    } catch (IOException e) {
+      e.printStackTrace();
+    }  
   }
   
 }
