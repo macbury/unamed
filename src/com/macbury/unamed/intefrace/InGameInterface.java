@@ -36,11 +36,7 @@ public class InGameInterface {
   
   public InGameInterface(Level level) throws SlickException {
     this.level = level;
-    this.font  = new UnicodeFont("/res/fonts/advocut-webfont.ttf", 20, false, false);
-    
-    font.addAsciiGlyphs();
-    font.getEffects().add(new ColorEffect());
-    font.loadGlyphs();
+    this.font  = Core.instance().getFont();
     
     SpriteSheet spriteSheet = ImagesManager.shared().getSpriteSheet("hud/hotbar_cell.png", HOTBAR_CELL_SIZE, HOTBAR_CELL_SIZE);
     
