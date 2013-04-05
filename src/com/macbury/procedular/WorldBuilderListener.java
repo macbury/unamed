@@ -1,6 +1,6 @@
-package com.macbury.unamed.level;
+package com.macbury.procedular;
 
 public interface WorldBuilderListener {
   void onWorldBuildingFinish();
-  void onWorldBuildProgress(int progress);
+  void onWorldBuildProgress();
 }

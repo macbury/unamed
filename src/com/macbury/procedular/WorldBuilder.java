@@ -1,5 +1,7 @@
-package com.macbury.unamed.level;
+package com.macbury.procedular;
 
+import java.awt.List;
+import java.util.ArrayList;
 import java.util.Random;
 
 import javax.security.auth.callback.Callback;
@@ -15,6 +17,7 @@ import com.macbury.unamed.PerlinGen;
 
 public class WorldBuilder implements Runnable {
   private static final int SEED_THROTTLE = 1000;
+  private static final int ROOM_COUNT    = 60;
   public float perlinNoise[][];
   public Color map[][];
   public int size;
@@ -22,11 +25,15 @@ public class WorldBuilder implements Runnable {
   private int seed;
   private WorldBuilderListener listener;
   
+  private ArrayList<Room> rooms;
+  public int progress;
+  
   public WorldBuilder(int size, int seed) {
     this.seed          = seed;
     this.size          = size;
     this.map           = new Color[size][size];
     this.pg            = new PerlinGen(0, 0);
+    this.rooms         = new ArrayList<Room>();
   }
   
   public void setListener(WorldBuilderListener listener) {
@@ -102,6 +109,15 @@ public class WorldBuilder implements Runnable {
       }
     }
     
+    
+    
+    for(Room room : this.rooms) {
+      localImgG.setColor(Color.black);
+      localImgG.fillRect(room.getX(), room.getY(), room.getWidth(), room.getHeight());
+      localImgG.setColor(Color.green);
+      localImgG.drawRect(room.getX(), room.getY(), room.getWidth(), room.getHeight());
+    }
+    
     Log.info("Flushing bitmap");
     localImgG.flush();
     Log.info("Writing bitmap");
@@ -110,29 +126,47 @@ public class WorldBuilder implements Runnable {
   
   @Override
   public void run() {
-    Log.info("Starting building world");
-    this.listener.onWorldBuildProgress(5);
-    fillWithGround();
-    this.listener.onWorldBuildProgress(10);
-    applySandAndWater();
-    this.listener.onWorldBuildProgress(15);
-    Log.info("Building stone");
-    this.listener.onWorldBuildProgress(20);
-    applyStone();
-    Log.info("Building copper");
-    this.listener.onWorldBuildProgress(25);
-    applyCopper();
-    Log.info("Building coal");
-    this.listener.onWorldBuildProgress(30);
-    applyCoal();
-    Log.info("Building gold");
-    this.listener.onWorldBuildProgress(35);
-    applyGold();
-
-     
-    this.listener.onWorldBuildProgress(100);
+    applyResources();
+    applyRooms();
+    
+    this.progress = 100;
     Log.info("Finished...");
     this.listener.onWorldBuildingFinish();
+  }
+
+  private void applyRooms() {
+    Random random = new Random(getSeed());
+    
+    int roomCount = random.nextInt(ROOM_COUNT) + ROOM_COUNT;
+    while(roomCount-- >= 0) {
+      int rx      = random.nextInt(this.size);
+      int ry      = random.nextInt(this.size);
+      int rWidth  = 20 + random.nextInt(20);
+      int rHeight = 15 + random.nextInt(15);
+      
+      this.rooms.add(new Room(rx, ry, rWidth, rHeight));
+    }
+  }
+
+  private void applyResources() {
+    Log.info("Starting building world");
+    this.progress = 5;
+    fillWithGround();
+    this.progress = 10;
+    applySandAndWater();
+    this.progress = 15;
+    Log.info("Building stone");
+    this.progress = 20;
+    applyStone();
+    Log.info("Building copper");
+    this.progress = 25;
+    applyCopper();
+    Log.info("Building coal");
+    this.progress = 30;
+    applyCoal();
+    Log.info("Building gold");
+    this.progress = 35;
+    applyGold();
   }
   
 }

@@ -7,18 +7,17 @@ import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
+import com.macbury.procedular.WorldBuilder;
+import com.macbury.procedular.WorldBuilderListener;
 import com.macbury.unamed.Core;
-import com.macbury.unamed.level.WorldBuilder;
-import com.macbury.unamed.level.WorldBuilderListener;
 
 public class LoadingState extends BasicGameState implements WorldBuilderListener {
   private UnicodeFont font;
   private WorldBuilder world;
-  private int progress = 0;
   @Override
   public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
     this.font          = Core.instance().getFont();
-    world              = new WorldBuilder(2048, 495);
+    world              = new WorldBuilder(1000, 495);
     Thread newThread   = new Thread(world);
     world.setListener(this);
     newThread.start();
@@ -26,8 +25,8 @@ public class LoadingState extends BasicGameState implements WorldBuilderListener
 
   @Override
   public void render(GameContainer arg0, StateBasedGame arg1, Graphics arg2) throws SlickException {
-    if (progress > 0) {
-      font.drawString(10, 10, "Creating world: " + progress + "%");
+    if (world.progress > 0) {
+      font.drawString(10, 10, "Creating world: " + world.progress + "%");
     } else {
       font.drawString(10, 10, "Loading...");
     }
@@ -35,7 +34,7 @@ public class LoadingState extends BasicGameState implements WorldBuilderListener
 
   @Override
   public void update(GameContainer arg0, StateBasedGame arg1, int arg2) throws SlickException {
-    if (progress == 100) {
+    if (world.progress == 100) {
       world.dumpTo("screenshoot.png");
       System.exit(0);
     }
@@ -52,8 +51,8 @@ public class LoadingState extends BasicGameState implements WorldBuilderListener
   }
 
   @Override
-  public void onWorldBuildProgress(int progress) {
-    this.progress = progress;
+  public void onWorldBuildProgress() {
+    
   }
 
 }

@@ -3,7 +3,7 @@ package com.macbury.unamed;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.SlickException;
 
-import com.macbury.unamed.level.WorldBuilder;
+import com.macbury.procedular.WorldBuilder;
 
 public class Main {
   public static void main(String[] args) {

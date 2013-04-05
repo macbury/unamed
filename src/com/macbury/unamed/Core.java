@@ -6,7 +6,7 @@ import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.state.StateBasedGame;
 
-import com.macbury.unamed.level.WorldBuilder;
+import com.macbury.procedular.WorldBuilder;
 import com.macbury.unamed.scenes.GameScene;
 import com.macbury.unamed.scenes.LoadingState;
 
