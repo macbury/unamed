@@ -17,7 +17,7 @@ public class LoadingState extends BasicGameState implements WorldBuilderListener
   @Override
   public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
     this.font          = Core.instance().getFont();
-    world              = new WorldBuilder(2048, 3948);
+    world              = new WorldBuilder(2000, 3948);
     Thread newThread   = new Thread(world);
     world.setListener(this);
     newThread.start();

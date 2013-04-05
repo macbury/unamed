@@ -170,8 +170,13 @@ public class WorldBuilder implements Runnable {
     }
     
     for(Room room : this.rooms) {
-      localImgG.setColor(Color.black);
+      if (SpawnRoom.class.isInstance(room)) {
+        localImgG.setColor(Color.lightGray);
+      } else {
+        localImgG.setColor(Color.black);
+      }
       localImgG.fillRect(room.getX(), room.getY(), room.getWidth(), room.getHeight());
+      
       localImgG.setColor(Color.green);
       localImgG.drawRect(room.getX(), room.getY(), room.getWidth(), room.getHeight());
     }
@@ -196,8 +201,10 @@ public class WorldBuilder implements Runnable {
   private void applyRooms() {
     Random random = new Random(getSeed());
     
+    boolean createdSpawn = false;
+    
     int roomCount = random.nextInt(ROOM_COUNT) + ROOM_COUNT;
-    int stepBy    = (100 - this.progress) / roomCount;
+    int stepBy    = (90 - this.progress) / roomCount;
     while(roomCount >= 0) {
       boolean generateNewRoom = false;
       int rx      = random.nextInt(this.size);
@@ -205,7 +212,22 @@ public class WorldBuilder implements Runnable {
       int rWidth  = 20 + random.nextInt(50);
       int rHeight = 15 + random.nextInt(50);
       
-      Room room   = new Room(rx, ry, rWidth, rHeight);
+      Room room   = null;
+      
+      if (!createdSpawn) {
+        room         = new SpawnRoom(rx, ry, rWidth, rHeight);
+        createdSpawn = true;
+      } else {
+        switch (random.nextInt(1)) {
+          case 1:
+            room   = new Room(rx, ry, rWidth, rHeight);
+          break;
+  
+          default:
+            room   = new Room(rx, ry, rWidth, rHeight);
+          break;
+        }
+      }
       
       for (Room stackRoom : this.rooms) {
         if (stackRoom.intersects(room)) {
