@@ -18,6 +18,7 @@ public class Core extends StateBasedGame {
   public static final int MAX_FPS     = 60;
   public final static int TILE_SIZE   = 32;
   public static final int ACTION_KEY  = Input.KEY_Z;
+  public static final int CANCEL_KEY  = Input.KEY_X;
   private static Core coreInstance;
   public static String title = "Unamed";
   

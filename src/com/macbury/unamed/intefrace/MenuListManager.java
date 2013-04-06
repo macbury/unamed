@@ -33,9 +33,16 @@ public class MenuListManager extends ArrayList<MenuList> {
       gr.pushTransform();
       gr.translate(this.getX(), this.getY());
       
+      int sy = 0;
+      int x  = 20;
+      
+      if (currentMenuList.haveTitle()) {
+        font.drawString(x, sy, currentMenuList.getTitle());
+        sy = 40;
+      }
+      
       for (int i = 0; i < currentMenuList.size(); i++) {
-        int x = 20;
-        int y = i * this.menuPadding;
+        int y = i * this.menuPadding + sy;
         if (currentItemIndex == i) {
           font.drawString(0, y, ">");
         }
@@ -86,11 +93,25 @@ public class MenuListManager extends ArrayList<MenuList> {
       } else if (input.isKeyDown(Core.ACTION_KEY)) {
         menuListener.onSelectItem(currentItemIndex, currentMenuList);
         startMoving = true;
+      } else if (input.isKeyDown(Core.CANCEL_KEY)) {
+        popList();
+        startMoving = true;
       }
       
       if (startMoving) {
         menuListener.onItemChange(currentItemIndex, currentMenuList);
       }
+    }
+  }
+
+  private void popList() {
+    if (this.size() > 1) {
+      this.remove(this.size()-1); 
+    }
+    
+    int last = this.size() - 1;
+    if (last >= 0) {
+      setCurrentMenuList(this.get(last));
     }
   }
 

@@ -17,6 +17,7 @@ import com.macbury.unamed.ImagesManager;
 import com.macbury.unamed.entity.Player;
 import com.macbury.unamed.inventory.BlockItem;
 import com.macbury.unamed.inventory.CoalItem;
+import com.macbury.unamed.inventory.CopperItem;
 import com.macbury.unamed.inventory.InventoryItem;
 import com.macbury.unamed.inventory.InventoryManager;
 import com.macbury.unamed.inventory.TorchItem;
@@ -57,7 +58,9 @@ public class InGameInterface {
   }
   
   public Image getImageForInventoryItem(InventoryItem item) throws SlickException {
-    if (CoalItem.class.isInstance(item)) {
+    if (CopperItem.class.isInstance(item)) {
+      return getOrLoadInventoryItemImage(CopperItem.class, 1, 1);
+    } else if (CoalItem.class.isInstance(item)) {
       return getOrLoadInventoryItemImage(CoalItem.class, 1, 1);
     } if (TorchItem.class.isInstance(item)) {
       return getOrLoadInventoryItemImage(TorchItem.class, 2, 0);

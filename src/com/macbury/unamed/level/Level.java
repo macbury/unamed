@@ -154,6 +154,7 @@ public class Level {
   }
 
   public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
+    BlockResources.shared().update(delta);
     if (refreshEntityList) {
       Collections.sort(this.entities);
       refreshEntityList = false;
@@ -288,6 +289,14 @@ public class Level {
     player.setTileY(3);
     
     createRoom(1,1, 4, 4);
+    
+
+    this.world[1][1] = new GoldOre(1, 1);
+    this.world[2][1] = new CopperOre(2, 1);
+    this.world[3][1] = new DiamondOre(3, 1);
+    this.world[4][1] = new CoalOre(4, 1);
+    this.world[5][1] = new Water(5, 1);
+    this.world[6][1] = new Lava(6, 1);
   }
   
   private void applyBedrockBorder() {
@@ -309,7 +318,7 @@ public class Level {
   private void fillWorldWithBlocks(int size) {
     this.mapTileWidth  = size;
     this.mapTileHeight = size;
-    this.world = new Block[mapTileWidth][mapTileHeight];
+    this.world         = new Block[mapTileWidth][mapTileHeight];
     Log.info("Initializing world size: "+this.mapTileWidth + "x" + this.mapTileHeight);
     
     for (int x = 0; x < this.mapTileWidth; x++) {
@@ -318,6 +327,7 @@ public class Level {
         //Log.debug("Building block: "+ x + "x" +y + " with id: "+ block.id);
       }
     }
+    
   }
   
   private void createRoom(int sx, int sy, int width, int height) {

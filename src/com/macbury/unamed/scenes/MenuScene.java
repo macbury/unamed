@@ -18,6 +18,7 @@ public class MenuScene extends BasicGameState implements MenuListManagerInterfac
   private static final int ITEM_INDEX_START_GAME = 0;
   public  static final int STATE_MENU            = 4;
   private MenuList mainMenuList;
+  private MenuList selectGeneratedWorldSizeMenu;
   MenuListManager menuManager = null;
   private StateBasedGame sg;
   
@@ -32,6 +33,13 @@ public class MenuScene extends BasicGameState implements MenuListManagerInterfac
     mainMenuList.add("Load world");
     mainMenuList.add("Options");
     mainMenuList.add("Exit");
+    
+    selectGeneratedWorldSizeMenu = new MenuList();
+    selectGeneratedWorldSizeMenu.setTitle("Select world size:");
+    selectGeneratedWorldSizeMenu.add("Normal");
+    selectGeneratedWorldSizeMenu.add("Big");
+    selectGeneratedWorldSizeMenu.add("Epic");
+    selectGeneratedWorldSizeMenu.add("Crash my computer");
     menuManager.pushList(mainMenuList);
   }
 
@@ -67,7 +75,8 @@ public class MenuScene extends BasicGameState implements MenuListManagerInterfac
   public void onSelectItem(int index, MenuList currentMenuList) {
     if (currentMenuList == mainMenuList) {
       if (index == ITEM_INDEX_START_GAME) {
-        Core.instance().enterState(LoadingState.STATE_GENERATIING);
+        //Core.instance().enterState(LoadingState.STATE_GENERATIING);
+        menuManager.pushList(selectGeneratedWorldSizeMenu);
       }
       if (index == 1) {
         Core.instance().enterState(GameplayScene.STATE_GAMEPLAY);
