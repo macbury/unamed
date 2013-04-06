@@ -18,7 +18,6 @@ public class SoundManager {
     if (SoundManager.sharedInstance == null) {
       SoundManager.sharedInstance = new SoundManager();
     }
-    
     return SoundManager.sharedInstance;
   }
 

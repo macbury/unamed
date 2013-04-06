@@ -7,7 +7,6 @@ import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
-import com.macbury.unamed.scenes.BaseScene;
 
 public class ImageRenderComponent extends RenderComponent {
   private Image image;

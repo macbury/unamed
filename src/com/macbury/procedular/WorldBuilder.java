@@ -269,9 +269,15 @@ public class WorldBuilder implements Runnable {
     
     try {
       objOut = new ObjectOutputStream(new FileOutputStream("maps/"+this.seed+".dungeon"));
-      objOut.writeObject(this.map);
-      objOut.writeObject(this.rooms);
-      //objOut.writeObject(this.perlinNoise);  
+      objOut.writeInt(size);
+      
+      for (int x = 0; x < this.map.length; x++) {
+        objOut.writeObject(this.map[x]);
+      }
+      
+      objOut.writeUTF("<=======>");
+      
+      objOut.writeObject(this.rooms);  
       objOut.close(); 
     } catch (IOException e) {
       e.printStackTrace();

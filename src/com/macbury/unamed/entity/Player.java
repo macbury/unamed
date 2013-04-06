@@ -24,10 +24,11 @@ import com.macbury.unamed.level.Block;
 import com.macbury.unamed.level.Dirt;
 import com.macbury.unamed.level.HarvestableBlock;
 import com.macbury.unamed.level.Rock;
+import com.macbury.unamed.level.Sand;
 import com.macbury.unamed.level.Sidewalk;
 
 public class Player extends Entity {
-  public final static int FOG_OF_WAR_RADIUS = 10;
+  public final static int  FOG_OF_WAR_RADIUS = 10;
   private static final int ENTITY_ZINDEX    = Entity.ENTITY_BASE_LAYER+1;
   private static final int LIGHT_POWER      = 10;
   TileBasedMovement tileMovement;
@@ -60,6 +61,11 @@ public class Player extends Entity {
     blockItem = new BlockItem(this, Rock.class);
     blockItem.addItem(98);
     this.inventory.add(blockItem);
+    
+    blockItem = new BlockItem(this, Sand.class);
+    blockItem.addItem(98);
+    this.inventory.add(blockItem);
+    
     
     this.z = ENTITY_ZINDEX;
     tileMovement = new TileBasedMovement();

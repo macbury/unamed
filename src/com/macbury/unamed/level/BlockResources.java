@@ -18,6 +18,7 @@ public class BlockResources {
   Image rockImage;
   Image dirtImage;
   Image coalImage;
+  Image sandImage;
   
   public static BlockResources shared() throws SlickException {
     if (shared == null) {
@@ -35,6 +36,7 @@ public class BlockResources {
     rockImage     = spriteSheet.getSprite(1, 0);
     dirtImage     = spriteSheet.getSprite(3, 1);
     coalImage     = spriteSheet.getSprite(2, 2);
+    sandImage     = spriteSheet.getSprite(2, 1);
   }
   
   public Image imageForBlock(Block block) {
@@ -42,7 +44,9 @@ public class BlockResources {
   }
   
   public Image imageForBlockClass(Class klass) {
-    if (klass.getName().equals(CoalOre.class.getName())) {
+    if (klass.getName().equals(Sand.class.getName())) {
+      return sandImage;
+    } else if (klass.getName().equals(CoalOre.class.getName())) {
       return coalImage;
     } else if (klass.getName().equals(Dirt.class.getName())) {
       return dirtImage;

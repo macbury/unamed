@@ -14,15 +14,20 @@ import com.macbury.unamed.Core;
 public class LoadingState extends BasicGameState implements WorldBuilderListener {
   private UnicodeFont font;
   private WorldBuilder world;
+  public final static int STATE_GENERATIING = 2;
   @Override
   public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
     this.font          = Core.instance().getFont();
-    world              = new WorldBuilder(2000, 3948);
+  }
+  @Override
+  public void enter(GameContainer container, StateBasedGame game) throws SlickException {
+    super.enter(container, game);
+    world              = new WorldBuilder(1000, 3948);
     Thread newThread   = new Thread(world);
     world.setListener(this);
     newThread.start();
   }
-
+  
   @Override
   public void render(GameContainer arg0, StateBasedGame arg1, Graphics arg2) throws SlickException {
     if (world.progress > 0) {
@@ -43,7 +48,7 @@ public class LoadingState extends BasicGameState implements WorldBuilderListener
   @Override
   public int getID() {
     // TODO Auto-generated method stub
-    return 2;
+    return STATE_GENERATIING;
   }
 
   @Override

@@ -1,14 +1,15 @@
 package com.macbury.unamed;
 
 import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.state.StateBasedGame;
 
-import com.macbury.procedular.WorldBuilder;
-import com.macbury.unamed.scenes.GameScene;
+import com.macbury.unamed.scenes.GameplayScene;
 import com.macbury.unamed.scenes.LoadingState;
+import com.macbury.unamed.scenes.MenuScene;
 
 public class Core extends StateBasedGame {
   public static final boolean DEBUG   = false;
@@ -16,6 +17,7 @@ public class Core extends StateBasedGame {
   public static final int MAX_UPDATES = 10;
   public static final int MAX_FPS     = 60;
   public final static int TILE_SIZE   = 32;
+  public static final int ACTION_KEY  = Input.KEY_Z;
   private static Core coreInstance;
   public static String title = "Unamed";
   
@@ -44,11 +46,8 @@ public class Core extends StateBasedGame {
 
   @Override
   public void initStatesList(GameContainer gameContainer) throws SlickException {
+    this.addState(new MenuScene());
     this.addState(new LoadingState());
-    //this.addState(new PerlinTestState(gameContainer));
-    //this.addState(new GameScene(gameContainer));
-
-    
+    this.addState(new GameplayScene());
   }
-
 }

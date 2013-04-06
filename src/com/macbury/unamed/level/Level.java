@@ -47,7 +47,7 @@ public class Level {
   public Level() throws SlickException {
     this.entities       = new ArrayList<Entity>();
     this.blockResources = BlockResources.shared();
-    this.shadowMap      = ImagesManager.shared().getSpriteSheet("shadowmap.png", 32, 32);
+    this.shadowMap      = ImagesManager.shared().getSpriteSheet("effects/shadowmap.png", 32, 32);
   }
   
   public Entity getEntityForTilePosition(int x, int y) {

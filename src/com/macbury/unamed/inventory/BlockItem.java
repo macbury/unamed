@@ -8,6 +8,7 @@ import com.macbury.unamed.entity.Player;
 import com.macbury.unamed.level.Dirt;
 import com.macbury.unamed.level.HarvestableBlock;
 import com.macbury.unamed.level.Rock;
+import com.macbury.unamed.level.Sand;
 
 public class BlockItem extends InventoryItem {
   public Class<HarvestableBlock> blockType;
@@ -38,6 +39,10 @@ public class BlockItem extends InventoryItem {
       
       if (Dirt.class.equals(blockType)) {
         block = new Dirt((int)tilePos.x, (int)tilePos.y);
+      }
+      
+      if (Sand.class.equals(blockType)) {
+        block = new Sand((int)tilePos.x, (int)tilePos.y);
       }
     }
     
