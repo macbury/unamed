@@ -57,12 +57,10 @@ public class MenuScene extends BasicGameState implements MenuListManagerInterfac
   @Override
   public void update(GameContainer gc, StateBasedGame sg, int delta) throws SlickException {
     menuManager.update(gc, sg, delta);
-    
   }
 
   @Override
   public int getID() {
-    // TODO Auto-generated method stub
     return STATE_MENU;
   }
 
@@ -73,9 +71,10 @@ public class MenuScene extends BasicGameState implements MenuListManagerInterfac
 
   @Override
   public void onSelectItem(int index, MenuList currentMenuList) {
-    if (currentMenuList == mainMenuList) {
+    if (selectGeneratedWorldSizeMenu == currentMenuList) {
+      Core.instance().enterState(LoadingState.STATE_GENERATIING);
+    } else if (currentMenuList == mainMenuList) {
       if (index == ITEM_INDEX_START_GAME) {
-        //Core.instance().enterState(LoadingState.STATE_GENERATIING);
         menuManager.pushList(selectGeneratedWorldSizeMenu);
       }
       if (index == 1) {

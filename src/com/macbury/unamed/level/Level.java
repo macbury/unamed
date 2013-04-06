@@ -297,6 +297,9 @@ public class Level {
     this.world[4][1] = new CoalOre(4, 1);
     this.world[5][1] = new Water(5, 1);
     this.world[6][1] = new Lava(6, 1);
+    this.world[7][1] = new Lava(7, 1);
+    this.world[8][1] = new Lava(8, 1);
+    this.world[6][2] = new Lava(6, 2);
   }
   
   private void applyBedrockBorder() {

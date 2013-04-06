@@ -24,18 +24,18 @@ public class WorldBuilder implements Runnable {
   private static final int SEED_THROTTLE = 1000;
   private static final int ROOM_COUNT    = 60;
   
-  private static final int RESOURCE_AIR     = 0;
-  private static final int RESOURCE_COPPER  = 1;
-  private static final int RESOURCE_SAND    = 2;
-  private static final int RESOURCE_WATER   = 3;
-  private static final int RESOURCE_STONE   = 4;
-  private static final int RESOURCE_LAVA    = 5;
-  private static final int RESOURCE_COAL    = 6;
-  private static final int RESOURCE_DIAMOND = 7;
-  private static final int RESOURCE_GOLD    = 8;
+  private static final byte RESOURCE_AIR     = 0;
+  private static final byte RESOURCE_COPPER  = 1;
+  private static final byte RESOURCE_SAND    = 2;
+  private static final byte RESOURCE_WATER   = 3;
+  private static final byte RESOURCE_STONE   = 4;
+  private static final byte RESOURCE_LAVA    = 5;
+  private static final byte RESOURCE_COAL    = 6;
+  private static final byte RESOURCE_DIAMOND = 7;
+  private static final byte RESOURCE_GOLD    = 8;
   
   public float perlinNoise[][];
-  public int map[][];
+  public byte map[][];
   public int size;
   private PerlinGen pg;
   private int seed;
@@ -47,7 +47,7 @@ public class WorldBuilder implements Runnable {
   public WorldBuilder(int size, int seed) {
     this.seed          = seed;
     this.size          = size;
-    this.map           = new int[size][size];
+    this.map           = new byte[size][size];
     this.pg            = new PerlinGen(0, 0);
     this.rooms         = new ArrayList<Room>();
   }
@@ -98,7 +98,7 @@ public class WorldBuilder implements Runnable {
     }
   }
   
-  public void applyDataFromPerlinNoise(float start, float end, int color) {
+  public void applyDataFromPerlinNoise(float start, float end, byte color) {
     for (int x = 0; x < this.size; x++) {
       for (int y = 0; y < this.size; y++) {
         float val = this.perlinNoise[x][y];
