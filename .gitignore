@@ -3,3 +3,5 @@ bin/
 screenshot.png
 .dungeon
 .Thumbs
+*.dungeon
+screenshoot.png

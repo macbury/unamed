@@ -23,6 +23,7 @@ import com.macbury.unamed.inventory.TorchItem;
 import com.macbury.unamed.level.Block;
 import com.macbury.unamed.level.Dirt;
 import com.macbury.unamed.level.HarvestableBlock;
+import com.macbury.unamed.level.PassableBlock;
 import com.macbury.unamed.level.Rock;
 import com.macbury.unamed.level.Sand;
 import com.macbury.unamed.level.Sidewalk;
@@ -201,7 +202,7 @@ public class Player extends Entity {
     Block  blockInFront        = this.getLevel().getBlockForPosition((int)frontTilePosition.x, (int)frontTilePosition.y);
     if (HarvestableBlock.class.isInstance(blockInFront)) {
       // Cannot use element because is harvestable block!
-    } else if( Sidewalk.class.isInstance(blockInFront) ) {
+    } else if( PassableBlock.class.isInstance(blockInFront) ) {
       Entity entityInFront       = this.getLevel().getEntityForTilePosition((int)frontTilePosition.x, (int)frontTilePosition.y);
       
       if (entityInFront != null) {

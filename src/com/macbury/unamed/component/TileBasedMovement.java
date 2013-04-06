@@ -9,6 +9,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import com.macbury.unamed.Core;
 import com.macbury.unamed.SoundManager;
 import com.macbury.unamed.Util;
+import com.macbury.unamed.level.Block;
 
 public class TileBasedMovement extends Component {
   public final static String NAME = "TileBasedMovement"; 
@@ -71,7 +72,9 @@ public class TileBasedMovement extends Component {
       this.moveInProgress = true;
       this.totalMoveTime  = 0.0f;
       this.owner.setFuturePosition(computeTargetPositionForDirection(inDirection));
-      SoundManager.shared().playStep();
+     
+      Block block = this.owner.getLevel().getBlockForPosition(this.owner.getTileX(), this.owner.getTileY());
+      SoundManager.shared().playStepForBlock(block);
       return true;
     }
   }

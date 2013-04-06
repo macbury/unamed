@@ -102,8 +102,8 @@ public class Level {
             visibleBlocks.add(block);
             image.draw(tx,ty);
             
-            if(Sidewalk.class.isInstance(block)) {
-              Sidewalk walk = (Sidewalk) block;
+            if(PassableBlock.class.isInstance(block)) {
+              PassableBlock walk = (PassableBlock) block;
               
               if (walk.shouldRefreshShadowMap()) {
                 walk.computeShadowMapBasedOnLevel(this);
@@ -380,8 +380,8 @@ public class Level {
 
   private void tryToRefreshSideWalkForPosition(int x, int y) {
     Block block = getBlockForPosition(x, y);
-    if (block != null && Sidewalk.class.isInstance(block)) {
-      ((Sidewalk) block).refreshShadowMap();
+    if (block != null && PassableBlock.class.isInstance(block)) {
+      ((PassableBlock) block).refreshShadowMap();
     }
   }
 }

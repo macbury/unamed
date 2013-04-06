@@ -47,13 +47,15 @@ public class BlockResources {
     goldImage     = spriteSheet.getSprite(0, 2);
     diamondImage  = spriteSheet.getSprite(2, 3);
     
-    animatedWater = new Animation(new Image[] { 
-        spriteSheet.getSprite(13, 12), 
-        spriteSheet.getSprite(14, 12), 
-        spriteSheet.getSprite(15, 12),
-        spriteSheet.getSprite(14, 13),
-        spriteSheet.getSprite(15, 13),
-    }, 100);
+    SpriteSheet waterSpriteSheet = ImagesManager.shared().getSpriteSheet("water.png", Core.TILE_SIZE, Core.TILE_SIZE);
+
+    Image[] waterImages = new Image[waterSpriteSheet.getVerticalCount()];
+    
+    for (int i = 0; i < waterSpriteSheet.getVerticalCount(); i++) {
+      waterImages[i] = waterSpriteSheet.getSprite(0, i);
+    }
+    
+    animatedWater = new Animation(waterImages, 150);
     animatedWater.setAutoUpdate(false);
     
     animatedLava = new Animation(new Image[] {

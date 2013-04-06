@@ -11,6 +11,10 @@ import org.newdawn.slick.openal.Audio;
 import org.newdawn.slick.openal.AudioLoader;
 import org.newdawn.slick.util.Log;
 
+import com.macbury.unamed.level.Block;
+import com.macbury.unamed.level.Sidewalk;
+import com.macbury.unamed.level.Water;
+
 public class SoundManager {
   public static SoundManager sharedInstance = null;
   
@@ -25,12 +29,13 @@ public class SoundManager {
   public Audio cancelSound;
   public Audio placeBlockSound;
   public Audio removeBlock;
-  private ArrayList<Audio> steps;
   int lastIndex = 0;
   public Audio dig;
   public Audio theme;
   public Audio loot;
   public Audio miss;
+  private ArrayList<Audio> stepsStone;
+  private ArrayList<Audio> waterStone;
   
   private Audio loadOgg(String filename) {
     try {
@@ -53,24 +58,38 @@ public class SoundManager {
     this.miss             = loadOgg("Miss");
     this.igniteSound      = loadOgg("Ignite");
     this.theme            = loadOgg("Theme");
-    this.steps = new ArrayList<Audio>();
+    
+    this.stepsStone       = new ArrayList<Audio>();
     for (int i = 1; i <= 6; i++) {
-      this.steps.add(loadOgg("stone"+i));
+      this.stepsStone.add(loadOgg("stone"+i));
     }
     
+    this.waterStone       = new ArrayList<Audio>();
+    for (int i = 1; i <= 4; i++) {
+      this.waterStone.add(loadOgg("swim"+i));
+    }
   }
+
   
-  public void playStep(){
+  public void playStepArray(ArrayList<Audio> array){
     int index = 0;
     while(true) {
-      index = (int)Math.round(Math.random() * (this.steps.size()-1));
+      index = (int)Math.round(Math.random() * (array.size()-1));
       if (index != lastIndex){
         break;
       }
     }
+    lastIndex = index;  
+    array.get(index).playAsSoundEffect(1.0f, 0.5f, false);
+  }
+
+  public void playStepForBlock(Block blockForPosition) {
+    if (Sidewalk.class.isInstance(blockForPosition)) {
+      playStepArray(this.stepsStone);
+    }
     
-    lastIndex = index;
-    
-    this.steps.get(index).playAsSoundEffect(1.0f, 0.5f, false);
+    if (Water.class.isInstance(blockForPosition)) {
+      playStepArray(this.waterStone);
+    }
   }
 }

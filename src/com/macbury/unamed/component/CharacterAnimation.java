@@ -113,7 +113,7 @@ public class CharacterAnimation extends RenderComponent {
   @Override
   public void render(GameContainer gc, StateBasedGame sb, Graphics gr) {
     if (currentAnimation != null) {
-      currentAnimation.draw(owner.getX(), owner.getY());
+      currentAnimation.getCurrentFrame().draw(this.owner.getX(), this.owner.getY());
     }
   }
 
