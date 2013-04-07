@@ -28,7 +28,7 @@ public class GeneratingWorldState extends BasicGameState implements WorldBuilder
   public void enter(GameContainer container, StateBasedGame game) throws SlickException {
     super.enter(container, game);
 
-    world              = new WorldBuilder(worldSize, 3948);
+    world              = new WorldBuilder(worldSize, 2221);
     Thread newThread   = new Thread(world);
     world.setListener(this);
     newThread.start();

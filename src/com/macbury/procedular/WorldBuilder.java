@@ -19,12 +19,23 @@ import org.newdawn.slick.imageout.ImageOut;
 import org.newdawn.slick.util.Log;
 
 import com.macbury.unamed.PerlinGen;
+import com.macbury.unamed.level.Block;
+import com.macbury.unamed.level.CoalOre;
+import com.macbury.unamed.level.CopperOre;
+import com.macbury.unamed.level.DiamondOre;
+import com.macbury.unamed.level.Dirt;
+import com.macbury.unamed.level.GoldOre;
+import com.macbury.unamed.level.Lava;
+import com.macbury.unamed.level.Level;
+import com.macbury.unamed.level.Rock;
+import com.macbury.unamed.level.Sand;
+import com.macbury.unamed.level.Water;
 
 public class WorldBuilder implements Runnable {
   private static final int SEED_THROTTLE = 1000;
   private static final int ROOM_COUNT    = 60;
   
-  private static final byte RESOURCE_AIR     = 0;
+  private static final byte RESOURCE_DIRT    = 0;
   private static final byte RESOURCE_COPPER  = 1;
   private static final byte RESOURCE_SAND    = 2;
   private static final byte RESOURCE_WATER   = 3;
@@ -38,7 +49,6 @@ public class WorldBuilder implements Runnable {
   public static final int CRASH_MY_COMPUTER  = 4116;
   
   public float perlinNoise[][];
-  public byte map[][];
   public int size;
   private PerlinGen pg;
   private int seed;
@@ -46,44 +56,45 @@ public class WorldBuilder implements Runnable {
   
   private ArrayList<Room> rooms;
   public int progress;
+  private Level level;
   
-  public WorldBuilder(int size, int seed) {
+  public WorldBuilder(int size, int seed) throws SlickException {
     this.seed          = seed;
     this.size          = size;
-    this.map           = new byte[size][size];
     this.pg            = new PerlinGen(0, 0);
     this.rooms         = new ArrayList<Room>();
+    this.level         = new Level();
+    this.level.setSize(size);
   }
   
   public void setListener(WorldBuilderListener listener) {
     this.listener = listener;
   }
   
-  private void applyCopper() {
+  private void applyCopper() throws SlickException {
     this.perlinNoise   = pg.generate(size, 5, getSeed());
     applyDataFromPerlinNoise(0.0f,0.3f, RESOURCE_COPPER);
   }
 
-  private void applySandAndWater() {
+  private void applySandAndWater() throws SlickException {
     this.perlinNoise   = pg.generate(size, 6, getSeed());
     applyDataFromPerlinNoise(0.0f,0.35f, RESOURCE_SAND);
     applyDataFromPerlinNoise(0.0f,0.2f, RESOURCE_WATER); //water
   }
   
-  
-  private void applyStone() {
+  private void applyStone() throws SlickException {
     this.perlinNoise   = pg.generate(size, 7, getSeed());
     applyDataFromPerlinNoise(0.0f,0.4f, RESOURCE_STONE);
     applyDataFromPerlinNoise(0.1f,0.2f, RESOURCE_LAVA); //lava
   }
 
-  private void applyCoal() {
+  private void applyCoal() throws SlickException {
     this.perlinNoise   = pg.generate(size, 5, getSeed());
     applyDataFromPerlinNoise(0.0f,0.3f, RESOURCE_COAL);
     applyDataFromPerlinNoise(0.0f,0.05f, RESOURCE_DIAMOND); // diamond
   }
 
-  private void applyGold() {
+  private void applyGold() throws SlickException {
     this.perlinNoise   = pg.generate(size, 7, getSeed());
     applyDataFromPerlinNoise(0.0f,0.1f, RESOURCE_GOLD);
   }
@@ -96,106 +107,74 @@ public class WorldBuilder implements Runnable {
   private void fillWithGround() {
     for (int x = 0; x < this.size; x++) {
       for (int y = 0; y < this.size; y++) {
-        this.map[x][y] = RESOURCE_AIR;
+        this.level.setBlock(x, y, new Dirt(x, y));
       }
     }
   }
   
-  public void applyDataFromPerlinNoise(float start, float end, byte color) {
+  public void applyDataFromPerlinNoise(float start, float end, byte resourceType) throws SlickException {
     for (int x = 0; x < this.size; x++) {
       for (int y = 0; y < this.size; y++) {
         float val = this.perlinNoise[x][y];
         if (val >= start && val <= end) {
-          this.map[x][y] = color;
+          Block block = null;
+          switch (resourceType) {
+            case RESOURCE_COPPER:
+              block = new CopperOre(x, y);
+            break;
+  
+            case RESOURCE_COAL:
+              block = new CoalOre(x, y);
+            break;
+            
+            case RESOURCE_GOLD:
+              block = new GoldOre(x, y);
+            break;
+            
+            case RESOURCE_WATER:
+              block = new Water(x, y);
+            break;
+            
+            case RESOURCE_DIAMOND:
+              block = new DiamondOre(x, y);
+            break;
+            
+            case RESOURCE_LAVA:
+              block = new Lava(x, y);
+            break;
+            
+            case RESOURCE_SAND:
+              block = new Sand(x, y);
+            break;
+            
+            case RESOURCE_STONE:
+              block = new Rock(x, y);
+            break;
+            
+            default:
+              throw new SlickException("Undefined block type!");
+          }
+          
+          this.level.setBlock(x, y, block);
         }
       }
     }
   }
   
   public void dumpTo(String filePath) throws SlickException {
-    Log.info("Saving dump");
-    Image localImg = Image.createOffscreenImage(size,size);
-    Graphics localImgG = localImg.getGraphics();
-    localImgG.setBackground(Color.black);
-    localImgG.clear();
-    
-    Log.info("Creating bitmap");
-    for (int x = 0; x < this.size; x++) {
-      for (int y = 0; y < this.size; y++) {
-        int resourceType = this.map[x][y];
-        boolean render   = true;
-        Color color      = null;
-        
-        switch (resourceType) {
-          case RESOURCE_COPPER:
-            color = new Color(127,0,0); 
-          break;
-
-          case RESOURCE_COAL:
-            color = Color.darkGray; 
-          break;
-          
-          case RESOURCE_GOLD:
-            color = Color.yellow; 
-          break;
-          
-          case RESOURCE_WATER:
-            color = Color.blue; 
-          break;
-          
-          case RESOURCE_DIAMOND:
-            color = Color.white; 
-          break;
-          
-          case RESOURCE_LAVA:
-            color = Color.red; 
-          break;
-          
-          case RESOURCE_SAND:
-            color = Color.green; 
-          break;
-          
-          case RESOURCE_STONE:
-            color = Color.gray; 
-          break;
-          
-          default:
-            render = false;
-          break;
-        }
-        
-        if (render) {
-          localImgG.setColor(color);
-          localImgG.drawRect(x, y, 1, 1);
-        }
-        
-      }
-    }
-    
-    for(Room room : this.rooms) {
-      if (SpawnRoom.class.isInstance(room)) {
-        localImgG.setColor(Color.lightGray);
-      } else {
-        localImgG.setColor(Color.black);
-      }
-      localImgG.fillRect(room.getX(), room.getY(), room.getWidth(), room.getHeight());
-      
-      localImgG.setColor(Color.green);
-      localImgG.drawRect(room.getX(), room.getY(), room.getWidth(), room.getHeight());
-    }
-    
-    Log.info("Flushing bitmap");
-    localImgG.flush();
-    Log.info("Writing bitmap");
-    ImageOut.write(localImg, filePath, false);
+    //this.level.dumpTo(filePath);
   }
   
   @Override
   public void run() {
-    applyResources();
-    applyRooms();
+    try {
+      applyResources();
+    } catch (SlickException e) {
+      e.printStackTrace();
+    }
+    //applyRooms();
 
-    save();
+    this.level.save();
     this.progress = 100;
     Log.info("Finished...");
     this.listener.onWorldBuildingFinish();
@@ -246,7 +225,7 @@ public class WorldBuilder implements Runnable {
     }
   }
 
-  private void applyResources() {
+  private void applyResources() throws SlickException {
     Log.info("Starting building world");
     this.progress = 5;
     fillWithGround();
@@ -265,26 +244,6 @@ public class WorldBuilder implements Runnable {
     Log.info("Building gold");
     this.progress = 35;
     applyGold();
-  }
-  
-  public void save() {
-    ObjectOutputStream objOut = null;
-    
-    try {
-      objOut = new ObjectOutputStream(new FileOutputStream("maps/"+this.seed+".dungeon"));
-      objOut.writeInt(size);
-      
-      for (int x = 0; x < this.map.length; x++) {
-        objOut.writeObject(this.map[x]);
-      }
-      
-      objOut.writeUTF("<=======>");
-      
-      objOut.writeObject(this.rooms);  
-      objOut.close(); 
-    } catch (IOException e) {
-      e.printStackTrace();
-    }  
   }
   
 }

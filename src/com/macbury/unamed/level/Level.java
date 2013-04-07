@@ -1,7 +1,15 @@
 package com.macbury.unamed.level;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
+import java.util.zip.DeflaterOutputStream;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -11,14 +19,20 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
+import org.newdawn.slick.imageout.ImageOut;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.Log;
 
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Output;
+import com.esotericsoftware.kryo.io.OutputChunked;
 import com.macbury.unamed.Core;
 import com.macbury.unamed.ImagesManager;
 import com.macbury.unamed.entity.Entity;
 import com.macbury.unamed.entity.Player;
-public class Level {
+import com.macbury.unamed.serializers.BlockSerializer;
+import com.macbury.unamed.serializers.LevelSerializer;
+public class Level{
   public static final int SMALL = 100;
 
   Block[][] world;
@@ -387,5 +401,101 @@ public class Level {
     if (block != null && PassableBlock.class.isInstance(block)) {
       ((PassableBlock) block).refreshShadowMap();
     }
+  }
+
+  public void setBlock(int tx, int ty, Block block) {
+    this.world[tx][ty] = block;
+    block.setX(tx);
+    block.setY(ty);
+  }
+  
+  public void setSize(int size) {
+    this.mapTileWidth  = size;
+    this.mapTileHeight = size;
+    
+    this.world = new Block[size][size]; 
+  }
+  
+  public void dumpTo(String filePath) throws SlickException {
+    Log.info("Saving dump");
+    Image localImg = Image.createOffscreenImage(this.mapTileWidth,this.mapTileHeight);
+    Graphics localImgG = localImg.getGraphics();
+    localImgG.setBackground(Color.black);
+    localImgG.clear();
+    
+    Log.info("Creating bitmap");
+    for (int x = 0; x < this.mapTileWidth; x++) {
+      for (int y = 0; y < this.mapTileHeight; y++) {
+        Block block      = this.world[x][y];
+        boolean render   = true;
+        Color color      = null;
+        
+        if (block.isDirt()) {
+          color = Color.black;
+        } else if (block.isCopper()) {
+          color = new Color(127,0,0); 
+        } else if (block.isAir()) {
+          color = Color.black;
+        } else if (block.isCoal()) {
+          color = Color.darkGray; 
+        } else if (block.isGold()) {
+          color = Color.yellow; 
+        } else if (block.isWater()) {
+          color = Color.blue; 
+        } else if (block.isDiamond()) {
+          color = Color.white; 
+        } else if (block.isLava()) {
+          color = Color.red; 
+        } else if (block.isSand()) {
+          color = Color.green; 
+        } else if (block.isRock()) {
+          color = Color.gray; 
+        } else {
+          throw new SlickException("Undefined block to dump: " + block.getClass().getName());
+        }
+        
+        if (render) {
+          localImgG.setColor(color);
+          localImgG.drawRect(x, y, 1, 1);
+        }
+      }
+    }
+    
+    Log.info("Flushing bitmap");
+    localImgG.flush();
+    Log.info("Writing bitmap");
+    ImageOut.write(localImg, filePath, false);
+  }
+  
+  public void save() {
+    Kryo kryo = new Kryo();
+    kryo.register(com.macbury.unamed.level.Level.class, new LevelSerializer());
+    kryo.register(BlockSerializer.class, new BlockSerializer());
+    try {
+      OutputStream outputStream = new DeflaterOutputStream(new FileOutputStream("maps/1.dungeon"));
+      OutputChunked output      = new OutputChunked(outputStream, 1024);
+      
+      kryo.writeObject(output, this);
+      for (int x = 0; x < this.mapTileWidth; x++) {
+        for (int y = 0; y < this.mapTileHeight; y++) {
+          kryo.writeObject(output, this.world[x][y]);
+        }
+        output.endChunks();
+      }
+      
+      for (Entity entity : this.entities) {
+        kryo.writeObject(output, entity);
+      }
+      
+      //kryo.writeObject(this.world, this);
+      output.close();
+    } catch (FileNotFoundException e1) {
+      // TODO Auto-generated catch block
+      e1.printStackTrace();
+    }  
+  }
+  
+  public Block[][] getWorld() {
+    return this.world;
   }
 }

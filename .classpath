@@ -12,5 +12,6 @@
 	<classpathentry kind="lib" path="libs/jars/lzma.jar"/>
 	<classpathentry kind="lib" path="libs/jars/jogg-0.0.7.jar"/>
 	<classpathentry kind="lib" path="libs/jars/jorbis-0.0.15.jar"/>
+	<classpathentry kind="lib" path="libs/jars/kryo-2.21-all.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

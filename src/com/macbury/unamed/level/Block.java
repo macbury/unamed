@@ -1,16 +1,19 @@
 package com.macbury.unamed.level;
 
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import org.newdawn.slick.util.Log;
+
 import com.macbury.unamed.component.Light;
 
 public class Block {
-
-  
   public static final int VISITED_ALPHA             = 210;
   public static final int MIN_LIGHT_POWER           = 200;
   public static int gid                             = 0;
@@ -136,5 +139,57 @@ public class Block {
     } else {
       return null;
     }
+  }
+
+  public boolean isCopper() {
+    return CopperOre.class.isInstance(this);
+  }
+  
+  public boolean isDirt() {
+    return Dirt.class.isInstance(this);
+  }
+  
+  public boolean isRock() {
+    return Rock.class.isInstance(this);
+  }
+  
+  public boolean isWater() {
+    return Water.class.isInstance(this);
+  }
+  
+  public boolean isLava() {
+    return Lava.class.isInstance(this);
+  }
+  
+  public boolean isGold() {
+    return GoldOre.class.isInstance(this);
+  }
+  
+  public boolean isDiamond() {
+    return DiamondOre.class.isInstance(this);
+  }
+  
+  public boolean isBedrock() {
+    return Bedrock.class.isInstance(this);
+  }
+  
+  public boolean isSand() {
+    return Sand.class.isInstance(this);
+  }
+  
+  public boolean isCoal() {
+    return CoalOre.class.isInstance(this);
+  }
+  
+  public boolean isAir() {
+    return Sidewalk.class.isInstance(this);
+  }
+
+  public void setX(int tx) {
+    this.x = tx;
+  }
+
+  public void setY(int ty) {
+    this.y = ty;
   }
 }
