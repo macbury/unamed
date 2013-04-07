@@ -94,11 +94,14 @@ public class Entity implements Comparable<Entity> {
   }
 
   public void render(GameContainer gc, StateBasedGame sb, Graphics gr) {
+    gr.pushTransform();
+    gr.translate(this.getX(), this.getY());
     for(Component component : components) {
       if (component.enabled) {
         component.render(gc, sb, gr);
       }
     }
+    gr.popTransform();
   }
   
   public int getId() {

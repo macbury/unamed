@@ -26,8 +26,8 @@ import com.macbury.unamed.level.Level;
 
 public class InGameInterface {
   final static int HOTBAR_PADDING = 10;
-  final static int HOTBAR_CELL_SIZE = 34;
-  final static int HOTBAR_CELL_TEXT_PADDING = -2;
+  public final static int HOTBAR_CELL_SIZE = 34;
+  public final static int HOTBAR_CELL_TEXT_PADDING = -2;
   Level level;
   private UnicodeFont font;
   private Image cellImage;
@@ -39,7 +39,7 @@ public class InGameInterface {
     this.level = level;
     this.font  = Core.instance().getFont();
     
-    SpriteSheet spriteSheet = ImagesManager.shared().getSpriteSheet("hud/hotbar_cell.png", HOTBAR_CELL_SIZE, HOTBAR_CELL_SIZE);
+    SpriteSheet spriteSheet = ImagesManager.shared().getHotBarCellSpriteSheet();
     
     this.cellImage         = spriteSheet.getSprite(0, 0);
     this.selectedCellImage = spriteSheet.getSprite(1, 0);

@@ -28,7 +28,7 @@ public class AnimatedSprite extends RenderComponent {
   @Override
   public void render(GameContainer gc, StateBasedGame sb, Graphics gr) {
     if (currentAnimation != null) {
-      currentAnimation.draw(owner.getX(), owner.getY());
+      currentAnimation.draw(0, 0);
     }
   }
 

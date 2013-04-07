@@ -1,6 +1,6 @@
 package com.macbury.unamed.level;
 
-public class Lava extends PassableBlock {
+public class Lava extends LiquidBlock {
 
   public Lava(int x, int y) {
     super(x, y);
@@ -19,6 +19,11 @@ public class Lava extends PassableBlock {
   @Override
   public float getSpeed() {
     return 0.5f;
+  }
+
+  @Override
+  public float divePower() {
+    return 0.7f;
   }
   
   

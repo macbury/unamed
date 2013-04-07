@@ -121,4 +121,20 @@ public class Block {
   public int getId() {
     return this.id;
   }
+  
+  public PassableBlock getAsPassableBlock() {
+    if (PassableBlock.class.isInstance(this)) {
+      return (PassableBlock) this;
+    } else {
+      return null;
+    }
+  }
+  
+  public LiquidBlock getAsLiquidBlock() {
+    if (LiquidBlock.class.isInstance(this)) {
+      return (LiquidBlock) this;
+    } else {
+      return null;
+    }
+  }
 }

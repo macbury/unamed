@@ -23,7 +23,7 @@ public class Sprite extends RenderComponent {
   @Override
   public void render(GameContainer gc, StateBasedGame sb, Graphics gr) {
     if (image != null) {
-      image.draw(owner.getX(), owner.getY());
+      image.draw(0, 0);
     }
   }
   

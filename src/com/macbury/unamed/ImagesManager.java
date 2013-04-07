@@ -7,13 +7,17 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.util.Log;
 
+import com.macbury.unamed.intefrace.InGameInterface;
+
 public class ImagesManager {
   private static int MAX_BREAKING_BLOCK_SIZE = 9;
   public static ImagesManager sharedInstance = null;
   private HashMap<String, Image> imagesCache;
   private HashMap<String, SpriteSheet> spriteSheetCache;
+  private SpriteSheet hotBarCellSpriteSheet;
+  private SpriteSheet shadowMapSpriteSheet;
   
-  public static ImagesManager shared() {
+  public static ImagesManager shared() throws SlickException {
     if (ImagesManager.sharedInstance == null) {
       ImagesManager.sharedInstance = new ImagesManager();
     }
@@ -21,9 +25,11 @@ public class ImagesManager {
     return ImagesManager.sharedInstance;
   }
   
-  public ImagesManager() {
+  public ImagesManager() throws SlickException {
     this.imagesCache      = new HashMap<>();
     this.spriteSheetCache = new HashMap<>();
+    this.hotBarCellSpriteSheet = getSpriteSheet("hud/hotbar_cell.png", InGameInterface.HOTBAR_CELL_SIZE, InGameInterface.HOTBAR_CELL_SIZE);
+    this.shadowMapSpriteSheet  = getSpriteSheet("effects/shadowmap.png", Core.TILE_SIZE, Core.TILE_SIZE);
   }
   
   public Image getImage(String name) throws SlickException {
@@ -55,5 +61,13 @@ public class ImagesManager {
   public Image getDestroyBlockEffectForProgress(float progress) throws SlickException {
     SpriteSheet sheet = getSpriteSheet("effects/breaking_block_animation.png", 32, 32);
     return sheet.getSprite(Math.round(MAX_BREAKING_BLOCK_SIZE * progress), 0);
+  }
+  
+  public SpriteSheet getHotBarCellSpriteSheet() {
+    return hotBarCellSpriteSheet;
+  }
+
+  public SpriteSheet getShadowMapSpriteSheet() {
+    return this.shadowMapSpriteSheet;
   }
 }

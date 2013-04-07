@@ -8,7 +8,10 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.state.StateBasedGame;
 
+import com.macbury.unamed.Core;
 import com.macbury.unamed.ImagesManager;
+import com.macbury.unamed.level.LiquidBlock;
+import com.macbury.unamed.level.PassableBlock;
 
 public class CharacterAnimation extends RenderComponent {
   public final static int SPRITE_TILE_WIDTH  = 32;
@@ -113,7 +116,15 @@ public class CharacterAnimation extends RenderComponent {
   @Override
   public void render(GameContainer gc, StateBasedGame sb, Graphics gr) {
     if (currentAnimation != null) {
-      currentAnimation.getCurrentFrame().draw(this.owner.getX(), this.owner.getY());
+      Image image = currentAnimation.getCurrentFrame();
+      LiquidBlock block = this.owner.getBlock().getAsLiquidBlock();
+      if (block != null) {
+        int diveLevel = Math.round(Core.TILE_SIZE * block.divePower());
+        image.draw(0, 0, Core.TILE_SIZE, diveLevel, 0, 0, Core.TILE_SIZE, diveLevel);
+      } else {
+        image.draw();
+      }
+      
     }
   }
 

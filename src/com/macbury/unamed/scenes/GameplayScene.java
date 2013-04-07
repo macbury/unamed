@@ -33,7 +33,7 @@ public class GameplayScene extends BasicGameState {
       this.gameInterface = new InGameInterface(this.level);
       this.level.setupViewport(container);
       this.level.generateWorld(100);
-      this.startTime  = 1000;
+      this.startTime  = 100;
     }
   }
 

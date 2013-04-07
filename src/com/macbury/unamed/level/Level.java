@@ -47,7 +47,7 @@ public class Level {
   public Level() throws SlickException {
     this.entities       = new ArrayList<Entity>();
     this.blockResources = BlockResources.shared();
-    this.shadowMap      = ImagesManager.shared().getSpriteSheet("effects/shadowmap.png", 32, 32);
+    this.shadowMap      = ImagesManager.shared().getShadowMapSpriteSheet();
   }
   
   public Entity getEntityForTilePosition(int x, int y) {
@@ -100,6 +100,7 @@ public class Level {
           Image image = this.blockResources.imageForBlock(block);
           if (image != null) {
             visibleBlocks.add(block);
+            
             image.draw(tx,ty);
             
             if(PassableBlock.class.isInstance(block)) {
@@ -296,6 +297,9 @@ public class Level {
     this.world[3][1] = new DiamondOre(3, 1);
     this.world[4][1] = new CoalOre(4, 1);
     this.world[5][1] = new Water(5, 1);
+    this.world[5][2] = new Water(5, 2);
+    this.world[5][3] = new Water(5, 3);
+    this.world[5][4] = new Water(5, 4);
     this.world[6][1] = new Lava(6, 1);
     this.world[7][1] = new Lava(7, 1);
     this.world[8][1] = new Lava(8, 1);
