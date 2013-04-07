@@ -6,4 +6,10 @@ public class Water extends PassableBlock {
     super(x, y);
   }
 
+  @Override
+  public float getSpeed() {
+    // TODO Auto-generated method stub
+    return 0.6f;
+  }
+
 }

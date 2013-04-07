@@ -15,6 +15,11 @@ public class Lava extends PassableBlock {
   public int getLightPower() {
     return 0;
   }
+
+  @Override
+  public float getSpeed() {
+    return 0.5f;
+  }
   
   
 }

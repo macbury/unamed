@@ -10,11 +10,16 @@ import org.newdawn.slick.state.StateBasedGame;
 import com.macbury.procedular.WorldBuilder;
 import com.macbury.procedular.WorldBuilderListener;
 import com.macbury.unamed.Core;
+import com.macbury.unamed.ImagesManager;
+import com.macbury.unamed.SoundManager;
+import com.macbury.unamed.level.BlockResources;
 
-public class LoadingState extends BasicGameState implements WorldBuilderListener {
+public class GeneratingWorldState extends BasicGameState implements WorldBuilderListener {
   private UnicodeFont font;
   private WorldBuilder world;
   public final static int STATE_GENERATIING = 2;
+
+  public int worldSize = WorldBuilder.NORMAL;
   @Override
   public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
     this.font          = Core.instance().getFont();
@@ -22,7 +27,8 @@ public class LoadingState extends BasicGameState implements WorldBuilderListener
   @Override
   public void enter(GameContainer container, StateBasedGame game) throws SlickException {
     super.enter(container, game);
-    world              = new WorldBuilder(1000, 3948);
+
+    world              = new WorldBuilder(worldSize, 3948);
     Thread newThread   = new Thread(world);
     world.setListener(this);
     newThread.start();
@@ -58,6 +64,9 @@ public class LoadingState extends BasicGameState implements WorldBuilderListener
   @Override
   public void onWorldBuildProgress() {
     
+  }
+  public void setWorldSize(int size) {
+    this.worldSize = size;
   }
 
 }

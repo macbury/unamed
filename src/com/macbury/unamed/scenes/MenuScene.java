@@ -6,8 +6,11 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
+import org.newdawn.slick.state.transition.FadeInTransition;
+import org.newdawn.slick.state.transition.FadeOutTransition;
 import org.newdawn.slick.util.Log;
 
+import com.macbury.procedular.WorldBuilder;
 import com.macbury.unamed.Core;
 import com.macbury.unamed.intefrace.MenuList;
 import com.macbury.unamed.intefrace.MenuListManager;
@@ -17,6 +20,9 @@ public class MenuScene extends BasicGameState implements MenuListManagerInterfac
   private static final int ITEM_INDEX_EXIT       = 3;
   private static final int ITEM_INDEX_START_GAME = 0;
   public  static final int STATE_MENU            = 4;
+  private static final int MENU_ITEM_SIZE_NORMAL            = 0;
+  private static final int MENU_ITEM_SIZE_BIG               = 1;
+  private static final int MENU_ITEM_SIZE_CRASH_MY_COMPUTER = 2;
   private MenuList mainMenuList;
   private MenuList selectGeneratedWorldSizeMenu;
   MenuListManager menuManager = null;
@@ -38,7 +44,6 @@ public class MenuScene extends BasicGameState implements MenuListManagerInterfac
     selectGeneratedWorldSizeMenu.setTitle("Select world size:");
     selectGeneratedWorldSizeMenu.add("Normal");
     selectGeneratedWorldSizeMenu.add("Big");
-    selectGeneratedWorldSizeMenu.add("Epic");
     selectGeneratedWorldSizeMenu.add("Crash my computer");
     menuManager.pushList(mainMenuList);
   }
@@ -72,7 +77,20 @@ public class MenuScene extends BasicGameState implements MenuListManagerInterfac
   @Override
   public void onSelectItem(int index, MenuList currentMenuList) {
     if (selectGeneratedWorldSizeMenu == currentMenuList) {
-      Core.instance().enterState(LoadingState.STATE_GENERATIING);
+      switch (index) {
+      case MENU_ITEM_SIZE_NORMAL:
+        Core.instance().getGeneratingWorldState().setWorldSize(WorldBuilder.NORMAL);
+      break;
+      case MENU_ITEM_SIZE_BIG:
+        Core.instance().getGeneratingWorldState().setWorldSize(WorldBuilder.BIG);
+      break;
+      case MENU_ITEM_SIZE_CRASH_MY_COMPUTER:
+        Core.instance().getGeneratingWorldState().setWorldSize(WorldBuilder.CRASH_MY_COMPUTER);
+      break;
+      default:
+        break;
+      }
+      Core.instance().enterState(GeneratingWorldState.STATE_GENERATIING, new FadeOutTransition(), new FadeInTransition());
     } else if (currentMenuList == mainMenuList) {
       if (index == ITEM_INDEX_START_GAME) {
         menuManager.pushList(selectGeneratedWorldSizeMenu);

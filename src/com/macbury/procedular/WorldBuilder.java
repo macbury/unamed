@@ -33,6 +33,9 @@ public class WorldBuilder implements Runnable {
   private static final byte RESOURCE_COAL    = 6;
   private static final byte RESOURCE_DIAMOND = 7;
   private static final byte RESOURCE_GOLD    = 8;
+  public static final int NORMAL             = 1024;
+  public static final int BIG                = 2048;
+  public static final int CRASH_MY_COMPUTER  = 4116;
   
   public float perlinNoise[][];
   public byte map[][];

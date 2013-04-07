@@ -10,6 +10,7 @@ import com.macbury.unamed.Core;
 import com.macbury.unamed.SoundManager;
 import com.macbury.unamed.Util;
 import com.macbury.unamed.level.Block;
+import com.macbury.unamed.level.PassableBlock;
 
 public class TileBasedMovement extends Component {
   public final static String NAME = "TileBasedMovement"; 
@@ -24,6 +25,7 @@ public class TileBasedMovement extends Component {
   
   private boolean moveInProgress = false;
   private Vector2f basePosition;
+  private float blockMoveSpeed;
   
   public boolean isMoving() {
     return moveInProgress;
@@ -73,7 +75,8 @@ public class TileBasedMovement extends Component {
       this.totalMoveTime  = 0.0f;
       this.owner.setFuturePosition(computeTargetPositionForDirection(inDirection));
      
-      Block block = this.owner.getLevel().getBlockForPosition(this.owner.getTileX(), this.owner.getTileY());
+      PassableBlock block = (PassableBlock) this.owner.getLevel().getBlockForPosition(this.owner.getTileX(), this.owner.getTileY());
+      this.blockMoveSpeed = block.getSpeed();
       SoundManager.shared().playStepForBlock(block);
       return true;
     }
@@ -82,7 +85,7 @@ public class TileBasedMovement extends Component {
   @Override
   public void update(GameContainer gc, StateBasedGame sb, int delta) {
     if (this.isMoving()) {
-      totalMoveTime += speed * (float)delta;
+      totalMoveTime += speed * (float)delta * blockMoveSpeed;
       float x = Math.round(Util.lerp(basePosition.x, this.owner.getFuturePosition().x, totalMoveTime));
       float y = Math.round(Util.lerp(basePosition.y, this.owner.getFuturePosition().y, totalMoveTime));
       this.owner.setX(x);

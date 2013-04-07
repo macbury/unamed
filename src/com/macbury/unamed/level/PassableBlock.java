@@ -3,7 +3,7 @@ package com.macbury.unamed.level;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SpriteSheet;
 
-public class PassableBlock extends Block {
+public abstract class PassableBlock extends Block {
   public Shadow shadowMapIndex = Shadow.SHADOW_NEED_TO_REFRESH;
   
   public PassableBlock(int x, int y) {
@@ -66,4 +66,6 @@ public class PassableBlock extends Block {
   public boolean isShadowMap(Shadow mask) {
     return shadowMapIndex == mask;
   }
+  
+  public abstract float getSpeed();
 }

@@ -8,7 +8,8 @@ import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.macbury.unamed.scenes.GameplayScene;
-import com.macbury.unamed.scenes.LoadingState;
+import com.macbury.unamed.scenes.GeneratingWorldState;
+import com.macbury.unamed.scenes.LoadingResourceScreen;
 import com.macbury.unamed.scenes.MenuScene;
 
 public class Core extends StateBasedGame {
@@ -23,6 +24,7 @@ public class Core extends StateBasedGame {
   public static String title = "Unamed";
   
   private UnicodeFont font;
+  private GeneratingWorldState generatingWorldState;
   
   static public Core instance() {
     return Core.coreInstance;
@@ -47,8 +49,17 @@ public class Core extends StateBasedGame {
 
   @Override
   public void initStatesList(GameContainer gameContainer) throws SlickException {
+    this.addState(new LoadingResourceScreen());
     this.addState(new MenuScene());
-    this.addState(new LoadingState());
+    this.addState(getGeneratingWorldState());
     this.addState(new GameplayScene());
+  }
+  
+  public GeneratingWorldState getGeneratingWorldState() {
+    if (generatingWorldState == null) {
+      generatingWorldState = new GeneratingWorldState();
+    }
+    
+    return generatingWorldState;
   }
 }
