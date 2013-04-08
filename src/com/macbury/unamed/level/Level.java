@@ -430,7 +430,9 @@ public class Level{
         boolean render   = true;
         Color color      = null;
         
-        if (block.isDirt()) {
+        if (block.isBedrock()) {
+          color = Color.cyan;
+        } else if (block.isDirt()) {
           color = Color.black;
         } else if (block.isCopper()) {
           color = new Color(127,0,0); 

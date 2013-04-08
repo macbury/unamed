@@ -4,6 +4,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.UnicodeFont;
+import org.newdawn.slick.loading.LoadingList;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
@@ -30,14 +31,21 @@ public class GeneratingWorldState extends BasicGameState implements WorldBuilder
 
     world              = new WorldBuilder(worldSize, 2221);
     Thread newThread   = new Thread(world);
+    newThread.setPriority(Thread.MIN_PRIORITY);
     world.setListener(this);
     newThread.start();
   }
   
   @Override
-  public void render(GameContainer arg0, StateBasedGame arg1, Graphics arg2) throws SlickException {
+  public void render(GameContainer arg0, StateBasedGame arg1, Graphics gr) throws SlickException {
     if (world.progress > 0) {
-      font.drawString(10, 10, "Creating world: " + world.progress + "%");
+      font.drawString(100, 110, "Creating world: " + world.progress + "%");
+      
+      float total = 1.0f;
+      float loaded = world.subProgress;
+
+      gr.fillRect(100,150,loaded*480,20);
+      gr.drawRect(100,150,total*480,20);
     } else {
       font.drawString(10, 10, "Loading...");
     }

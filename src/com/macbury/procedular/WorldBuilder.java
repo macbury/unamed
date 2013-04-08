@@ -19,6 +19,7 @@ import org.newdawn.slick.imageout.ImageOut;
 import org.newdawn.slick.util.Log;
 
 import com.macbury.unamed.PerlinGen;
+import com.macbury.unamed.level.Bedrock;
 import com.macbury.unamed.level.Block;
 import com.macbury.unamed.level.CoalOre;
 import com.macbury.unamed.level.CopperOre;
@@ -44,9 +45,9 @@ public class WorldBuilder implements Runnable {
   private static final byte RESOURCE_COAL    = 6;
   private static final byte RESOURCE_DIAMOND = 7;
   private static final byte RESOURCE_GOLD    = 8;
-  public static final int NORMAL             = 1024;
-  public static final int BIG                = 2048;
-  public static final int CRASH_MY_COMPUTER  = 4116;
+  public static final int NORMAL             = 2000;
+  public static final int BIG                = 4000;
+  public static final int CRASH_MY_COMPUTER  = 6000;
   
   public float perlinNoise[][];
   public int size;
@@ -57,6 +58,7 @@ public class WorldBuilder implements Runnable {
   private ArrayList<Room> rooms;
   public int progress;
   private Level level;
+  public float subProgress;
   
   public WorldBuilder(int size, int seed) throws SlickException {
     this.seed          = seed;
@@ -105,15 +107,21 @@ public class WorldBuilder implements Runnable {
   }
 
   private void fillWithGround() {
+    this.subProgress = 0;
     for (int x = 0; x < this.size; x++) {
+      this.subProgress = (float)x / (float)this.size;
       for (int y = 0; y < this.size; y++) {
         this.level.setBlock(x, y, new Dirt(x, y));
       }
     }
+    
+    this.subProgress = 0;
   }
   
   public void applyDataFromPerlinNoise(float start, float end, byte resourceType) throws SlickException {
+    this.subProgress = 0.0f;
     for (int x = 0; x < this.size; x++) {
+      this.subProgress = (float)x / (float)this.size;
       for (int y = 0; y < this.size; y++) {
         float val = this.perlinNoise[x][y];
         if (val >= start && val <= end) {
@@ -162,14 +170,16 @@ public class WorldBuilder implements Runnable {
   }
   
   public void dumpTo(String filePath) throws SlickException {
-    //this.level.dumpTo(filePath);
+    this.level.dumpTo(filePath);
   }
   
   @Override
   public void run() {
     try {
       applyResources();
-    } catch (SlickException e) {
+      
+      applyBedrockBorder();
+    } catch (Exception e) {
       e.printStackTrace();
     }
     //applyRooms();
@@ -225,6 +235,26 @@ public class WorldBuilder implements Runnable {
     }
   }
 
+  private void applyBedrockBorder() {
+    Log.info("Adding bedrock border");
+    this.progress = 37;
+    int y = this.level.mapTileHeight-1;
+    int x = 0;
+    for (x = 0; x < this.level.mapTileWidth; x++) {
+      this.level.setBlock(x, 0, new Bedrock(x,0));
+      this.level.setBlock(x, y, new Bedrock(x,y));
+    }
+    
+    x = this.level.mapTileWidth-1;
+    this.progress = 39;
+    for (y = 0; y < this.level.mapTileHeight; y++) {
+      this.level.setBlock(0, y, new Bedrock(0,y));
+      this.level.setBlock(x, y, new Bedrock(x,y));
+    }
+    
+    this.progress = 40;
+  }
+  
   private void applyResources() throws SlickException {
     Log.info("Starting building world");
     this.progress = 5;
