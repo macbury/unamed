@@ -35,6 +35,7 @@ import com.macbury.unamed.level.Water;
 public class WorldBuilder implements Runnable {
   private static final int SEED_THROTTLE = 1000;
   private static final int ROOM_COUNT    = 60;
+  private static final int CELL_SIZE     = 256;
   
   private static final byte RESOURCE_DIRT    = 0;
   private static final byte RESOURCE_COPPER  = 1;
@@ -45,7 +46,7 @@ public class WorldBuilder implements Runnable {
   private static final byte RESOURCE_COAL    = 6;
   private static final byte RESOURCE_DIAMOND = 7;
   private static final byte RESOURCE_GOLD    = 8;
-  public static final int NORMAL             = 2000;
+  public static final int NORMAL             = 1024;
   public static final int BIG                = 4000;
   public static final int CRASH_MY_COMPUTER  = 6000;
   
@@ -177,7 +178,7 @@ public class WorldBuilder implements Runnable {
   public void run() {
     try {
       applyResources();
-      
+      buildDungeon();
       applyBedrockBorder();
     } catch (Exception e) {
       e.printStackTrace();
@@ -190,6 +191,15 @@ public class WorldBuilder implements Runnable {
     this.listener.onWorldBuildingFinish();
   }
 
+  private void buildDungeon() {
+    int cellCount = this.size / CELL_SIZE;
+    Log.info("Cell size: " + cellCount);
+    
+    Random random = new Random(seed);
+    
+    DungeonCell dungeonCell = new DungeonCell(0, 0, CELL_SIZE, CELL_SIZE, 0, random);
+  }
+  
   private void applyRooms() {
     Random random = new Random(getSeed());
     
@@ -203,7 +213,6 @@ public class WorldBuilder implements Runnable {
       int ry      = random.nextInt(this.size);
       int rWidth  = 20 + random.nextInt(50);
       int rHeight = 15 + random.nextInt(50);
-      
       Room room   = null;
       
       if (!createdSpawn) {

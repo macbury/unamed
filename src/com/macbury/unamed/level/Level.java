@@ -2,13 +2,9 @@ package com.macbury.unamed.level;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.zip.DeflaterOutputStream;
 
 import org.newdawn.slick.Color;
@@ -24,7 +20,6 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.Log;
 
 import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.kryo.io.OutputChunked;
 import com.macbury.unamed.Core;
 import com.macbury.unamed.ImagesManager;
@@ -32,6 +27,7 @@ import com.macbury.unamed.entity.Entity;
 import com.macbury.unamed.entity.Player;
 import com.macbury.unamed.serializers.BlockSerializer;
 import com.macbury.unamed.serializers.LevelSerializer;
+
 public class Level{
   public static final int SMALL = 100;
 
