@@ -1,10 +1,13 @@
 package com.macbury.unamed.level;
 
+import java.awt.List;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EmptyStackException;
+import java.util.Stack;
 import java.util.zip.DeflaterOutputStream;
 
 import org.newdawn.slick.Color;
@@ -21,6 +24,7 @@ import org.newdawn.slick.util.Log;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.OutputChunked;
+import com.macbury.procedular.Room;
 import com.macbury.unamed.Core;
 import com.macbury.unamed.ImagesManager;
 import com.macbury.unamed.entity.Entity;
@@ -31,7 +35,8 @@ import com.macbury.unamed.serializers.LevelSerializer;
 public class Level{
   public static final int SMALL = 100;
 
-  Block[][] world;
+  private ArrayList<Room> rooms;
+  private Block[][] world;
   
   SpriteSheet shadowMap        = null;
   
@@ -51,13 +56,15 @@ public class Level{
   Entity        cameraTarget;
   Player        player;
   private ArrayList<Entity> entities;
+  private Stack<Entity> collidableEntities;
   private boolean refreshEntityList = true;
-  
+
   
   public Level() throws SlickException {
-    this.entities       = new ArrayList<Entity>();
-    this.blockResources = BlockResources.shared();
-    this.shadowMap      = ImagesManager.shared().getShadowMapSpriteSheet();
+    this.collidableEntities = new Stack<Entity>();
+    this.entities           = new ArrayList<Entity>();
+    this.blockResources     = BlockResources.shared();
+    this.shadowMap          = ImagesManager.shared().getShadowMapSpriteSheet();
   }
   
   public Entity getEntityForTilePosition(int x, int y) {
@@ -157,7 +164,6 @@ public class Level{
     }
     
     gr.popTransform();
-    
   }
   
   public boolean checkIfInBounds(int x, int y) {
@@ -172,10 +178,41 @@ public class Level{
       Log.debug("Refreshing order of entities");
     }
     
+    this.collidableEntities.clear();
     for (int i = 0; i < this.entities.size(); i++) {
       Entity e    = this.entities.get(i);
       if (this.updateArea.intersects(e.getRect())) {
         e.update(gc, sb, delta);
+        if (e.collidable) {
+          collidableEntities.add(e);
+        }
+      }
+    }
+    
+    Entity coliderEntity    = null;
+    Entity colideWithEntity = null;
+    int i = 0;
+    while(true) {
+      try {
+        coliderEntity = collidableEntities.pop();
+      } catch( EmptyStackException e ) {
+        break;
+      }
+      
+      colideWithEntity = null;
+      for (i = 0; i < collidableEntities.size(); i++) {
+        colideWithEntity = collidableEntities.get(i);
+        if (coliderEntity.getRect().intersects(colideWithEntity.getRect())) {
+          break;
+        } else {
+          colideWithEntity = null;
+        }
+      }
+      
+      if (colideWithEntity != null) {
+        coliderEntity.onCollideWith(colideWithEntity);
+        colideWithEntity.onCollideWith(coliderEntity);
+        collidableEntities.remove(i);
       }
     }
   }
@@ -459,6 +496,11 @@ public class Level{
       }
     }
     
+    localImgG.setColor(new Color(255,255,255,100));
+    for (Room room : this.rooms) {
+      localImgG.fill(room);
+    }
+    
     Log.info("Flushing bitmap");
     localImgG.flush();
     Log.info("Writing bitmap");
@@ -495,5 +537,21 @@ public class Level{
   
   public Block[][] getWorld() {
     return this.world;
+  }
+
+  public ArrayList<Room> getRooms() {
+    return rooms;
+  }
+
+  public void setRooms(ArrayList<Room> rooms) {
+    this.rooms = rooms;
+  }
+  
+  public Entity getCollider(Entity byEntity, int x, int y) {
+    for(Entity e : this.entities) {
+      
+    }
+    
+    return null;
   }
 }

@@ -5,6 +5,7 @@ import org.newdawn.slick.geom.Vector2f;
 
 import com.macbury.unamed.SoundManager;
 import com.macbury.unamed.entity.Player;
+import com.macbury.unamed.level.Cobblestone;
 import com.macbury.unamed.level.Dirt;
 import com.macbury.unamed.level.HarvestableBlock;
 import com.macbury.unamed.level.Rock;
@@ -33,6 +34,10 @@ public class BlockItem extends InventoryItem {
     HarvestableBlock block = null;
     
     if(haveItems()) {
+      if (Cobblestone.class.equals(blockType)) {
+        block = new Cobblestone((int)tilePos.x, (int)tilePos.y);
+      }
+      
       if (Rock.class.equals(blockType)) {
         block = new Rock((int)tilePos.x, (int)tilePos.y);
       }

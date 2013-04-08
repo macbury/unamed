@@ -36,6 +36,7 @@ public class SoundManager {
   public Audio miss;
   private ArrayList<Audio> stepsStone;
   private ArrayList<Audio> waterStone;
+  public Audio pop;
   
   private Audio loadOgg(String filename) {
     try {
@@ -58,7 +59,7 @@ public class SoundManager {
     this.miss             = loadOgg("Miss");
     this.igniteSound      = loadOgg("Ignite");
     this.theme            = loadOgg("Theme");
-    
+    this.pop              = loadOgg("pop");
     this.stepsStone       = new ArrayList<Audio>();
     for (int i = 1; i <= 6; i++) {
       this.stepsStone.add(loadOgg("stone"+i));

@@ -21,6 +21,7 @@ import com.macbury.unamed.inventory.InventoryItem;
 import com.macbury.unamed.inventory.InventoryManager;
 import com.macbury.unamed.inventory.TorchItem;
 import com.macbury.unamed.level.Block;
+import com.macbury.unamed.level.Cobblestone;
 import com.macbury.unamed.level.Dirt;
 import com.macbury.unamed.level.HarvestableBlock;
 import com.macbury.unamed.level.LiquidBlock;
@@ -51,8 +52,9 @@ public class Player extends Entity {
   public Player() throws SlickException {
     super();
     
-    this.inventory = new InventoryManager();
-    TorchItem item = new TorchItem(this);
+    this.collidable = true;
+    this.inventory  = new InventoryManager();
+    TorchItem item  = new TorchItem(this);
     item.addItem(9);
     this.inventory.add(item);
     
@@ -68,6 +70,9 @@ public class Player extends Entity {
     blockItem.addItem(98);
     this.inventory.add(blockItem);
     
+    blockItem = new BlockItem(this, Cobblestone.class);
+    blockItem.addItem(98);
+    this.inventory.add(blockItem);
     
     this.z = ENTITY_ZINDEX;
     tileMovement = new TileBasedMovement();
@@ -269,9 +274,8 @@ public class Player extends Entity {
         if (item == null) {
           SoundManager.shared().dig.playAsSoundEffect(1.0f, 1.0f, false);
         } else {
-          this.inventory.addItem(item);
           entityInFront.destroy();
-          SoundManager.shared().loot.playAsSoundEffect(1.0f, 1.0f, false);
+          SoundManager.shared().pop.playAsSoundEffect(1.0f, 1.0f, false);
         }
       }
     } else {

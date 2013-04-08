@@ -1,14 +1,15 @@
 package com.macbury.procedular;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.util.Log;
 
 public class DungeonCell extends Rectangle {
-  public final static int MAX_SPLIT_DEPTH = 4; 
+  public final static int MAX_SPLIT_DEPTH = 7; 
   final static float MIN_SPLIT_FACTOR = 0.48f;
-  final static float MAX_SPLIT_FACTOR = 0.55f;
+  final static float MAX_SPLIT_FACTOR = 0.52f;
   DungeonCell aCell;
   DungeonCell bCell;
   private Random random;
@@ -26,7 +27,15 @@ public class DungeonCell extends Rectangle {
   }
   
   private void createRoom() {
-    //this.room = new Room(MAX_SPLIT_DEPTH, MIN_SPLIT_FACTOR, MAX_SPLIT_FACTOR, MAX_SPLIT_DEPTH)
+    int baseWidth   = (int) ((this.getWidth() - 2) / 2);
+    int baseHeight  = (int) ((this.getHeight() - 2) / 2);
+    int roomWidth   = baseWidth + random.nextInt(baseWidth);
+    int roomHeight  = baseHeight + random.nextInt(baseHeight);
+    
+    int ex          = random.nextInt((int) (this.getWidth()  - roomWidth));
+    int ey          = random.nextInt((int) (this.getHeight() - roomHeight));
+    
+    this.room = new Room(this.getX() + ex, this.getY() + ey, roomWidth, roomHeight);
   }
 
   private int getSizeA(float size) {
@@ -72,7 +81,15 @@ public class DungeonCell extends Rectangle {
   public Random getRandom() {
     return random;
   }
-
+  
+  public Room getRoom() {
+    return this.room;
+  }
+  
+  public boolean haveRoom() {
+    return this.room != null;
+  }
+  
   public int getDepth() {
     return depth;
   }
@@ -83,5 +100,25 @@ public class DungeonCell extends Rectangle {
 
   public void setRandom(Random r) {
     this.random = r;
+  }
+
+  public ArrayList<Room> getAllRooms() {
+    ArrayList<Room> rooms = new ArrayList<Room>();
+    return getRoomsFromLowerNode(rooms);
+  }
+  
+  public boolean isBottomNode() {
+    return (aCell != null) && (bCell != null);
+  }
+  
+  private ArrayList<Room> getRoomsFromLowerNode(ArrayList<Room> rooms) {
+    if (this.haveRoom()) {
+      rooms.add(this.getRoom());
+      return rooms;
+    } else {
+      rooms = this.aCell.getRoomsFromLowerNode(rooms);
+      rooms = this.bCell.getRoomsFromLowerNode(rooms);
+      return rooms;
+    }
   }
 }

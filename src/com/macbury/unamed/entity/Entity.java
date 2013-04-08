@@ -27,6 +27,7 @@ public class Entity implements Comparable<Entity> {
   private Rectangle rectangle;
   private Vector2f  futurePosition = null; // this is future position of entity
   public  boolean   solid              = false;
+  public  boolean   collidable         = false;
   public  boolean   visibleUnderTheFog = false;
   
   public int z                    = ENTITY_BASE_LAYER;
@@ -258,5 +259,9 @@ public class Entity implements Comparable<Entity> {
 
   public void destroy() {
     this.getLevel().removeEntity(this);
+  }
+  
+  public void onCollideWith(Entity entity) {
+    
   }
 }

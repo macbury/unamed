@@ -45,29 +45,9 @@ public class InGameInterface {
     this.selectedCellImage = spriteSheet.getSprite(1, 0);
     
     this.hotBarSpriteSheet = spriteSheet;
-    this.hotBarIconsCache  = new HashMap<>();
-  }
-  
-  public Image getOrLoadInventoryItemImage(Class klass, int x, int y) {
-    Image img = hotBarIconsCache.get(klass.getName());
-    if (img == null) {
-      img = hotBarSpriteSheet.getSubImage(x, y);
-      hotBarIconsCache.put(klass.getName(), img);
-    }
-    return img;
-  }
-  
-  public Image getImageForInventoryItem(InventoryItem item) throws SlickException {
-    if (CopperItem.class.isInstance(item)) {
-      return getOrLoadInventoryItemImage(CopperItem.class, 1, 1);
-    } else if (CoalItem.class.isInstance(item)) {
-      return getOrLoadInventoryItemImage(CoalItem.class, 1, 1);
-    } if (TorchItem.class.isInstance(item)) {
-      return getOrLoadInventoryItemImage(TorchItem.class, 2, 0);
-    }
     
-    throw new SlickException("No image for inventory item: " +item.getClass().getName());    
   }
+
   
   public void render(GameContainer gc, StateBasedGame sb, Graphics gr) throws SlickException {
     Player player = level.getPlayer();
@@ -99,7 +79,7 @@ public class InGameInterface {
           Image icon = BlockResources.shared().imageForBlockClass(blockItem.blockType);
           icon.draw(x+4, 4, 0.8f);
         } else {
-          Image icon = getImageForInventoryItem(item);
+          Image icon = InventoryManager.shared().getImageForInventoryItem(item);
           icon.draw(x, 0);
         }
         

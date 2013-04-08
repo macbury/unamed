@@ -25,6 +25,7 @@ public class BlockResources {
   private Image diamondImage;
   private Animation animatedWater;
   private Animation animatedLava;
+  private Image cobblestone;
   
   public static BlockResources shared() throws SlickException {
     if (shared == null) {
@@ -46,6 +47,7 @@ public class BlockResources {
     copperImage   = spriteSheet.getSprite(1, 2);
     goldImage     = spriteSheet.getSprite(0, 2);
     diamondImage  = spriteSheet.getSprite(2, 3);
+    cobblestone   = spriteSheet.getSprite(7, 0);
     
     SpriteSheet waterSpriteSheet = ImagesManager.shared().getSpriteSheet("water.png", Core.TILE_SIZE, Core.TILE_SIZE);
 
@@ -73,7 +75,9 @@ public class BlockResources {
   }
   
   public Image imageForBlockClass(Class klass) {
-    if (klass.getName().equals(Lava.class.getName())) {
+    if (klass.getName().equals(Cobblestone.class.getName())) {
+      return cobblestone;
+    } else if (klass.getName().equals(Lava.class.getName())) {
       return animatedLava.getCurrentFrame();
     } else if (klass.getName().equals(Water.class.getName())) {
       return animatedWater.getCurrentFrame();

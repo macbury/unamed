@@ -37,18 +37,19 @@ public class WorldBuilder implements Runnable {
   private static final int ROOM_COUNT    = 60;
   private static final int CELL_SIZE     = 256;
   
-  private static final byte RESOURCE_DIRT    = 0;
-  private static final byte RESOURCE_COPPER  = 1;
-  private static final byte RESOURCE_SAND    = 2;
-  private static final byte RESOURCE_WATER   = 3;
-  private static final byte RESOURCE_STONE   = 4;
-  private static final byte RESOURCE_LAVA    = 5;
-  private static final byte RESOURCE_COAL    = 6;
-  private static final byte RESOURCE_DIAMOND = 7;
-  private static final byte RESOURCE_GOLD    = 8;
-  public static final int NORMAL             = 1024;
-  public static final int BIG                = 4000;
-  public static final int CRASH_MY_COMPUTER  = 6000;
+  private static final byte RESOURCE_SIDEWALK = 0;
+  private static final byte RESOURCE_DIRT     = 1;
+  private static final byte RESOURCE_COPPER   = 2;
+  private static final byte RESOURCE_SAND     = 3;
+  private static final byte RESOURCE_WATER    = 4;
+  private static final byte RESOURCE_STONE    = 5;
+  private static final byte RESOURCE_LAVA     = 6;
+  private static final byte RESOURCE_COAL     = 7;
+  private static final byte RESOURCE_DIAMOND  = 8;
+  private static final byte RESOURCE_GOLD     = 9;
+  public static final int NORMAL              = 1024;
+  public static final int BIG                 = 4000;
+  public static final int CRASH_MY_COMPUTER   = 6000;
   
   public float perlinNoise[][];
   public int size;
@@ -198,6 +199,8 @@ public class WorldBuilder implements Runnable {
     Random random = new Random(seed);
     
     DungeonCell dungeonCell = new DungeonCell(0, 0, CELL_SIZE, CELL_SIZE, 0, random);
+    this.level.setRooms(dungeonCell.getAllRooms());
+    Log.info("Generated rooms: " + this.level.getRooms().size());
   }
   
   private void applyRooms() {
