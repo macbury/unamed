@@ -27,15 +27,19 @@ public class DungeonCell extends Rectangle {
   }
   
   private void createRoom() {
-    int baseWidth   = (int) ((this.getWidth() - 2) / 2);
-    int baseHeight  = (int) ((this.getHeight() - 2) / 2);
+    int baseWidth   = (int) (this.getWidth() / 2);
+    int baseHeight  = (int) (this.getHeight() / 2);
     int roomWidth   = baseWidth + random.nextInt(baseWidth);
     int roomHeight  = baseHeight + random.nextInt(baseHeight);
-    
-    int ex          = random.nextInt((int) (this.getWidth()  - roomWidth));
-    int ey          = random.nextInt((int) (this.getHeight() - roomHeight));
-    
-    this.room = new Room(this.getX() + ex, this.getY() + ey, roomWidth, roomHeight);
+
+    if (roomWidth < 3 || roomHeight < 3) {
+      createRoom();
+    } else {
+      int ex          = random.nextInt((int) (this.getWidth()  - roomWidth));
+      int ey          = random.nextInt((int) (this.getHeight() - roomHeight));
+      
+      this.room = new Room(this.getX() + ex, this.getY() + ey, roomWidth, roomHeight);
+    }
   }
 
   private int getSizeA(float size) {
