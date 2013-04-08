@@ -52,10 +52,14 @@ public class CollectableItem extends Entity {
   @Override
   public void onCollideWith(Entity entity) {
     if (Player.class.isInstance(entity)) {
-      InventoryManager.shared().addItem(itemToCollect);
-      SoundManager.shared().loot.playAsSoundEffect(1.0f, 1.0f, false);
-      this.destroy();
+      loot();
     }
+  }
+
+  public void loot() {
+    InventoryManager.shared().addItem(itemToCollect);
+    SoundManager.shared().loot.playAsSoundEffect(1.0f, 1.0f, false);
+    this.destroy();
   }
   
   

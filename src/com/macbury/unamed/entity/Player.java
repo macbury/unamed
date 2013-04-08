@@ -212,7 +212,10 @@ public class Player extends Entity {
       Entity entityInFront       = this.getLevel().getEntityForTilePosition((int)frontTilePosition.x, (int)frontTilePosition.y);
       
       if (entityInFront != null) {
-        if (BlockEntity.class.isInstance(entityInFront)) {
+        if (CollectableItem.class.isInstance(entityInFront)) {
+          CollectableItem item = (CollectableItem) entityInFront;
+          item.loot();
+        } else if (BlockEntity.class.isInstance(entityInFront)) {
           BlockEntity usableEntity = (BlockEntity) entityInFront;
           if (!usableEntity.use()) {
             SoundManager.shared().cancelSound.playAsSoundEffect(1.0f, 1.0f, false);
