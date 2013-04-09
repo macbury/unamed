@@ -33,9 +33,9 @@ import com.macbury.unamed.level.Sand;
 import com.macbury.unamed.level.Water;
 
 public class WorldBuilder implements Runnable {
-  private static final int SEED_THROTTLE = 1000;
-  private static final int ROOM_COUNT    = 60;
-  private static final int CELL_SIZE     = 256;
+  private static final int SEED_THROTTLE      = 1000;
+  private static final int ROOM_COUNT         = 60;
+  private static final int CELL_SIZE          = 128;
   
   private static final byte RESOURCE_SIDEWALK = 0;
   private static final byte RESOURCE_DIRT     = 1;
@@ -194,13 +194,24 @@ public class WorldBuilder implements Runnable {
 
   private void buildDungeon() {
     int cellCount = this.size / CELL_SIZE;
-    Log.info("Cell size: " + cellCount);
+    Log.info("Cell size: " + cellCount); 
     
-    Random random = new Random(seed);
+    int minCellCount = cellCount / 2;
+    Random random    = new Random(seed);
+    cellCount        = minCellCount + random.nextInt(minCellCount);
     
-    DungeonCell dungeonCell = new DungeonCell(0, 0, CELL_SIZE, CELL_SIZE, 0, random);
+    DungeonCell dungeonCell = new DungeonCell(null, 0, 0, CELL_SIZE, CELL_SIZE, 0, random);
     this.level.setRooms(dungeonCell.getAllRooms());
-    Log.info("Generated rooms: " + this.level.getRooms().size());
+    
+    ArrayList<DungeonCell> leaves = new ArrayList<DungeonCell>();
+    dungeonCell.gatherLeaves(leaves);
+    Log.info("Generated rooms: " + leaves.size());
+    
+    for (DungeonCell leaf : leaves) {
+      if (leaf.haveRoom()) {
+        Log.info("Have room!");
+      }
+    }
   }
   
   private void applyRooms() {
@@ -287,5 +298,5 @@ public class WorldBuilder implements Runnable {
     this.progress = 35;
     applyGold();
   }
-  
+
 }

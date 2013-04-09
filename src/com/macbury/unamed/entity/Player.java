@@ -51,7 +51,7 @@ public class Player extends Entity {
     
     this.collidable = true;
     this.inventory  = new InventoryManager();
-    TorchItem item  = new TorchItem(this);
+    /*TorchItem item  = new TorchItem(this);
     item.addItem(9);
     this.inventory.add(item);
     
@@ -69,7 +69,7 @@ public class Player extends Entity {
     
     blockItem = new BlockItem(this, Cobblestone.class);
     blockItem.addItem(98);
-    this.inventory.add(blockItem);
+    this.inventory.add(blockItem);*/
     
     this.z = ENTITY_ZINDEX;
     tileMovement = new TileBasedMovement();

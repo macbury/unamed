@@ -7,7 +7,7 @@ import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.util.Log;
 
 public class DungeonCell extends Rectangle {
-  public final static int MAX_SPLIT_DEPTH = 7; 
+  public final static int MAX_SPLIT_DEPTH = 5; 
   final static float MIN_SPLIT_FACTOR = 0.48f;
   final static float MAX_SPLIT_FACTOR = 0.52f;
   DungeonCell aCell;
@@ -15,15 +15,26 @@ public class DungeonCell extends Rectangle {
   private Random random;
   private int depth = 0;
   private Room room;
+  private DungeonCell parent;
+  private Corridor corridor;
   
-  public DungeonCell(float x, float y, float width, float height, int depth, Random random) {
+  public DungeonCell(DungeonCell parent, float x, float y, float width, float height, int depth, Random random) {
     super(x, y, width, height);
+    this.setParent(parent);
     this.random = random;
-    this.depth = depth + 1;
+    this.depth  = depth + 1;
     Log.debug("DungeonCell: X: "+x + " Y: "+ y + " width: "+ width + " height: " +height + " depth: "+depth);
     if (!this.split()) {
       this.createRoom();
     }
+  }
+  
+  public void connectTo(DungeonCell dungeonCell) {
+    new Corridor(this, dungeonCell);
+  }
+  
+  public boolean isRoot() {
+    return parent == null;
   }
   
   private void createRoom() {
@@ -32,13 +43,13 @@ public class DungeonCell extends Rectangle {
     int roomWidth   = baseWidth + random.nextInt(baseWidth);
     int roomHeight  = baseHeight + random.nextInt(baseHeight);
 
-    if (roomWidth < 3 || roomHeight < 3) {
-      createRoom();
+    if (roomWidth <= 4 || roomHeight <= 4) {
+      this.parent.randomSplit();
     } else {
       int ex          = random.nextInt((int) (this.getWidth()  - roomWidth));
       int ey          = random.nextInt((int) (this.getHeight() - roomHeight));
       
-      this.room = new Room(this.getX() + ex, this.getY() + ey, roomWidth, roomHeight);
+      this.room       = new Room(this.getX() + ex, this.getY() + ey, roomWidth, roomHeight);
     }
   }
 
@@ -52,8 +63,8 @@ public class DungeonCell extends Rectangle {
     int sizeA = getSizeA(this.getWidth());
     int sizeB = (int)(this.getWidth() - sizeA);
     
-    aCell = new DungeonCell(this.getX(), this.getY(), sizeA, this.getHeight(), this.depth, this.random);
-    bCell = new DungeonCell(this.getX()+sizeA, this.getY(), sizeB, this.getHeight(), this.depth, this.random);
+    aCell = new DungeonCell(this, this.getX(), this.getY(), sizeA, this.getHeight(), this.depth, this.random);
+    bCell = new DungeonCell(this, this.getX()+sizeA, this.getY(), sizeB, this.getHeight(), this.depth, this.random);
   }
 
   private void splitVertical() {
@@ -61,8 +72,8 @@ public class DungeonCell extends Rectangle {
     int sizeA = getSizeA(this.getHeight());
     int sizeB = (int)(this.getHeight() - sizeA);
     
-    aCell = new DungeonCell(this.getX(), this.getY(), this.getWidth(), sizeA, this.depth, this.random);
-    bCell = new DungeonCell(this.getX(), this.getY()+sizeA, this.getWidth(), sizeB, this.depth, this.random);
+    aCell = new DungeonCell(this, this.getX(), this.getY(), this.getWidth(), sizeA, this.depth, this.random);
+    bCell = new DungeonCell(this, this.getX(), this.getY()+sizeA, this.getWidth(), sizeB, this.depth, this.random);
   }
   
   public boolean split() {
@@ -75,10 +86,10 @@ public class DungeonCell extends Rectangle {
   }
   
   private void randomSplit() {
-    if (random.nextBoolean()) {
-      splitVertical();
-    } else {
+    if (this.random.nextBoolean()) {
       splitHorizontaly();
+    } else {
+      splitVertical();
     }
   }
   
@@ -124,5 +135,31 @@ public class DungeonCell extends Rectangle {
       rooms = this.bCell.getRoomsFromLowerNode(rooms);
       return rooms;
     }
+  }
+
+  public DungeonCell getParent() {
+    return parent;
+  }
+
+  public void setParent(DungeonCell parent) {
+    this.parent = parent;
+  }
+
+  public Corridor getCorridor() {
+    return corridor;
+  }
+
+  public void setCorridor(Corridor corridor) {
+    this.corridor = corridor;
+  }
+  
+  public void gatherLeaves(ArrayList<DungeonCell> leaves) {
+    if (aCell == null) {
+      return;
+    }
+    leaves.add(aCell);
+    leaves.add(bCell);
+    aCell.gatherLeaves(leaves);
+    bCell.gatherLeaves(leaves);
   }
 }

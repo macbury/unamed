@@ -34,16 +34,16 @@ import com.macbury.unamed.serializers.BlockSerializer;
 import com.macbury.unamed.serializers.LevelSerializer;
 
 public class Level{
-  public static final int SMALL = 100;
+  public static final int SMALL  = 100;
 
   private ArrayList<Room> rooms;
   private Block[][] world;
   
-  SpriteSheet shadowMap        = null;
+  SpriteSheet shadowMap          = null;
   
-  int stateID                  = -1;
-  private Rectangle viewPort   = null;
-  private Rectangle updateArea = null;
+  int stateID                    = -1;
+  private Rectangle viewPort     = null;
+  private Rectangle updateArea   = null;
   private BlockResources blockResources;
   
   public int tileWidth           = Core.TILE_SIZE;
@@ -174,13 +174,13 @@ public class Level{
   public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
     BlockResources.shared().update(delta);
     ParticleManager.shared().update(delta);
+    
     if (refreshEntityList) {
       Collections.sort(this.entities);
       refreshEntityList = false;
       Log.debug("Refreshing order of entities");
     }
     
-    this.collidableEntities.clear();
     for (int i = 0; i < this.entities.size(); i++) {
       Entity e    = this.entities.get(i);
       if (this.updateArea.intersects(e.getRect())) {
@@ -280,7 +280,6 @@ public class Level{
   public int transformYToTile(float y) {
     return Math.round(y / this.tileHeight);
   }
-
 
   public boolean canMoveTo(Vector2f targetPosition, Entity mover) {
     return canMoveTo(new Rectangle(targetPosition.x, targetPosition.y, this.tileWidth, this.tileHeight), mover);
@@ -510,6 +509,7 @@ public class Level{
   }
   
   public void save() {
+    Log.info("Saving map...");
     Kryo kryo = new Kryo();
     kryo.register(com.macbury.unamed.level.Level.class, new LevelSerializer());
     kryo.register(BlockSerializer.class, new BlockSerializer());
@@ -518,6 +518,7 @@ public class Level{
       OutputChunked output      = new OutputChunked(outputStream, 1024);
       
       kryo.writeObject(output, this);
+      output.endChunks();
       for (int x = 0; x < this.mapTileWidth; x++) {
         for (int y = 0; y < this.mapTileHeight; y++) {
           kryo.writeObject(output, this.world[x][y]);
@@ -528,7 +529,7 @@ public class Level{
       for (Entity entity : this.entities) {
         kryo.writeObject(output, entity);
       }
-      
+      output.endChunks();
       //kryo.writeObject(this.world, this);
       output.close();
     } catch (FileNotFoundException e1) {
