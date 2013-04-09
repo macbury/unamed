@@ -1,14 +1,12 @@
 package com.macbury.unamed.entity;
 
 import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.macbury.unamed.Core;
-import com.macbury.unamed.ImagesManager;
 import com.macbury.unamed.SoundManager;
 import com.macbury.unamed.component.CharacterAnimation;
 import com.macbury.unamed.component.HitBox;
@@ -28,7 +26,6 @@ import com.macbury.unamed.level.LiquidBlock;
 import com.macbury.unamed.level.PassableBlock;
 import com.macbury.unamed.level.Rock;
 import com.macbury.unamed.level.Sand;
-import com.macbury.unamed.level.Sidewalk;
 
 public class Player extends Entity {
   public final static int  FOG_OF_WAR_RADIUS = 10;

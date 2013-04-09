@@ -1,16 +1,16 @@
 package com.macbury.unamed.entity;
 
-import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
-import org.newdawn.slick.state.StateBasedGame;
+import org.newdawn.slick.geom.Vector2f;
 
 import com.macbury.unamed.ImagesManager;
+import com.macbury.unamed.ParticleManager;
 import com.macbury.unamed.SoundManager;
 import com.macbury.unamed.component.AnimatedSprite;
 import com.macbury.unamed.component.Light;
+import com.macbury.unamed.component.ParticleEmitter;
 import com.macbury.unamed.component.Sprite;
 import com.macbury.unamed.inventory.InventoryItem;
 import com.macbury.unamed.inventory.TorchItem;
@@ -19,6 +19,7 @@ public class Torch extends BlockEntity {
   final static int TORCH_POWER       = 10;
   private AnimatedSprite animatedSprite;
   private Sprite offSprite;
+  private ParticleEmitter emitter;
 
   public Torch() throws SlickException {
     super();
@@ -39,7 +40,11 @@ public class Torch extends BlockEntity {
     this.offSprite      = new Sprite(spriteSheet.getSprite(3, 0));
     offSprite.enabled   = false;
     addComponent(offSprite);
-
+    
+    this.emitter = new ParticleEmitter(ParticleManager.shared().getTorchParticleSystem());
+    emitter.setPosition(new Vector2f(16, 16));
+    emitter.enabled = true;
+    addComponent(emitter);
   }
 
   @Override
@@ -48,9 +53,11 @@ public class Torch extends BlockEntity {
     light.setEnabled(!light.getEnabled());
     
     if (light.getEnabled()) {
+      emitter.enabled        = true;
       offSprite.enabled      = false;
       animatedSprite.enabled = true;
     } else {
+      emitter.enabled        = false;
       offSprite.enabled      = true;
       animatedSprite.enabled = false;
     }

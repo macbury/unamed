@@ -50,23 +50,22 @@ public class BlockResources {
     cobblestone   = spriteSheet.getSprite(7, 0);
     
     SpriteSheet waterSpriteSheet = ImagesManager.shared().getSpriteSheet("water.png", Core.TILE_SIZE, Core.TILE_SIZE);
-
-    Image[] waterImages = new Image[waterSpriteSheet.getVerticalCount()];
+    Image[] liquidImages         = new Image[waterSpriteSheet.getVerticalCount()];
     
     for (int i = 0; i < waterSpriteSheet.getVerticalCount(); i++) {
-      waterImages[i] = waterSpriteSheet.getSprite(0, i);
+      liquidImages[i] = waterSpriteSheet.getSprite(0, i);
     }
     
-    animatedWater = new Animation(waterImages, 150);
+    animatedWater = new Animation(liquidImages, 150);
     animatedWater.setAutoUpdate(false);
     
-    animatedLava = new Animation(new Image[] {
-        spriteSheet.getSprite(13, 14), 
-        spriteSheet.getSprite(14, 14), 
-        spriteSheet.getSprite(15, 14),
-        spriteSheet.getSprite(14, 15),
-        spriteSheet.getSprite(15, 15),
-    }, 100);
+    SpriteSheet lavaSpriteSheet = ImagesManager.shared().getSpriteSheet("lava.png", Core.TILE_SIZE, Core.TILE_SIZE);
+    liquidImages                = new Image[lavaSpriteSheet.getVerticalCount()];
+    for (int i = 0; i < lavaSpriteSheet.getVerticalCount(); i++) {
+      liquidImages[i] = lavaSpriteSheet.getSprite(0, i);
+    }
+    
+    animatedLava = new Animation(liquidImages, 150);
     animatedLava.setAutoUpdate(false);
   }
   

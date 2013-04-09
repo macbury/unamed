@@ -27,6 +27,7 @@ import com.esotericsoftware.kryo.io.OutputChunked;
 import com.macbury.procedular.Room;
 import com.macbury.unamed.Core;
 import com.macbury.unamed.ImagesManager;
+import com.macbury.unamed.ParticleManager;
 import com.macbury.unamed.entity.Entity;
 import com.macbury.unamed.entity.Player;
 import com.macbury.unamed.serializers.BlockSerializer;
@@ -172,6 +173,7 @@ public class Level{
 
   public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
     BlockResources.shared().update(delta);
+    ParticleManager.shared().update(delta);
     if (refreshEntityList) {
       Collections.sort(this.entities);
       refreshEntityList = false;

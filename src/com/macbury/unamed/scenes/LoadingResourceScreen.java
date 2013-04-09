@@ -16,6 +16,7 @@ import org.newdawn.slick.util.Log;
 
 import com.macbury.unamed.Core;
 import com.macbury.unamed.ImagesManager;
+import com.macbury.unamed.ParticleManager;
 import com.macbury.unamed.SoundManager;
 import com.macbury.unamed.level.BlockResources;
 
@@ -25,7 +26,6 @@ public class LoadingResourceScreen extends BasicGameState {
   private boolean initFinished = false;
 
   public LoadingResourceScreen() {
-    // TODO Auto-generated constructor stub
   }
 
   @Override
@@ -34,6 +34,7 @@ public class LoadingResourceScreen extends BasicGameState {
     ImagesManager.shared();
     BlockResources.shared();
     SoundManager.shared();
+    ParticleManager.shared();
     Log.info("Init LoadingResourceScreen");
     initFinished = true;
     
@@ -48,11 +49,8 @@ public class LoadingResourceScreen extends BasicGameState {
 
     int total = LoadingList.get().getTotalResources();
     int loaded = LoadingList.get().getTotalResources() - LoadingList.get().getRemainingResources();
-
-    float bar = loaded / (float) total;
     g.fillRect(100,150,loaded*40,20);
     g.drawRect(100,150,total*40,20);
-
   }
 
   @Override
