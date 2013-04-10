@@ -8,7 +8,7 @@ import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.util.Log;
 
 public class DungeonBSPNode extends Rectangle {
-  public final static int MAX_SPLIT_DEPTH   = 4; 
+  public final static int MAX_SPLIT_DEPTH   = 6; 
   public final static byte SPLIT_VERITICAL  = 0;
   public final static byte SPLIT_HORIZONTAL = 1;
   final static float MIN_SPLIT_FACTOR = 0.48f;

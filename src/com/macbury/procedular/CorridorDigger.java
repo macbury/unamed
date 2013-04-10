@@ -9,8 +9,8 @@ public class CorridorDigger {
 
   public static final int LEFT_DIRECTION  = 0;
   public static final int RIGHT_DIRECTION = 1;
-  private static final int UP_DIRECTION   = 2;
-  private static final int DOWN_DIRECTION = 3;
+  public static final int UP_DIRECTION   = 2;
+  public static final int DOWN_DIRECTION = 3;
   private Level level;
 
   public CorridorDigger(Level level) {

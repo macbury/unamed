@@ -35,7 +35,7 @@ import com.macbury.unamed.level.Water;
 public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCallback, DungeonBSPNodeRoomGenerateCallback {
   private static final int SEED_THROTTLE      = 1000;
   private static final int ROOM_COUNT         = 60;
-  private static final int CELL_SIZE          = 128;
+  private static final int CELL_SIZE          = 256;
   
   private static final byte RESOURCE_SIDEWALK = 0;
   private static final byte RESOURCE_DIRT     = 1;
@@ -238,11 +238,69 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
           digger.dig(leftChild.getRoom().getMaxX() + 1, corridorY, CorridorDigger.RIGHT_DIRECTION, 0, true);
         } else {
           int tunnelMeetX, tunnelMeetY;
-          
           if (leftChild.getRoom().getY() > rightChild.getRoom().getY()) {
+            //        _____
+            //   X____|   |
+            //    |   | R |
+            //    |   |___|
+            //  __|__
+            //  |   |
+            //  | L |
+            //  |___|
             tunnelMeetX = randomValueBetween(leftChild.getRoom().getX() + 1, leftChild.getRoom().getMaxX());
             tunnelMeetY = randomValueBetween(rightChild.getRoom().getY() + 1, Math.min(rightChild.getRoom().getMaxY() - 1, leftChild.getRoom().getY()));
             digger.digDownRightCorridor(tunnelMeetX, tunnelMeetY, tunnelMeetX, tunnelMeetY);
+          } else {
+            //    _____
+            //    |   |____X
+            //    | L |   |
+            //    |___|   |
+            //          __|__
+            //          |   |
+            //          | R |
+            //          |___|
+            tunnelMeetX = randomValueBetween(rightChild.getRoom().getX() + 1, rightChild.getRoom().getMaxX());
+            tunnelMeetY = randomValueBetween(leftChild.getRoom().getY() + 1, Math.min(leftChild.getRoom().getMaxY() - 1, rightChild.getRoom().getY()));
+            digger.digDownLeftLCorridor(tunnelMeetX, tunnelMeetY, tunnelMeetX, tunnelMeetY);
+          }
+        }
+      } else {
+        int minOverlappingX = (int) Math.max(leftChild.getRoom().getX(), rightChild.getRoom().getX());
+        int maxOverlappingX = (int) Math.min(leftChild.getRoom().getMaxX(), rightChild.getRoom().getMaxX());
+        if (maxOverlappingX - minOverlappingX >= 3) {
+          int corridorX = minOverlappingX + 1 + this.random.nextInt(maxOverlappingX - minOverlappingX - 2);
+
+          digger.dig(corridorX, (int) leftChild.getRoom().getMaxY(), CorridorDigger.UP_DIRECTION, 0, true);
+          digger.dig(corridorX, (int) (leftChild.getRoom().getMaxY() + 1), CorridorDigger.DOWN_DIRECTION, 0, true);
+        } else {
+          int tunnelMeetX, tunnelMeetY;
+          
+          if (leftChild.getRoom().getX() > rightChild.getRoom().getX()) {
+            //        _____
+            //        |   |
+            //        | L |
+            //        |___|
+            //  _____   |
+            //  |   |   |
+            //  | R |___|X
+            //  |___|    
+            
+            tunnelMeetX = randomValueBetween(Math.max(leftChild.getRoom().getX() + 1, rightChild.getRoom().getMaxX() + 1), leftChild.getRoom().getMaxX());
+            tunnelMeetY = randomValueBetween(rightChild.getRoom().getY() + 1, rightChild.getRoom().getMaxY());
+            digger.digUpLeftCorridor(tunnelMeetX, tunnelMeetY, tunnelMeetX, tunnelMeetY);
+          } else {
+            //    _____
+            //    |   |
+            //    | L |
+            //    |___|
+            //      |    _____
+            //      |    |   |
+            //     X|____| R |
+            //           |___|   
+            
+            tunnelMeetX = randomValueBetween(leftChild.getRoom().getX(), Math.min(rightChild.getRoom().getX(), leftChild.getRoom().getMaxX() - 1));
+            tunnelMeetY = randomValueBetween(rightChild.getRoom().getY() + 1, rightChild.getRoom().getMaxY());
+            digger.DigUpRightLCorridor(tunnelMeetX, tunnelMeetY, tunnelMeetX, tunnelMeetY);
           }
         }
       }
