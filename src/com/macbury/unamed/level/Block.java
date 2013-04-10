@@ -192,4 +192,8 @@ public class Block {
   public void setY(int ty) {
     this.y = ty;
   }
+
+  public boolean isCobbleStone() {
+    return Cobblestone.class.isInstance(this);
+  }
 }

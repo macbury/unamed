@@ -391,7 +391,6 @@ public class Level{
     for (int x = sx; x <= ex; x++) {
       for (int y = sy; y <= ey; y++) {
         this.world[x][y] = new Sidewalk(x,y);
-        //Log.debug("Building block: "+ x + "x" +y + " with id: "+ block.id);
       }
     }
   }
@@ -464,14 +463,16 @@ public class Level{
         boolean render   = true;
         Color color      = null;
         
-        if (block.isBedrock()) {
+        if (block.isCobbleStone()) {
+          color = new Color(50,50,50);
+        } else if (block.isBedrock()) {
           color = Color.cyan;
         } else if (block.isDirt()) {
           color = Color.black;
         } else if (block.isCopper()) {
           color = new Color(127,0,0); 
         } else if (block.isAir()) {
-          color = Color.black;
+          color = new Color(134,134,134);
         } else if (block.isCoal()) {
           color = Color.darkGray; 
         } else if (block.isGold()) {
@@ -497,10 +498,12 @@ public class Level{
       }
     }
     
-    localImgG.setColor(new Color(255,255,255,100));
-    for (Room room : this.rooms) {
+    /*for (Room room : this.rooms) {
+      localImgG.setColor(new Color(134,134,134));
       localImgG.fill(room);
-    }
+      localImgG.setColor(new Color(32,32,32));
+      localImgG.drawRect(room.getX(), room.getY(), room.getWidth(), room.getHeight());
+    }*/
     
     Log.info("Flushing bitmap");
     localImgG.flush();
@@ -556,5 +559,42 @@ public class Level{
     }
     
     return null;
+  }
+
+  public void applyRooms(ArrayList<Room> allRooms) {
+    this.setRooms(allRooms);
+    
+    for(Room room : allRooms) {
+      createRoomWithBorder(room);
+    }
+  }
+
+  private void createRoomWithBorder(Room room) {
+    int ex = (int) room.getMaxX();
+    int ey = (int) room.getMaxY();
+    int sx = (int) room.getX();
+    int sy = (int) room.getY();
+    
+    for (int x = sx; x <= ex; x++) {
+      for (int y = sy; y <= ey; y++) {
+        this.world[x][y] = new Sidewalk(x,y);
+      }
+    }
+    
+    int y = ey;
+    int x = sx;
+    for (x = sx; x <= ex; x++) {
+      this.world[x][sy] = new Cobblestone(x,sy);
+      this.world[x][ey] = new Cobblestone(x,ey);
+    }
+    
+    for (y = sy; y <= ey; y++) {
+      this.world[sx][y] = new Cobblestone(sx,y);
+      this.world[ex][y] = new Cobblestone(ex,y);
+    }
+  }
+
+  public Block getBlockForPosition(float x, float y) {
+    return getBlockForPosition((int) x, (int) y);
   }
 }

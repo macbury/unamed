@@ -61,6 +61,7 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
   public int progress;
   private Level level;
   public float subProgress;
+  private Random random;
   
   public WorldBuilder(int size, int seed) throws SlickException {
     this.seed          = seed;
@@ -197,11 +198,11 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
     Log.info("Cell size: " + cellCount); 
     
     int minCellCount = cellCount / 2;
-    Random random    = new Random(seed);
+    this.random      = new Random(seed);
     cellCount        = minCellCount + random.nextInt(minCellCount);
     
     DungeonBSPNode dungeonBSPNode = new DungeonBSPNode(null, 0, 0, CELL_SIZE, CELL_SIZE, 0, random);
-    this.level.setRooms(dungeonBSPNode.getAllRooms());
+    this.level.applyRooms(dungeonBSPNode.getAllRooms());
     
     dungeonBSPNode.bottomsUpByLevelEnumerate(this, this);
   }
@@ -213,53 +214,45 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
 
   @Override
   public void onGenerateCorridor(DungeonBSPNode currentNode) {
-    Log.info("Generating corridor from callback");
+    defaultCorridorGenerator(currentNode);
   }
   
-  private void applyRooms() {
-    Random random = new Random(getSeed());
+  public void defaultCorridorGenerator(DungeonBSPNode dungeonNode) {
+    DungeonBSPNode leftChild  = dungeonNode.leftChild;
+    DungeonBSPNode rightChild = dungeonNode.rightChild;
+    CorridorDigger digger     = new CorridorDigger(this.level);
     
-    boolean createdSpawn = false;
-    
-    int roomCount = random.nextInt(ROOM_COUNT) + ROOM_COUNT;
-    int stepBy    = (90 - this.progress) / roomCount;
-    while(roomCount >= 0) {
-      boolean generateNewRoom = false;
-      int rx      = random.nextInt(this.size);
-      int ry      = random.nextInt(this.size);
-      int rWidth  = 20 + random.nextInt(50);
-      int rHeight = 15 + random.nextInt(50);
-      Room room   = null;
-      
-      if (!createdSpawn) {
-        room         = new SpawnRoom(rx, ry, rWidth, rHeight);
-        createdSpawn = true;
-      } else {
-        switch (random.nextInt(1)) {
-          case 1:
-            room   = new Room(rx, ry, rWidth, rHeight);
-          break;
-  
-          default:
-            room   = new Room(rx, ry, rWidth, rHeight);
-          break;
+    if (leftChild == null || !leftChild.haveRoom()) {
+      dungeonNode.setBounds(rightChild.getRoom());
+    } else if (rightChild == null || !rightChild.haveRoom()) {
+      dungeonNode.setBounds(leftChild.getRoom());
+    } else {
+      if (dungeonNode.isHorizontal()) {
+        int minOverlappingY = (int) Math.max(leftChild.getRoom().getMinY(), rightChild.getRoom().getMinY());
+        int maxOverlappingY = (int) Math.min(leftChild.getRoom().getMaxY(), rightChild.getRoom().getMaxY());
+        
+        if (maxOverlappingY - minOverlappingY >= 3) {
+          int corridorY = minOverlappingY + 1 + this.random.nextInt(maxOverlappingY - minOverlappingY - 2);
+          
+          digger.dig(leftChild.getRoom().getMaxX(), corridorY, CorridorDigger.LEFT_DIRECTION, 0, true);
+          digger.dig(leftChild.getRoom().getMaxX() + 1, corridorY, CorridorDigger.RIGHT_DIRECTION, 0, true);
+        } else {
+          int tunnelMeetX, tunnelMeetY;
+          
+          if (leftChild.getRoom().getY() > rightChild.getRoom().getY()) {
+            tunnelMeetX = randomValueBetween(leftChild.getRoom().getX() + 1, leftChild.getRoom().getMaxX());
+            tunnelMeetY = randomValueBetween(rightChild.getRoom().getY() + 1, Math.min(rightChild.getRoom().getMaxY() - 1, leftChild.getRoom().getY()));
+            digger.digDownRightCorridor(tunnelMeetX, tunnelMeetY, tunnelMeetX, tunnelMeetY);
+          }
         }
-      }
-      
-      for (Room stackRoom : this.rooms) {
-        if (stackRoom.intersects(room)) {
-          generateNewRoom = true;
-        }
-      }
-      
-      if (!generateNewRoom) {
-        this.rooms.add(room);
-        roomCount--;
-        this.progress += stepBy;
       }
     }
   }
 
+  private int randomValueBetween(float start, float end)  {
+    return (int)start + random.nextInt((int)end - (int)start);
+  }
+  
   private void applyBedrockBorder() {
     Log.info("Adding bedrock border");
     this.progress = 37;

@@ -8,11 +8,14 @@ import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.util.Log;
 
 public class DungeonBSPNode extends Rectangle {
-  public final static int MAX_SPLIT_DEPTH   = 5; 
+  public final static int MAX_SPLIT_DEPTH   = 4; 
   public final static byte SPLIT_VERITICAL  = 0;
   public final static byte SPLIT_HORIZONTAL = 1;
   final static float MIN_SPLIT_FACTOR = 0.48f;
   final static float MAX_SPLIT_FACTOR = 0.52f;
+  
+  static private float MAX_PARTION_SPLIT_FACTOR_RATIO = 1.5f;
+  
   public DungeonBSPNode leftChild;
   public DungeonBSPNode rightChild;
   private Random random;
@@ -42,16 +45,16 @@ public class DungeonBSPNode extends Rectangle {
   }
   
   private void createRoom() {
-    int baseWidth   = (int) (this.getWidth() / 2);
-    int baseHeight  = (int) (this.getHeight() / 2);
+    int baseWidth   = (int) (this.getWidth() / 2) - 2;
+    int baseHeight  = (int) (this.getHeight() / 2) - 2;
     int roomWidth   = baseWidth + random.nextInt(baseWidth);
     int roomHeight  = baseHeight + random.nextInt(baseHeight);
 
     if (roomWidth <= 4 || roomHeight <= 4) {
       this.parent.randomSplit();
     } else {
-      int ex          = random.nextInt((int) (this.getWidth()  - roomWidth));
-      int ey          = random.nextInt((int) (this.getHeight() - roomHeight));
+      int ex          = random.nextInt((int) (this.getWidth()  - roomWidth)) + 1;
+      int ey          = random.nextInt((int) (this.getHeight() - roomHeight)) + 1;
       
       this.room       = new Room(this.getX() + ex, this.getY() + ey, roomWidth, roomHeight);
     }
@@ -90,7 +93,11 @@ public class DungeonBSPNode extends Rectangle {
   }
   
   private void randomSplit() {
-    if (this.random.nextBoolean()) {
+    if (this.getWidth() / this.getHeight() > MAX_PARTION_SPLIT_FACTOR_RATIO) {
+      splitHorizontaly();
+    } else if (this.getHeight() / this.getWidth() > MAX_PARTION_SPLIT_FACTOR_RATIO) {
+      splitVertical();
+    } else if (this.random.nextBoolean()) {
       splitHorizontaly();
     } else {
       splitVertical();
@@ -210,5 +217,8 @@ public class DungeonBSPNode extends Rectangle {
       }
     }
   }
-
+  
+  public boolean isHorizontal() {
+    return splitDirection == SPLIT_HORIZONTAL;
+  }
 }
