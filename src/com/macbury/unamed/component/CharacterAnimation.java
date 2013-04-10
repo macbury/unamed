@@ -91,6 +91,10 @@ public class CharacterAnimation extends RenderComponent {
     }
     
     if (targetAnimation != currentAnimation) {
+      walkingLeft.stop();
+      walkingTop.stop();
+      walkingRight.stop();
+      walkingDown.stop();
       if (currentAnimation != null) {
         currentAnimation.stop();
         currentAnimation.setCurrentFrame(0);

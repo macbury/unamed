@@ -32,7 +32,7 @@ import com.macbury.unamed.level.Rock;
 import com.macbury.unamed.level.Sand;
 import com.macbury.unamed.level.Water;
 
-public class WorldBuilder implements Runnable {
+public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCallback, DungeonBSPNodeRoomGenerateCallback {
   private static final int SEED_THROTTLE      = 1000;
   private static final int ROOM_COUNT         = 60;
   private static final int CELL_SIZE          = 128;
@@ -200,18 +200,20 @@ public class WorldBuilder implements Runnable {
     Random random    = new Random(seed);
     cellCount        = minCellCount + random.nextInt(minCellCount);
     
-    DungeonCell dungeonCell = new DungeonCell(null, 0, 0, CELL_SIZE, CELL_SIZE, 0, random);
-    this.level.setRooms(dungeonCell.getAllRooms());
+    DungeonBSPNode dungeonBSPNode = new DungeonBSPNode(null, 0, 0, CELL_SIZE, CELL_SIZE, 0, random);
+    this.level.setRooms(dungeonBSPNode.getAllRooms());
     
-    ArrayList<DungeonCell> leaves = new ArrayList<DungeonCell>();
-    dungeonCell.gatherLeaves(leaves);
-    Log.info("Generated rooms: " + leaves.size());
-    
-    for (DungeonCell leaf : leaves) {
-      if (leaf.haveRoom()) {
-        Log.info("Have room!");
-      }
-    }
+    dungeonBSPNode.bottomsUpByLevelEnumerate(this, this);
+  }
+  
+  @Override
+  public void onGenerateRoom(DungeonBSPNode currentNode) {
+    Log.info("Generating room from callback");
+  }
+
+  @Override
+  public void onGenerateCorridor(DungeonBSPNode currentNode) {
+    Log.info("Generating corridor from callback");
   }
   
   private void applyRooms() {
@@ -298,5 +300,5 @@ public class WorldBuilder implements Runnable {
     this.progress = 35;
     applyGold();
   }
-
+  
 }
