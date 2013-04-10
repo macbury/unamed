@@ -202,14 +202,14 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
     cellCount        = minCellCount + random.nextInt(minCellCount);
     
     DungeonBSPNode dungeonBSPNode = new DungeonBSPNode(null, 0, 0, CELL_SIZE, CELL_SIZE, 0, random);
+    dungeonBSPNode.split();
     this.level.applyRooms(dungeonBSPNode.getAllRooms());
-    
     dungeonBSPNode.bottomsUpByLevelEnumerate(this, this);
   }
   
   @Override
-  public void onGenerateRoom(DungeonBSPNode currentNode) {
-    Log.info("Generating room from callback");
+  public void onGenerateRoom(DungeonBSPNode dungeonNode) {
+    dungeonNode.createRoom();
   }
 
   @Override

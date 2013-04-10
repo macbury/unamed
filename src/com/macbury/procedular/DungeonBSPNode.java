@@ -14,15 +14,15 @@ public class DungeonBSPNode extends Rectangle {
   final static float MIN_SPLIT_FACTOR = 0.48f;
   final static float MAX_SPLIT_FACTOR = 0.52f;
   
+  static private float SMALLEST_PARTITION_SIZE        = 0.2f;
   static private float MAX_PARTION_SPLIT_FACTOR_RATIO = 1.5f;
-  
+  static private float HOMOGENITY_FACTOR               = 0.25f;
   public DungeonBSPNode leftChild;
   public DungeonBSPNode rightChild;
   private Random random;
   private int depth = 0;
   private Room room;
   private DungeonBSPNode parent;
-  private Corridor corridor;
   private byte splitDirection;
   
   public DungeonBSPNode(DungeonBSPNode parent, float x, float y, float width, float height, int depth, Random random) {
@@ -31,33 +31,23 @@ public class DungeonBSPNode extends Rectangle {
     this.random = random;
     this.depth  = depth + 1;
     Log.debug("DungeonBSPNode: X: "+x + " Y: "+ y + " width: "+ width + " height: " +height + " depth: "+depth);
-    if (!this.split()) {
-      this.createRoom();
-    }
-  }
-  
-  public void connectTo(DungeonBSPNode dungeonBSPNode) {
-    new Corridor(this, dungeonBSPNode);
+    
   }
   
   public boolean isRoot() {
     return parent == null;
   }
   
-  private void createRoom() {
+  public void createRoom() {
     int baseWidth   = (int) (this.getWidth() / 2) - 2;
     int baseHeight  = (int) (this.getHeight() / 2) - 2;
     int roomWidth   = baseWidth + random.nextInt(baseWidth);
     int roomHeight  = baseHeight + random.nextInt(baseHeight);
 
-    if (roomWidth <= 4 || roomHeight <= 4) {
-      this.parent.randomSplit();
-    } else {
-      int ex          = random.nextInt((int) (this.getWidth()  - roomWidth)) + 1;
-      int ey          = random.nextInt((int) (this.getHeight() - roomHeight)) + 1;
-      
-      this.room       = new Room(this.getX() + ex, this.getY() + ey, roomWidth, roomHeight);
-    }
+    int ex          = random.nextInt((int) (this.getWidth()  - roomWidth)) + 1;
+    int ey          = random.nextInt((int) (this.getHeight() - roomHeight)) + 1;
+    
+    this.room       = new Room(this.getX() + ex, this.getY() + ey, roomWidth, roomHeight);
   }
 
   private int getSizeA(float size) {
@@ -67,32 +57,51 @@ public class DungeonBSPNode extends Rectangle {
   
   private void splitHorizontaly() {
     Log.info("Spliting horizontal on depth: "+this.depth);
-    int sizeA      = getSizeA(this.getWidth());
-    int sizeB      = (int)(this.getWidth() - sizeA);
-    splitDirection = SPLIT_HORIZONTAL;
+    int sizeA          = getSizeA(this.getWidth());
+    int sizeB          = (int)(this.getWidth() - sizeA);
+    
+    splitDirection     = SPLIT_HORIZONTAL;
+    
     leftChild          = new DungeonBSPNode(this, this.getX(), this.getY(), sizeA, this.getHeight(), this.depth, this.random);
     rightChild         = new DungeonBSPNode(this, this.getX()+sizeA, this.getY(), sizeB, this.getHeight(), this.depth, this.random);
+    
+    if (shouldSplit(sizeA)) {
+      leftChild.split();
+    } else {
+      leftChild.createRoom();
+    }
+    
+    if (shouldSplit(sizeB)) {
+      rightChild.split();
+    } else {
+      rightChild.createRoom();
+    }
   }
 
   private void splitVertical() {
     Log.info("Spliting vertical on depth: "+this.depth);
-    int sizeA      = getSizeA(this.getHeight());
-    int sizeB      = (int)(this.getHeight() - sizeA);
-    splitDirection = SPLIT_VERITICAL;
+    int sizeA          = getSizeA(this.getHeight());
+    int sizeB          = (int)(this.getHeight() - sizeA);
+    
+    splitDirection     = SPLIT_VERITICAL;
+    
     leftChild          = new DungeonBSPNode(this, this.getX(), this.getY(), this.getWidth(), sizeA, this.depth, this.random);
     rightChild         = new DungeonBSPNode(this, this.getX(), this.getY()+sizeA, this.getWidth(), sizeB, this.depth, this.random);
-  }
-  
-  public boolean split() {
-    if (this.depth >= MAX_SPLIT_DEPTH) {
-      return false;
+    
+    if (shouldSplit(sizeA)) {
+      leftChild.split();
     } else {
-      randomSplit();
-      return true;
+      leftChild.createRoom();
+    }
+    
+    if (shouldSplit(sizeB)) {
+      rightChild.split();
+    } else {
+      rightChild.createRoom();
     }
   }
   
-  private void randomSplit() {
+  public void split() {
     if (this.getWidth() / this.getHeight() > MAX_PARTION_SPLIT_FACTOR_RATIO) {
       splitHorizontaly();
     } else if (this.getHeight() / this.getWidth() > MAX_PARTION_SPLIT_FACTOR_RATIO) {
@@ -103,7 +112,7 @@ public class DungeonBSPNode extends Rectangle {
       splitVertical();
     }
   }
-  
+
   public Random getRandom() {
     return random;
   }
@@ -154,14 +163,6 @@ public class DungeonBSPNode extends Rectangle {
 
   public void setParent(DungeonBSPNode parent) {
     this.parent = parent;
-  }
-
-  public Corridor getCorridor() {
-    return corridor;
-  }
-
-  public void setCorridor(Corridor corridor) {
-    this.corridor = corridor;
   }
   
   public void gatherLeaves(ArrayList<DungeonBSPNode> leaves) {
@@ -220,5 +221,32 @@ public class DungeonBSPNode extends Rectangle {
   
   public boolean isHorizontal() {
     return splitDirection == SPLIT_HORIZONTAL;
+  }
+  
+  public boolean shouldSplit(float partitionSize) {
+    DungeonBSPNode root = getRootOrParentRoot();
+    partitionSize = partitionSize / root.getSize();
+    if (partitionSize > SMALLEST_PARTITION_SIZE && partitionSize < SMALLEST_PARTITION_SIZE * 2.0 && this.random.nextDouble() <= 0.1)
+      return false;
+
+    return partitionSize > SMALLEST_PARTITION_SIZE; 
+  }
+  
+  private float homogenizedRandomValue() {
+    return (float)(0.5 - (this.random.nextDouble() * HOMOGENITY_FACTOR));
+  }
+  
+  private DungeonBSPNode getRootOrParentRoot() {
+    DungeonBSPNode node = this;
+    
+    while(!node.isRoot()) {
+      node = node.parent;
+    }
+    
+    return node;
+  }
+  
+  public int getSize() {
+    return (int) this.getWidth();
   }
 }
