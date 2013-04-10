@@ -507,10 +507,8 @@ public class Level{
     }
     
     /*for (Room room : this.rooms) {
-      localImgG.setColor(new Color(134,134,134));
+      localImgG.setColor(new Color(255,255,255, 100));
       localImgG.fill(room);
-      localImgG.setColor(new Color(32,32,32));
-      localImgG.drawRect(room.getX(), room.getY(), room.getWidth(), room.getHeight());
     }*/
     
     Log.info("Flushing bitmap");

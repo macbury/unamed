@@ -34,6 +34,10 @@ public class DungeonBSPNode extends Rectangle {
     
   }
   
+  public void setRoom(Room r) {
+    this.room = r;
+  }
+  
   public boolean isRoot() {
     return parent == null;
   }
@@ -48,6 +52,7 @@ public class DungeonBSPNode extends Rectangle {
     int ey          = random.nextInt((int) (this.getHeight() - roomHeight)) + 1;
     
     this.room       = new Room(this.getX() + ex, this.getY() + ey, roomWidth, roomHeight);
+    this.room.setNode(this);
   }
 
   private int getSizeA(float size) {

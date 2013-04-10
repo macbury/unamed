@@ -6,15 +6,19 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Random;
-
+import java.util.Collections;
 import javax.security.auth.callback.Callback;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.GeomUtil;
+import org.newdawn.slick.geom.Rectangle;
+import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.imageout.ImageOut;
 import org.newdawn.slick.util.Log;
 
@@ -47,7 +51,7 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
   private static final byte RESOURCE_COAL     = 7;
   private static final byte RESOURCE_DIAMOND  = 8;
   private static final byte RESOURCE_GOLD     = 9;
-  public static final int NORMAL              = 1024;
+  public static final int NORMAL              = 512;
   public static final int BIG                 = 4000;
   public static final int CRASH_MY_COMPUTER   = 6000;
   
@@ -199,12 +203,25 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
     
     int minCellCount = cellCount / 2;
     this.random      = new Random(seed);
-    cellCount        = minCellCount + random.nextInt(minCellCount);
+    //cellCount        = minCellCount + random.nextInt(minCellCount);
     
     DungeonBSPNode dungeonBSPNode = new DungeonBSPNode(null, 0, 0, CELL_SIZE, CELL_SIZE, 0, random);
     dungeonBSPNode.split();
-    this.level.applyRooms(dungeonBSPNode.getAllRooms());
+    ArrayList<Room> rooms = dungeonBSPNode.getAllRooms();
+    this.level.applyRooms(rooms);
     dungeonBSPNode.bottomsUpByLevelEnumerate(this, this);
+    
+    Collections.shuffle(rooms, this.random);
+    
+    Room previousRoom = null;
+    
+    for (Room currentRoom : rooms) {
+      if (previousRoom != null) {
+        bruteForceConnectRooms(previousRoom.getNode(), currentRoom.getNode());
+      }
+        
+      previousRoom = currentRoom;
+    }
   }
   
   @Override
@@ -217,15 +234,111 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
     defaultCorridorGenerator(currentNode);
   }
   
+  public void bruteForceConnectRooms(DungeonBSPNode regionA, DungeonBSPNode regionB) {
+    CorridorDigger digger     = new CorridorDigger(this.level);
+    
+    if (regionA.getRoom().getMaxY() < regionB.getRoom().getY() || regionB.getRoom().getMaxY() < regionA.getRoom().getY()) {
+      DungeonBSPNode upperRegion = (regionA.getRoom().getMaxY() <= regionB.getRoom().getY()) ? regionA : regionB;
+      DungeonBSPNode lowerRegion = (upperRegion == regionA) ? regionB : regionA;
+      
+      int minOverlappingX        = (int) Math.max(upperRegion.getRoom().getX(), lowerRegion.getRoom().getX());
+      int maxOverlappingX        = (int) Math.min(upperRegion.getRoom().getMaxX(), lowerRegion.getRoom().getMaxX());
+      
+      if (maxOverlappingX - minOverlappingX >= 3) {
+        int corridorX = minOverlappingX + 1 + this.random.nextInt(maxOverlappingX - minOverlappingX - 2);
+        
+        digger.dig(corridorX, (int) upperRegion.getRoom().getMaxY(), CorridorDigger.UP_DIRECTION, 0, true);
+        digger.dig(corridorX, (int) (upperRegion.getRoom().getMaxY() + 1), CorridorDigger.DOWN_DIRECTION, (int) (lowerRegion.getRoom().getY() - (upperRegion.getRoom().getMaxY() + 1)), true);
+      } else {
+        connectZShapeVertical(digger, upperRegion, lowerRegion);
+      }
+    } else {
+      DungeonBSPNode leftRegion = (regionA.getRoom().getMaxX() <= regionB.getRoom().getX()) ? regionA : regionB;
+      DungeonBSPNode rightRegion = (leftRegion == regionA) ? regionB : regionA;
+      
+      int minOverlappingY = (int) Math.max(leftRegion.getRoom().getY(), rightRegion.getRoom().getY());
+      int maxOverlappingY = (int) Math.min(leftRegion.getRoom().getMaxY(), rightRegion.getRoom().getMaxY());
+      if (maxOverlappingY - minOverlappingY >= 3) {
+        int corridorY = minOverlappingY + 1 + this.random.nextInt(maxOverlappingY - minOverlappingY - 2);
+
+        digger.dig(leftRegion.getRoom().getMaxX(), corridorY, CorridorDigger.LEFT_DIRECTION, 0, true);
+        digger.dig(leftRegion.getRoom().getMaxX() + 1, corridorY, CorridorDigger.RIGHT_DIRECTION, (int) (rightRegion.getRoom().getX() - (leftRegion.getRoom().getMaxX() + 1)), true);
+      } else {
+        connectZShapeHorizontal(digger, leftRegion, rightRegion);
+      }
+    }
+  }
+  
+  public void connectZShapeHorizontal(CorridorDigger digger, DungeonBSPNode leftChild, DungeonBSPNode rightChild) {
+    int tunnelMeetX, tunnelMeetY;
+    if (leftChild.getRoom().getY() > rightChild.getRoom().getY()) {
+      //        _____
+      //   X____|   |
+      //    |   | R |
+      //    |   |___|
+      //  __|__
+      //  |   |
+      //  | L |
+      //  |___|
+      tunnelMeetX = randomValueBetween(leftChild.getRoom().getX() + 1, leftChild.getRoom().getMaxX());
+      tunnelMeetY = randomValueBetween(rightChild.getRoom().getY() + 1, Math.min(rightChild.getRoom().getMaxY() - 1, leftChild.getRoom().getY()));
+      digger.digDownRightCorridor(tunnelMeetX, tunnelMeetY, tunnelMeetX, tunnelMeetY);
+    } else {
+      //    _____
+      //    |   |____X
+      //    | L |   |
+      //    |___|   |
+      //          __|__
+      //          |   |
+      //          | R |
+      //          |___|
+      tunnelMeetX = randomValueBetween(rightChild.getRoom().getX() + 1, rightChild.getRoom().getMaxX());
+      tunnelMeetY = randomValueBetween(leftChild.getRoom().getY() + 1, Math.min(leftChild.getRoom().getMaxY() - 1, rightChild.getRoom().getY()));
+      digger.digDownLeftLCorridor(tunnelMeetX, tunnelMeetY, tunnelMeetX, tunnelMeetY);
+    }
+  }
+  
+  public void connectZShapeVertical(CorridorDigger digger, DungeonBSPNode leftChild, DungeonBSPNode rightChild) {
+    int tunnelMeetX, tunnelMeetY;
+    
+    if (leftChild.getRoom().getX() > rightChild.getRoom().getX()) {
+      //        _____
+      //        |   |
+      //        | L |
+      //        |___|
+      //  _____   |
+      //  |   |   |
+      //  | R |___|X
+      //  |___|    
+      
+      tunnelMeetX = randomValueBetween(Math.max(leftChild.getRoom().getX() + 1, rightChild.getRoom().getMaxX() + 1), leftChild.getRoom().getMaxX());
+      tunnelMeetY = randomValueBetween(rightChild.getRoom().getY() + 1, rightChild.getRoom().getMaxY());
+      digger.digUpLeftCorridor(tunnelMeetX, tunnelMeetY, tunnelMeetX, tunnelMeetY);
+    } else {
+      //    _____
+      //    |   |
+      //    | L |
+      //    |___|
+      //      |    _____
+      //      |    |   |
+      //     X|____| R |
+      //           |___|   
+      
+      tunnelMeetX = randomValueBetween(leftChild.getRoom().getX(), Math.min(rightChild.getRoom().getX(), leftChild.getRoom().getMaxX() - 1));
+      tunnelMeetY = randomValueBetween(rightChild.getRoom().getY() + 1, rightChild.getRoom().getMaxY());
+      digger.DigUpRightLCorridor(tunnelMeetX, tunnelMeetY, tunnelMeetX, tunnelMeetY);
+    }
+  }
+  
   public void defaultCorridorGenerator(DungeonBSPNode dungeonNode) {
     DungeonBSPNode leftChild  = dungeonNode.leftChild;
     DungeonBSPNode rightChild = dungeonNode.rightChild;
     CorridorDigger digger     = new CorridorDigger(this.level);
     
     if (leftChild == null || !leftChild.haveRoom()) {
-      dungeonNode.setBounds(rightChild.getRoom());
+      dungeonNode.setRoom(rightChild.getRoom());
     } else if (rightChild == null || !rightChild.haveRoom()) {
-      dungeonNode.setBounds(leftChild.getRoom());
+      dungeonNode.setRoom(leftChild.getRoom());
     } else {
       if (dungeonNode.isHorizontal()) {
         int minOverlappingY = (int) Math.max(leftChild.getRoom().getMinY(), rightChild.getRoom().getMinY());
@@ -237,32 +350,7 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
           digger.dig(leftChild.getRoom().getMaxX(), corridorY, CorridorDigger.LEFT_DIRECTION, 0, true);
           digger.dig(leftChild.getRoom().getMaxX() + 1, corridorY, CorridorDigger.RIGHT_DIRECTION, 0, true);
         } else {
-          int tunnelMeetX, tunnelMeetY;
-          if (leftChild.getRoom().getY() > rightChild.getRoom().getY()) {
-            //        _____
-            //   X____|   |
-            //    |   | R |
-            //    |   |___|
-            //  __|__
-            //  |   |
-            //  | L |
-            //  |___|
-            tunnelMeetX = randomValueBetween(leftChild.getRoom().getX() + 1, leftChild.getRoom().getMaxX());
-            tunnelMeetY = randomValueBetween(rightChild.getRoom().getY() + 1, Math.min(rightChild.getRoom().getMaxY() - 1, leftChild.getRoom().getY()));
-            digger.digDownRightCorridor(tunnelMeetX, tunnelMeetY, tunnelMeetX, tunnelMeetY);
-          } else {
-            //    _____
-            //    |   |____X
-            //    | L |   |
-            //    |___|   |
-            //          __|__
-            //          |   |
-            //          | R |
-            //          |___|
-            tunnelMeetX = randomValueBetween(rightChild.getRoom().getX() + 1, rightChild.getRoom().getMaxX());
-            tunnelMeetY = randomValueBetween(leftChild.getRoom().getY() + 1, Math.min(leftChild.getRoom().getMaxY() - 1, rightChild.getRoom().getY()));
-            digger.digDownLeftLCorridor(tunnelMeetX, tunnelMeetY, tunnelMeetX, tunnelMeetY);
-          }
+          connectZShapeHorizontal(digger, leftChild, rightChild);
         }
       } else {
         int minOverlappingX = (int) Math.max(leftChild.getRoom().getX(), rightChild.getRoom().getX());
@@ -273,37 +361,21 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
           digger.dig(corridorX, (int) leftChild.getRoom().getMaxY(), CorridorDigger.UP_DIRECTION, 0, true);
           digger.dig(corridorX, (int) (leftChild.getRoom().getMaxY() + 1), CorridorDigger.DOWN_DIRECTION, 0, true);
         } else {
-          int tunnelMeetX, tunnelMeetY;
-          
-          if (leftChild.getRoom().getX() > rightChild.getRoom().getX()) {
-            //        _____
-            //        |   |
-            //        | L |
-            //        |___|
-            //  _____   |
-            //  |   |   |
-            //  | R |___|X
-            //  |___|    
-            
-            tunnelMeetX = randomValueBetween(Math.max(leftChild.getRoom().getX() + 1, rightChild.getRoom().getMaxX() + 1), leftChild.getRoom().getMaxX());
-            tunnelMeetY = randomValueBetween(rightChild.getRoom().getY() + 1, rightChild.getRoom().getMaxY());
-            digger.digUpLeftCorridor(tunnelMeetX, tunnelMeetY, tunnelMeetX, tunnelMeetY);
-          } else {
-            //    _____
-            //    |   |
-            //    | L |
-            //    |___|
-            //      |    _____
-            //      |    |   |
-            //     X|____| R |
-            //           |___|   
-            
-            tunnelMeetX = randomValueBetween(leftChild.getRoom().getX(), Math.min(rightChild.getRoom().getX(), leftChild.getRoom().getMaxX() - 1));
-            tunnelMeetY = randomValueBetween(rightChild.getRoom().getY() + 1, rightChild.getRoom().getMaxY());
-            digger.DigUpRightLCorridor(tunnelMeetX, tunnelMeetY, tunnelMeetX, tunnelMeetY);
-          }
+          connectZShapeVertical(digger, leftChild, rightChild);
         }
       }
+      
+      int sx = (int) Math.min(leftChild.getRoom().getX(), rightChild.getRoom().getX());
+      int sy = (int) Math.min(leftChild.getRoom().getY(), rightChild.getRoom().getY());
+      
+      int ex = (int) Math.max(leftChild.getRoom().getMaxX(), rightChild.getRoom().getMaxX());
+      int ey = (int) Math.max(leftChild.getRoom().getMaxY(), rightChild.getRoom().getMaxY());
+      
+      int width  = ex - sx;
+      int height = ey - sy;
+      Room room  = new Room(sx, sx, width, height);
+      
+      //dungeonNode.setRoom(room);
     }
   }
 
@@ -350,6 +422,12 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
     Log.info("Building gold");
     this.progress = 35;
     applyGold();
+  }
+
+  public void setSeed(int i) {
+    this.seed = i;
+    this.random = new Random(seed);
+    this.progress = 0;
   }
   
 }
