@@ -19,12 +19,17 @@ public class Block {
   public static int gid                             = 0;
   int id                                            = 0;
   
+  public static final byte FLAG_NEED_COMPUTATION    = 0;
+  public static final byte FLAG_NONE                = 1;
+  public static final byte FLAG_WALL                = 2;
+  
   public  boolean harvestable         = false;
   public  boolean solid               = false;
   private boolean visited             = false;
   private boolean visible             = false;
   protected short hardness            = -1;
   private int     lightPower          = 255;
+  private byte    flags               = FLAG_NEED_COMPUTATION;
   
   HashMap<Light,Integer> lightMapping;
   public int x;
@@ -185,6 +190,10 @@ public class Block {
     return Sidewalk.class.isInstance(this);
   }
 
+  public boolean isWall() {
+    return flags == FLAG_WALL;
+  }
+  
   public void setX(int tx) {
     this.x = tx;
   }
@@ -195,5 +204,20 @@ public class Block {
 
   public boolean isCobbleStone() {
     return Cobblestone.class.isInstance(this);
+  }
+
+  public void computeWallShadow(Level level) {
+    if (this.flags == FLAG_NEED_COMPUTATION) {
+      Block bottomBlock = level.getBlockForPosition(this.x, this.y + 1);
+      if (bottomBlock != null && (!bottomBlock.solid && this.solid)) {
+        this.flags = FLAG_WALL;
+      } else {
+        this.flags = FLAG_NONE;
+      }
+    }
+  }
+
+  public void refreshFlags() {
+    this.flags = FLAG_NEED_COMPUTATION;
   }
 }

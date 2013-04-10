@@ -120,6 +120,12 @@ public class Level{
             visibleBlocks.add(block);
             
             image.draw(tx,ty);
+            block.computeWallShadow(this);
+            
+            if (block.isWall()) {
+              gr.setColor(new Color(0,0,0,180));
+              gr.fillRect(tx, ty + Core.SHADOW_SIZE, Core.TILE_SIZE, Core.TILE_SIZE - Core.SHADOW_SIZE);
+            }
             
             if(PassableBlock.class.isInstance(block)) {
               PassableBlock walk = (PassableBlock) block;
@@ -418,6 +424,7 @@ public class Level{
       sidewalk.copyLightsFromBlock(oldBlock);
     }
     
+    tryToRefreshSideWalkForPosition(x, y);
     tryToRefreshSideWalkForPosition(x-1, y-1); // top left
     tryToRefreshSideWalkForPosition(x, y-1); // top
     tryToRefreshSideWalkForPosition(x+1, y-1); //top right
@@ -434,6 +441,7 @@ public class Level{
     if (block != null && PassableBlock.class.isInstance(block)) {
       ((PassableBlock) block).refreshShadowMap();
     }
+    block.refreshFlags();
   }
 
   public void setBlock(int tx, int ty, Block block) {
