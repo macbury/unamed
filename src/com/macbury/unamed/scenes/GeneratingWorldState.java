@@ -71,6 +71,7 @@ public class GeneratingWorldState extends BasicGameState implements WorldBuilder
       preview = new BigImage("screenshoot.png");
       this.seed++;
       world = null;
+      Core.instance().enterState(GameplayScene.STATE_GAMEPLAY);
     }
   }
 

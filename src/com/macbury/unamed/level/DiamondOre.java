@@ -1,8 +1,11 @@
 package com.macbury.unamed.level;
 
+import com.esotericsoftware.kryo.DefaultSerializer;
 import com.macbury.unamed.entity.Player;
 import com.macbury.unamed.inventory.InventoryItem;
+import com.macbury.unamed.serializers.BlockSerializer;
 
+@DefaultSerializer(BlockSerializer.class)
 public class DiamondOre extends HarvestableBlock {
 
   public DiamondOre(int x, int y) {
@@ -18,6 +21,11 @@ public class DiamondOre extends HarvestableBlock {
   @Override
   public InventoryItem harvestedByPlayer(Player byPlayer) {
     return null;
+  }
+
+  @Override
+  public byte getBlockTypeId() {
+    return Block.RESOURCE_DIAMOND;
   }
 
 }

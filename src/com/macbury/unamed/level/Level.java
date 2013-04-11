@@ -1,13 +1,16 @@
 package com.macbury.unamed.level;
 
 import java.awt.List;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EmptyStackException;
 import java.util.Stack;
+import java.util.zip.DeflaterInputStream;
 import java.util.zip.DeflaterOutputStream;
 
 import org.newdawn.slick.Color;
@@ -23,6 +26,9 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.Log;
 
 import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.InputChunked;
+import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.kryo.io.OutputChunked;
 import com.macbury.procedular.Room;
 import com.macbury.unamed.Core;
@@ -232,6 +238,11 @@ public class Level{
       this.updateArea = new Rectangle(0, 0, Math.round(this.viewPort.getWidth()*1.4), Math.round(this.viewPort.getHeight()*1.4));
       Log.info("Viewport size is: " + this.viewPort.getWidth() + "x" + this.viewPort.getHeight() );
       Log.info("Update area size is: " + this.updateArea.getWidth() + "x" + this.updateArea.getHeight() );
+      
+      this.tileCountHorizontal =  Math.round((this.viewPort.getWidth() / this.tileWidth) + 2);
+      this.tileCountVertical   =  Math.round((this.viewPort.getHeight() / this.tileHeight) + 2);
+      
+      Log.info("Tile count is: "+ this.tileCountHorizontal + "x" + this.tileCountVertical);
     }
   }
 
@@ -326,6 +337,15 @@ public class Level{
     }
   }
 
+  public void spawnPlayer() throws SlickException {
+    player = new Player();
+    this.addEntity(player);
+    lookAt(player);
+    
+    player.setTileX(20);
+    player.setTileY(20);
+  }
+  
   public void generateWorld(int size) throws SlickException {
     Log.info("Tile size is: "+ this.tileWidth + "x" + this.tileHeight);
     
@@ -335,14 +355,7 @@ public class Level{
     Log.info("Tile count is: "+ this.tileCountHorizontal + "x" + this.tileCountVertical);
     fillWorldWithBlocks(size);
     applyBedrockBorder();
-    
-    player = new Player();
-    this.addEntity(player);
-    lookAt(player);
-    
-    player.setTileX(3);
-    player.setTileY(3);
-    
+
     createRoom(1,1, 4, 4);
     
 
@@ -376,7 +389,7 @@ public class Level{
     }
   }
 
-  private void fillWorldWithBlocks(int size) {
+  public void fillWorldWithBlocks(int size) {
     this.mapTileWidth  = size;
     this.mapTileHeight = size;
     this.world         = new Block[mapTileWidth][mapTileHeight];
@@ -517,28 +530,62 @@ public class Level{
     ImageOut.write(localImg, filePath, false);
   }
   
+  public static Level load() throws SlickException {
+    Kryo kryo = Core.instance().setupKryo();
+    Input input;
+    Level level = null;
+    try {
+      InputStream inputStream = new FileInputStream("maps/1.dungeon");
+      input = new Input(inputStream);
+      level = kryo.readObject(input, Level.class);
+      
+      for (int x = 0; x < level.mapTileWidth; x++) {
+        for (int y = 0; y < level.mapTileHeight; y++) {
+          try {
+            Block block = kryo.readObject(input, Block.class, new BlockSerializer());
+            if (block != null) {
+              level.setBlock(x, y, block);
+            }
+            
+          } catch (IndexOutOfBoundsException e) {
+            //Log.error("X: " + x + " Y: " + y);
+            //e.printStackTrace();
+          }
+        }
+      //  
+      }
+      
+      input.close();
+      level.dumpTo("loadTest.png");
+    } catch (FileNotFoundException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    
+    level.spawnPlayer();
+    
+    return level;
+  }
+  
   public void save() {
     Log.info("Saving map...");
-    Kryo kryo = new Kryo();
-    kryo.register(com.macbury.unamed.level.Level.class, new LevelSerializer());
-    kryo.register(BlockSerializer.class, new BlockSerializer());
+    Kryo kryo = Core.instance().setupKryo();
     try {
-      OutputStream outputStream = new DeflaterOutputStream(new FileOutputStream("maps/1.dungeon"));
-      OutputChunked output      = new OutputChunked(outputStream, 1024);
+      OutputStream outputStream = new FileOutputStream("maps/1.dungeon");
+      Output  output            = new Output(outputStream);
       
       kryo.writeObject(output, this);
-      output.endChunks();
       for (int x = 0; x < this.mapTileWidth; x++) {
         for (int y = 0; y < this.mapTileHeight; y++) {
-          kryo.writeObject(output, this.world[x][y]);
+          kryo.writeObject(output, this.world[x][y], new BlockSerializer());
         }
-        output.endChunks();
+      //  output.endChunks();
       }
       
       for (Entity entity : this.entities) {
         kryo.writeObject(output, entity);
       }
-      output.endChunks();
+ //     output.endChunks();
       //kryo.writeObject(this.world, this);
       output.close();
     } catch (FileNotFoundException e1) {
@@ -558,14 +605,7 @@ public class Level{
   public void setRooms(ArrayList<Room> rooms) {
     this.rooms = rooms;
   }
-  
-  public Entity getCollider(Entity byEntity, int x, int y) {
-    for(Entity e : this.entities) {
-      
-    }
-    
-    return null;
-  }
+ 
 
   public void applyRooms(ArrayList<Room> allRooms) {
     this.setRooms(allRooms);
@@ -602,5 +642,15 @@ public class Level{
 
   public Block getBlockForPosition(float x, float y) {
     return getBlockForPosition((int) x, (int) y);
+  }
+
+  public void setSize(int w, int h) {
+    Log.info("Tile size is: "+ this.tileWidth + "x" + this.tileHeight);
+    this.mapTileWidth  = w;
+    this.mapTileHeight = h;
+    this.tileWidth     = Core.TILE_SIZE;
+    this.tileHeight    = Core.TILE_SIZE;
+
+    this.world         = new Block[mapTileWidth][mapTileHeight];
   }
 }

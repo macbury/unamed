@@ -75,9 +75,14 @@ public class TileBasedMovement extends Component {
       this.totalMoveTime  = 0.0f;
       this.owner.setFuturePosition(computeTargetPositionForDirection(inDirection));
      
-      PassableBlock block = (PassableBlock) this.owner.getLevel().getBlockForPosition(this.owner.getTileX(), this.owner.getTileY());
-      this.blockMoveSpeed = block.getSpeed();
-      SoundManager.shared().playStepForBlock(block);
+      Block block = (Block) this.owner.getLevel().getBlockForPosition(this.owner.getTileX(), this.owner.getTileY());
+      
+      if (block.isPassable()) {
+        PassableBlock passableBlock = (PassableBlock) block;
+        this.blockMoveSpeed = passableBlock.getSpeed();
+        SoundManager.shared().playStepForBlock(block);
+      }
+      
       return true;
     }
   }

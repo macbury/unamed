@@ -30,7 +30,7 @@ import com.macbury.unamed.level.Sand;
 public class Player extends Entity {
   public final static int  FOG_OF_WAR_RADIUS = 10;
   private static final int ENTITY_ZINDEX    = Entity.ENTITY_BASE_LAYER+1;
-  private static final int LIGHT_POWER      = 10;
+  private static final int LIGHT_POWER      = 14;
   TileBasedMovement tileMovement;
   KeyboardMovement  keyboardMovement;
   
@@ -51,11 +51,11 @@ public class Player extends Entity {
     
     this.collidable = true;
     this.inventory  = new InventoryManager();
-    /*TorchItem item  = new TorchItem(this);
-    item.addItem(9);
+    TorchItem item  = new TorchItem(this);
+    item.addItem(99);
     this.inventory.add(item);
     
-    BlockItem blockItem = new BlockItem(this, Dirt.class);
+    /*BlockItem blockItem = new BlockItem(this, Dirt.class);
     blockItem.addItem(98);
     this.inventory.add(blockItem);
     

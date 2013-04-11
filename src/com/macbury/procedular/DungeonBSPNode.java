@@ -14,7 +14,7 @@ public class DungeonBSPNode extends Rectangle {
   final static float MIN_SPLIT_FACTOR = 0.48f;
   final static float MAX_SPLIT_FACTOR = 0.52f;
   
-  static private float SMALLEST_PARTITION_SIZE        = 0.2f;
+  static private float SMALLEST_PARTITION_SIZE        = 0.1f;
   static private float MAX_PARTION_SPLIT_FACTOR_RATIO = 1.5f;
   static private float HOMOGENITY_FACTOR               = 0.25f;
   public DungeonBSPNode leftChild;

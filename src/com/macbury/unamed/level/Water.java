@@ -1,5 +1,9 @@
 package com.macbury.unamed.level;
 
+import com.esotericsoftware.kryo.DefaultSerializer;
+import com.macbury.unamed.serializers.BlockSerializer;
+
+@DefaultSerializer(BlockSerializer.class)
 public class Water extends LiquidBlock {
 
   public Water(int x, int y) {
@@ -8,13 +12,17 @@ public class Water extends LiquidBlock {
 
   @Override
   public float getSpeed() {
-    // TODO Auto-generated method stub
     return 0.6f;
   }
 
   @Override
   public float divePower() {
     return 0.7f;
+  }
+
+  @Override
+  public byte getBlockTypeId() {
+    return Block.RESOURCE_WATER;
   }
 
 }

@@ -1,5 +1,9 @@
 package com.macbury.unamed.level;
 
+import com.esotericsoftware.kryo.DefaultSerializer;
+import com.macbury.unamed.serializers.BlockSerializer;
+
+@DefaultSerializer(BlockSerializer.class)
 public class Lava extends LiquidBlock {
 
   public Lava(int x, int y) {
@@ -24,6 +28,11 @@ public class Lava extends LiquidBlock {
   @Override
   public float divePower() {
     return 0.7f;
+  }
+
+  @Override
+  public byte getBlockTypeId() {
+    return RESOURCE_LAVA;
   }
   
   

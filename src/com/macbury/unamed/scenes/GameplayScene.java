@@ -29,10 +29,10 @@ public class GameplayScene extends BasicGameState {
     super.enter(container, game);
     SoundManager.shared();
     if (this.level == null) {
-      this.level         = new Level();
+      this.level         = Level.load();
       this.gameInterface = new InGameInterface(this.level);
       this.level.setupViewport(container);
-      this.level.generateWorld(100);
+      //this.level.generateWorld(100);
       this.startTime  = 100;
     }
   }

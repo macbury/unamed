@@ -1,19 +1,20 @@
 package com.macbury.unamed.level;
 
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import org.newdawn.slick.util.Log;
+import org.newdawn.slick.SlickException;
 
+
+import com.esotericsoftware.kryo.KryoException;
+import com.esotericsoftware.kryo.io.InputChunked;
+import com.esotericsoftware.kryo.io.Output;
 import com.macbury.unamed.component.Light;
 
-public class Block {
+public abstract class Block {
   public static final int VISITED_ALPHA             = 210;
   public static final int MIN_LIGHT_POWER           = 200;
   public static int gid                             = 0;
@@ -22,6 +23,19 @@ public class Block {
   public static final byte FLAG_NEED_COMPUTATION    = 0;
   public static final byte FLAG_NONE                = 1;
   public static final byte FLAG_WALL                = 2;
+  
+  public static final byte RESOURCE_SIDEWALK    = 0;
+  public static final byte RESOURCE_DIRT        = 1;
+  public static final byte RESOURCE_COPPER      = 2;
+  public static final byte RESOURCE_SAND        = 3;
+  public static final byte RESOURCE_WATER       = 4;
+  public static final byte RESOURCE_STONE       = 5;
+  public static final byte RESOURCE_LAVA        = 6;
+  public static final byte RESOURCE_COAL        = 7;
+  public static final byte RESOURCE_DIAMOND     = 8;
+  public static final byte RESOURCE_GOLD        = 9;
+  public static final byte RESOURCE_BEDROCK     = 10;
+  public static final byte RESOURCE_COBBLESTONE = 11;
   
   public  boolean harvestable         = false;
   public  boolean solid               = false;
@@ -34,6 +48,10 @@ public class Block {
   HashMap<Light,Integer> lightMapping;
   public int x;
   public int y;
+  
+  public Block() {
+    this.id = Block.gid++;
+  }
   
   public Block(int x, int y) {
     this.id = Block.gid++;
@@ -130,6 +148,10 @@ public class Block {
     return this.id;
   }
   
+  public void setId(int nid) {
+    this.id = nid;
+  }
+  
   public PassableBlock getAsPassableBlock() {
     if (PassableBlock.class.isInstance(this)) {
       return (PassableBlock) this;
@@ -219,5 +241,101 @@ public class Block {
 
   public void refreshFlags() {
     this.flags = FLAG_NEED_COMPUTATION;
+  }
+
+  public void setVisible(boolean readBoolean) {
+    this.visible = readBoolean;
+  }
+
+  public void setVisited(boolean readBoolean) {
+    this.visited = readBoolean;
+  }
+
+  public boolean isPassable() {
+    return PassableBlock.class.isInstance(this);
+  }
+  
+  public abstract byte getBlockTypeId();
+  
+  public static Block blockByTypeId(byte resourceType, int x, int y) throws SlickException {
+    Block block = null;
+    switch (resourceType) {
+      case Block.RESOURCE_DIRT:
+        block = new Dirt(x, y);
+      break;
+      case Block.RESOURCE_COPPER:
+        block = new CopperOre(x, y);
+      break;
+  
+      case Block.RESOURCE_COAL:
+        block = new CoalOre(x, y);
+      break;
+      
+      case Block.RESOURCE_GOLD:
+        block = new GoldOre(x, y);
+      break;
+      
+      case Block.RESOURCE_WATER:
+        block = new Water(x, y);
+      break;
+      
+      case Block.RESOURCE_DIAMOND:
+        block = new DiamondOre(x, y);
+      break;
+      
+      case Block.RESOURCE_LAVA:
+        block = new Lava(x, y);
+      break;
+      
+      case Block.RESOURCE_SAND:
+        block = new Sand(x, y);
+      break;
+      
+      case Block.RESOURCE_STONE:
+        block = new Rock(x, y);
+      break;
+      
+      case Block.RESOURCE_SIDEWALK:
+        block = new Sidewalk(x, y);
+      break;
+      
+      case Block.RESOURCE_BEDROCK:
+        block = new Bedrock(x, y);
+      break;
+      
+      case Block.RESOURCE_COBBLESTONE:
+        block = new Cobblestone(x, y);
+      break;
+      
+      default:
+        throw new SlickException("Undefined block type: "+ resourceType);
+    }
+    
+    return block;
+  }
+  
+  public void saveTo(Output out) {
+    out.write(this.getBlockTypeId());
+    out.write(this.x);
+    out.write(this.y);
+    out.write(this.getId());
+    out.writeBoolean(this.isVisited());
+  }
+
+  public static Block readFrom(InputChunked input) {
+    Block block = null;
+    try {
+      byte blockType = input.readByte();
+      block = Block.blockByTypeId(blockType, input.readInt(), input.readInt());
+      block.setId(input.readInt());
+      block.setVisited(input.readBoolean());
+    } catch (KryoException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (SlickException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    return block;
   }
 }

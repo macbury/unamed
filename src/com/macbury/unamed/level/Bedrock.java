@@ -1,8 +1,11 @@
 package com.macbury.unamed.level;
 
+import com.esotericsoftware.kryo.DefaultSerializer;
 import com.macbury.unamed.entity.Player;
 import com.macbury.unamed.inventory.InventoryItem;
+import com.macbury.unamed.serializers.BlockSerializer;
 
+@DefaultSerializer(BlockSerializer.class)
 public class Bedrock extends HarvestableBlock {
   public Bedrock(int x, int y) {
     super(x, y);
@@ -17,6 +20,11 @@ public class Bedrock extends HarvestableBlock {
   public InventoryItem harvestedByPlayer(Player byPlayer) {
     // TODO Auto-generated method stub
     return null;
+  }
+
+  @Override
+  public byte getBlockTypeId() {
+    return Block.RESOURCE_BEDROCK;
   }
 
 }

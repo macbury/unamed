@@ -41,17 +41,7 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
   private static final int ROOM_COUNT         = 60;
   private static final int CELL_SIZE          = 256;
   
-  private static final byte RESOURCE_SIDEWALK = 0;
-  private static final byte RESOURCE_DIRT     = 1;
-  private static final byte RESOURCE_COPPER   = 2;
-  private static final byte RESOURCE_SAND     = 3;
-  private static final byte RESOURCE_WATER    = 4;
-  private static final byte RESOURCE_STONE    = 5;
-  private static final byte RESOURCE_LAVA     = 6;
-  private static final byte RESOURCE_COAL     = 7;
-  private static final byte RESOURCE_DIAMOND  = 8;
-  private static final byte RESOURCE_GOLD     = 9;
-  public static final int NORMAL              = 512;
+  public static final int NORMAL              = 1024;
   public static final int BIG                 = 4000;
   public static final int CRASH_MY_COMPUTER   = 6000;
   
@@ -82,30 +72,30 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
   
   private void applyCopper() throws SlickException {
     this.perlinNoise   = pg.generate(size, 5, getSeed());
-    applyDataFromPerlinNoise(0.0f,0.3f, RESOURCE_COPPER);
+    applyDataFromPerlinNoise(0.0f,0.3f, Block.RESOURCE_COPPER);
   }
 
   private void applySandAndWater() throws SlickException {
     this.perlinNoise   = pg.generate(size, 6, getSeed());
-    applyDataFromPerlinNoise(0.0f,0.35f, RESOURCE_SAND);
-    applyDataFromPerlinNoise(0.0f,0.2f, RESOURCE_WATER); //water
+    applyDataFromPerlinNoise(0.0f,0.35f, Block.RESOURCE_SAND);
+    applyDataFromPerlinNoise(0.0f,0.2f, Block.RESOURCE_WATER); //water
   }
   
   private void applyStone() throws SlickException {
     this.perlinNoise   = pg.generate(size, 7, getSeed());
-    applyDataFromPerlinNoise(0.0f,0.4f, RESOURCE_STONE);
-    applyDataFromPerlinNoise(0.1f,0.2f, RESOURCE_LAVA); //lava
+    applyDataFromPerlinNoise(0.0f,0.4f, Block.RESOURCE_STONE);
+    applyDataFromPerlinNoise(0.1f,0.2f, Block.RESOURCE_LAVA); //lava
   }
 
   private void applyCoal() throws SlickException {
     this.perlinNoise   = pg.generate(size, 5, getSeed());
-    applyDataFromPerlinNoise(0.0f,0.3f, RESOURCE_COAL);
-    applyDataFromPerlinNoise(0.0f,0.05f, RESOURCE_DIAMOND); // diamond
+    applyDataFromPerlinNoise(0.0f,0.3f, Block.RESOURCE_COAL);
+    applyDataFromPerlinNoise(0.0f,0.05f, Block.RESOURCE_DIAMOND); // diamond
   }
 
   private void applyGold() throws SlickException {
     this.perlinNoise   = pg.generate(size, 7, getSeed());
-    applyDataFromPerlinNoise(0.0f,0.1f, RESOURCE_GOLD);
+    applyDataFromPerlinNoise(0.0f,0.1f, Block.RESOURCE_GOLD);
   }
   
   private int getSeed() {
@@ -132,44 +122,7 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
       for (int y = 0; y < this.size; y++) {
         float val = this.perlinNoise[x][y];
         if (val >= start && val <= end) {
-          Block block = null;
-          switch (resourceType) {
-            case RESOURCE_COPPER:
-              block = new CopperOre(x, y);
-            break;
-  
-            case RESOURCE_COAL:
-              block = new CoalOre(x, y);
-            break;
-            
-            case RESOURCE_GOLD:
-              block = new GoldOre(x, y);
-            break;
-            
-            case RESOURCE_WATER:
-              block = new Water(x, y);
-            break;
-            
-            case RESOURCE_DIAMOND:
-              block = new DiamondOre(x, y);
-            break;
-            
-            case RESOURCE_LAVA:
-              block = new Lava(x, y);
-            break;
-            
-            case RESOURCE_SAND:
-              block = new Sand(x, y);
-            break;
-            
-            case RESOURCE_STONE:
-              block = new Rock(x, y);
-            break;
-            
-            default:
-              throw new SlickException("Undefined block type!");
-          }
-          
+          Block block = Block.blockByTypeId(resourceType, x, y);
           this.level.setBlock(x, y, block);
         }
       }
@@ -211,17 +164,21 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
     this.level.applyRooms(rooms);
     dungeonBSPNode.bottomsUpByLevelEnumerate(this, this);
     
-    Collections.shuffle(rooms, this.random);
-    
-    Room previousRoom = null;
-    
-    for (Room currentRoom : rooms) {
-      if (previousRoom != null) {
-        bruteForceConnectRooms(previousRoom.getNode(), currentRoom.getNode());
+    int i = 1 + this.random.nextInt(3);
+    while(i-- > 0) {
+      Collections.shuffle(rooms, this.random);
+      
+      Room previousRoom = null;
+      
+      for (Room currentRoom : rooms) {
+        if (previousRoom != null) {
+          bruteForceConnectRooms(previousRoom.getNode(), currentRoom.getNode());
+        }
+          
+        previousRoom = currentRoom;
       }
-        
-      previousRoom = currentRoom;
     }
+    
   }
   
   @Override

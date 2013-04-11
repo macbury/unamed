@@ -1,9 +1,12 @@
 package com.macbury.unamed.level;
 
+import com.esotericsoftware.kryo.DefaultSerializer;
 import com.macbury.unamed.entity.Player;
 import com.macbury.unamed.inventory.CopperItem;
 import com.macbury.unamed.inventory.InventoryItem;
+import com.macbury.unamed.serializers.BlockSerializer;
 
+@DefaultSerializer(BlockSerializer.class)
 public class CopperOre extends HarvestableBlock {
 
   public CopperOre(int x, int y) {
@@ -18,6 +21,11 @@ public class CopperOre extends HarvestableBlock {
   @Override
   public InventoryItem harvestedByPlayer(Player byPlayer) {
     return new CopperItem(byPlayer);
+  }
+
+  @Override
+  public byte getBlockTypeId() {
+    return Block.RESOURCE_COPPER;
   }
 
 }

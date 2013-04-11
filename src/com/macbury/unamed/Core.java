@@ -7,10 +7,18 @@ import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.state.StateBasedGame;
 
+import com.esotericsoftware.kryo.Kryo;
+import com.macbury.unamed.level.Block;
+import com.macbury.unamed.level.CoalOre;
+import com.macbury.unamed.level.Dirt;
+import com.macbury.unamed.level.Level;
+import com.macbury.unamed.level.Sand;
 import com.macbury.unamed.scenes.GameplayScene;
 import com.macbury.unamed.scenes.GeneratingWorldState;
 import com.macbury.unamed.scenes.LoadingResourceScreen;
 import com.macbury.unamed.scenes.MenuScene;
+import com.macbury.unamed.serializers.BlockSerializer;
+import com.macbury.unamed.serializers.LevelSerializer;
 
 public class Core extends StateBasedGame {
   public static final boolean DEBUG   = false;
@@ -29,6 +37,13 @@ public class Core extends StateBasedGame {
   
   static public Core instance() {
     return Core.coreInstance;
+  }
+  
+  public Kryo setupKryo() {
+    Kryo kryo = new Kryo();
+    kryo.register(Level.class, new LevelSerializer());
+    kryo.setReferences(false);
+    return kryo;
   }
 
   public UnicodeFont getFont() throws SlickException {
