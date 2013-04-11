@@ -44,6 +44,11 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
   public static final int NORMAL              = 1024;
   public static final int BIG                 = 4000;
   public static final int CRASH_MY_COMPUTER   = 6000;
+  private static final int MIN_DIGGER_COUNT   = 50;
+  private static final int MAX_DIGGER_COUNT   = MIN_DIGGER_COUNT * 800;
+  private static final float CAVE_COUNT_FACTOR  = 0.45f;
+  
+  private static final int MAX_LOOPS_WITHOUT_SPAWN = 2000;
   
   public float perlinNoise[][];
   public int size;
@@ -52,16 +57,19 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
   private WorldBuilderListener listener;
   
   private ArrayList<Room> rooms;
+  private ArrayList<CaveDigger> diggers;
   public int progress;
   private Level level;
   public float subProgress;
   private Random random;
+  private int dirtCellCount = 0;
   
   public WorldBuilder(int size, int seed) throws SlickException {
     this.seed          = seed;
     this.size          = size;
     this.pg            = new PerlinGen(0, 0);
     this.rooms         = new ArrayList<Room>();
+    this.diggers       = new ArrayList<CaveDigger>();
     this.level         = new Level();
     this.level.setSize(size);
   }
@@ -112,6 +120,8 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
       }
     }
     
+    this.dirtCellCount  = this.size * this.size;
+    
     this.subProgress = 0;
   }
   
@@ -124,19 +134,22 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
         if (val >= start && val <= end) {
           Block block = Block.blockByTypeId(resourceType, x, y);
           this.level.setBlock(x, y, block);
+          this.dirtCellCount--;
         }
       }
     }
   }
   
   public void dumpTo(String filePath) throws SlickException {
-    //this.level.dumpTo(filePath);
+    this.level.dumpTo(filePath);
   }
   
   @Override
   public void run() {
+    this.random      = new Random(seed);
     try {
       applyResources();
+      digCaves();
       buildDungeon();
       applyBedrockBorder();
     } catch (Exception e) {
@@ -150,34 +163,129 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
     this.listener.onWorldBuildingFinish();
   }
 
+  public Dirt findRandomDirt() {
+    Dirt dirt = null;
+    while(dirt == null) {
+      int x = random.nextInt(this.size);
+      int y = random.nextInt(this.size);
+      Block block = level.getBlockForPosition(x, y);
+      if (block != null && block.isDirt()) {
+        dirt = (Dirt) block;
+      }
+    }
+    
+    return dirt;
+  }
+  
+  private void digCaves() {
+    this.progress = 45;
+    
+    while(this.diggers.size() < MIN_DIGGER_COUNT) {
+      spawnRandomDigger();
+    }
+    
+    this.progress = 46;
+    
+    int loopWithoutSpawning = 0;
+    int totalDirtCells = Math.round(this.dirtCellCount * CAVE_COUNT_FACTOR);
+    int dirtCellsLeft = totalDirtCells;
+    
+    boolean spawnedDigger = false;
+    while(dirtCellsLeft > 0) {
+      this.subProgress = 1.0f - (float)dirtCellsLeft / (float)totalDirtCells;
+      
+      for (int i = 0; i < this.diggers.size(); i++) {
+        CaveDigger digger = this.diggers.get(i);
+        if (digger.dig()) {
+          dirtCellsLeft--;
+          
+          CaveDigger newCaveDigger = digger.tryToSpawnDigger();
+          
+          if (newCaveDigger != null) {
+            //Log.info("Spawned digger nr. "+ this.diggers.size());
+            this.diggers.add(newCaveDigger);
+            spawnedDigger = true;
+          }
+        }
+      }
+      
+      if (spawnedDigger) {
+        spawnedDigger = false;
+        loopWithoutSpawning = 0;
+      } else {
+        loopWithoutSpawning++;
+      }
+      
+      if (loopWithoutSpawning > MAX_LOOPS_WITHOUT_SPAWN) {
+        loopWithoutSpawning = 0;
+        spawnRandomDigger();
+      }
+    }
+    
+    this.progress = 50;
+  }
+
+  private void spawnRandomDigger() {
+    Dirt block = findRandomDirt();
+    CaveDigger digger = new CaveDigger(level, random);
+    digger.setX(block.x);
+    digger.setY(block.y);
+    Log.info("Spawning Miner at position: " + block.x + " x " + block.y);
+    this.diggers.add(digger);
+  }
+
   private void buildDungeon() {
     int cellCount = this.size / CELL_SIZE;
     Log.info("Cell size: " + cellCount); 
     
-    int minCellCount = cellCount / 2;
-    this.random      = new Random(seed);
+    int minCellCount = Math.round(cellCount * cellCount * 0.5f);
+    
+    ArrayList<DungeonBSPNode> generatedDungeons = new ArrayList<DungeonBSPNode>();
+    
+    while (minCellCount > 0) {
+      int x = random.nextInt(size - CELL_SIZE);
+      int y = random.nextInt(size - CELL_SIZE);
+      
+      DungeonBSPNode dungeonBSPNode = new DungeonBSPNode(null, x, y, CELL_SIZE, CELL_SIZE, 0, random);
+      
+      boolean splitDungeon = true;
+      
+      for (DungeonBSPNode iterateNode : generatedDungeons) {
+        if (iterateNode.intersects(dungeonBSPNode)) {
+          splitDungeon = false;
+          break;
+        }
+      }
+      
+      if (splitDungeon) {
+        generatedDungeons.add(dungeonBSPNode);
+        dungeonBSPNode.split();
+        ArrayList<Room> rooms = dungeonBSPNode.getAllRooms();
+        this.level.applyRooms(rooms);
+        dungeonBSPNode.bottomsUpByLevelEnumerate(this, this);
+        
+        int i = 1 + this.random.nextInt(3);
+        while(i-- > 0) {
+          Collections.shuffle(rooms, this.random);
+          
+          Room previousRoom = null;
+          
+          for (Room currentRoom : rooms) {
+            if (previousRoom != null) {
+              bruteForceConnectRooms(previousRoom.getNode(), currentRoom.getNode());
+            }
+              
+            previousRoom = currentRoom;
+          }
+        }
+      }
+      
+      minCellCount--;
+    }
+    
     //cellCount        = minCellCount + random.nextInt(minCellCount);
     
-    DungeonBSPNode dungeonBSPNode = new DungeonBSPNode(null, 0, 0, CELL_SIZE, CELL_SIZE, 0, random);
-    dungeonBSPNode.split();
-    ArrayList<Room> rooms = dungeonBSPNode.getAllRooms();
-    this.level.applyRooms(rooms);
-    dungeonBSPNode.bottomsUpByLevelEnumerate(this, this);
     
-    int i = 1 + this.random.nextInt(3);
-    while(i-- > 0) {
-      Collections.shuffle(rooms, this.random);
-      
-      Room previousRoom = null;
-      
-      for (Room currentRoom : rooms) {
-        if (previousRoom != null) {
-          bruteForceConnectRooms(previousRoom.getNode(), currentRoom.getNode());
-        }
-          
-        previousRoom = currentRoom;
-      }
-    }
     
   }
   
@@ -364,11 +472,12 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
     Log.info("Starting building world");
     this.progress = 5;
     fillWithGround();
+
     this.progress = 10;
     applySandAndWater();
     this.progress = 15;
     Log.info("Building stone");
-    this.progress = 20;
+    this.progress = 22;
     applyStone();
     Log.info("Building copper");
     this.progress = 25;

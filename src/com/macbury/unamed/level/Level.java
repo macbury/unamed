@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EmptyStackException;
+import java.util.Random;
 import java.util.Stack;
 import java.util.zip.DeflaterInputStream;
 import java.util.zip.DeflaterOutputStream;
@@ -337,13 +338,29 @@ public class Level{
     }
   }
 
+  public Sidewalk findRandomSidewalk() {
+    Sidewalk dirt = null;
+    Random random = new Random();
+    while(dirt == null) {
+      int x = random.nextInt(this.mapTileWidth);
+      int y = random.nextInt(this.mapTileHeight);
+      Block block = this.getBlockForPosition(x, y);
+      if (block != null && block.isAir()) {
+        dirt = (Sidewalk) block;
+      }
+    }
+    
+    return dirt;
+  }
+  
   public void spawnPlayer() throws SlickException {
     player = new Player();
     this.addEntity(player);
     lookAt(player);
     
-    player.setTileX(20);
-    player.setTileY(20);
+    Sidewalk block = findRandomSidewalk();
+    player.setTileX(block.x);
+    player.setTileY(block.y);
   }
   
   public void generateWorld(int size) throws SlickException {
@@ -493,7 +510,7 @@ public class Level{
         } else if (block.isCopper()) {
           color = new Color(127,0,0); 
         } else if (block.isAir()) {
-          color = new Color(134,134,134);
+          color = new Color(255, 0, 153);
         } else if (block.isCoal()) {
           color = Color.darkGray; 
         } else if (block.isGold()) {
@@ -632,13 +649,21 @@ public class Level{
     int y = ey;
     int x = sx;
     for (x = sx; x <= ex; x++) {
-      this.world[x][sy] = new Cobblestone(x,sy);
-      this.world[x][ey] = new Cobblestone(x,ey);
+      setBlockUnlessSideWalk(new Cobblestone(x,sy));
+      setBlockUnlessSideWalk(new Cobblestone(x,ey));
     }
     
     for (y = sy; y <= ey; y++) {
-      this.world[sx][y] = new Cobblestone(sx,y);
-      this.world[ex][y] = new Cobblestone(ex,y);
+      setBlockUnlessSideWalk(new Cobblestone(sx,y));
+      setBlockUnlessSideWalk(new Cobblestone(ex,y));
+    }
+  }
+  
+  public void setBlockUnlessSideWalk(Block blockToPlace) {
+    Block block = this.world[blockToPlace.x][blockToPlace.y];
+    
+    if (block == null || block.isPassable()) {
+      this.world[blockToPlace.x][blockToPlace.y] = blockToPlace;
     }
   }
 

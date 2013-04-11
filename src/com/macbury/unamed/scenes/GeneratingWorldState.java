@@ -31,7 +31,7 @@ public class GeneratingWorldState extends BasicGameState implements WorldBuilder
   @Override
   public void enter(GameContainer container, StateBasedGame game) throws SlickException {
     super.enter(container, game);
-    this.seed          = 7333;
+    this.seed          = 1323;
     world              = new WorldBuilder(worldSize, seed);
     Thread newThread   = new Thread(world);
     newThread.setPriority(Thread.MIN_PRIORITY);
