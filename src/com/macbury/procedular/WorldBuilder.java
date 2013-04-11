@@ -130,7 +130,7 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
   }
   
   public void dumpTo(String filePath) throws SlickException {
-    this.level.dumpTo(filePath);
+    //this.level.dumpTo(filePath);
   }
   
   @Override

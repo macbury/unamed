@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.Sound;
+import org.newdawn.slick.geom.Line;
 import org.newdawn.slick.openal.Audio;
 import org.newdawn.slick.openal.AudioLoader;
 import org.newdawn.slick.util.Log;
@@ -37,6 +38,9 @@ public class SoundManager {
   private ArrayList<Audio> stepsStone;
   private ArrayList<Audio> waterStone;
   public Audio pop;
+  
+  private int x = 0;
+  private int y = 0;
   
   private Audio loadOgg(String filename) {
     try {
@@ -71,6 +75,11 @@ public class SoundManager {
     }
   }
 
+  public void playAt(int tx, int ty, Audio sound) {
+    Line line = new Line(tx, ty, this.x, this.y);
+   
+    sound.playAsSoundEffect(1.0f, 1.0f, true, 0, 0, 0.0f);
+  }
   
   public void playStepArray(ArrayList<Audio> array){
     int index = 0;
@@ -92,5 +101,26 @@ public class SoundManager {
     if (Water.class.isInstance(blockForPosition)) {
       playStepArray(this.waterStone);
     }
+  }
+
+  public int getX() {
+    return x;
+  }
+
+  public void setX(int x) {
+    this.x = x;
+  }
+
+  public int getY() {
+    return y;
+  }
+
+  public void setY(int y) {
+    this.y = y;
+  }
+  
+  public void setPosition(int x, int y) {
+    this.x = x;
+    this.y = y;
   }
 }

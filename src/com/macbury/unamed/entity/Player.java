@@ -30,7 +30,7 @@ import com.macbury.unamed.level.Sand;
 public class Player extends Entity {
   public final static int  FOG_OF_WAR_RADIUS = 10;
   private static final int ENTITY_ZINDEX    = Entity.ENTITY_BASE_LAYER+1;
-  private static final int LIGHT_POWER      = 14;
+  private static final int LIGHT_POWER      = 11;
   TileBasedMovement tileMovement;
   KeyboardMovement  keyboardMovement;
   
@@ -141,6 +141,7 @@ public class Player extends Entity {
   @Override
   public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
     super.update(gc, sb, delta);
+    SoundManager.shared().setPosition(getTileX(), getTileY());
     
     Input input    = gc.getInput();
     

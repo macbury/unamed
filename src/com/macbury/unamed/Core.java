@@ -8,6 +8,7 @@ import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.esotericsoftware.kryo.Kryo;
+import com.macbury.unamed.entity.Entity;
 import com.macbury.unamed.level.Block;
 import com.macbury.unamed.level.CoalOre;
 import com.macbury.unamed.level.Dirt;
@@ -18,6 +19,7 @@ import com.macbury.unamed.scenes.GeneratingWorldState;
 import com.macbury.unamed.scenes.LoadingResourceScreen;
 import com.macbury.unamed.scenes.MenuScene;
 import com.macbury.unamed.serializers.BlockSerializer;
+import com.macbury.unamed.serializers.EntitySerializer;
 import com.macbury.unamed.serializers.LevelSerializer;
 
 public class Core extends StateBasedGame {
@@ -41,7 +43,8 @@ public class Core extends StateBasedGame {
   
   public Kryo setupKryo() {
     Kryo kryo = new Kryo();
-    kryo.register(Level.class, new LevelSerializer());
+    kryo.register(Level.class,  new LevelSerializer());
+    kryo.register(Entity.class, new EntitySerializer());
     kryo.setReferences(false);
     return kryo;
   }

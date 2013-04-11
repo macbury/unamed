@@ -538,11 +538,12 @@ public class Level{
       InputStream inputStream = new FileInputStream("maps/1.dungeon");
       input = new Input(inputStream);
       level = kryo.readObject(input, Level.class);
+      BlockSerializer blockSerializer = new BlockSerializer();
       
       for (int x = 0; x < level.mapTileWidth; x++) {
         for (int y = 0; y < level.mapTileHeight; y++) {
           try {
-            Block block = kryo.readObject(input, Block.class, new BlockSerializer());
+            Block block = kryo.readObject(input, Block.class, blockSerializer);
             if (block != null) {
               level.setBlock(x, y, block);
             }
@@ -556,7 +557,7 @@ public class Level{
       }
       
       input.close();
-      level.dumpTo("loadTest.png");
+      //level.dumpTo("loadTest.png");
     } catch (FileNotFoundException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -570,6 +571,7 @@ public class Level{
   public void save() {
     Log.info("Saving map...");
     Kryo kryo = Core.instance().setupKryo();
+    BlockSerializer blockSerializer = new BlockSerializer();
     try {
       OutputStream outputStream = new FileOutputStream("maps/1.dungeon");
       Output  output            = new Output(outputStream);
@@ -577,7 +579,7 @@ public class Level{
       kryo.writeObject(output, this);
       for (int x = 0; x < this.mapTileWidth; x++) {
         for (int y = 0; y < this.mapTileHeight; y++) {
-          kryo.writeObject(output, this.world[x][y], new BlockSerializer());
+          kryo.writeObject(output, this.world[x][y], blockSerializer);
         }
       //  output.endChunks();
       }
