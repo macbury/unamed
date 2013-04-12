@@ -474,10 +474,15 @@ public class Level{
     block.refreshFlags();
   }
 
-  public void setBlock(int tx, int ty, Block block) {
-    this.world[tx][ty] = block;
-    block.setX(tx);
-    block.setY(ty);
+  public boolean setBlock(int tx, int ty, Block block) {
+    try {
+      this.world[tx][ty] = block;
+      block.setX(tx);
+      block.setY(ty);
+      return true;
+    } catch (ArrayIndexOutOfBoundsException e) {
+      return false;
+    }
   }
   
   public void setSize(int size) {

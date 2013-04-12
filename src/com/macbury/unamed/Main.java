@@ -21,7 +21,7 @@ public class Main {
       //app.setFullscreen(true);
       app.setShowFPS(false);
       app.start();
-    } catch (SlickException e) {
+    } catch (Exception e) {
       e.printStackTrace();
       JOptionPane.showMessageDialog(null,
           e.toString(),

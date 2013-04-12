@@ -26,25 +26,24 @@ public class LoadingResourceScreen extends BasicGameState {
   private boolean initFinished = false;
 
   public LoadingResourceScreen() {
+    LoadingList.setDeferredLoading(true);
   }
 
   @Override
   public void enter(GameContainer container, StateBasedGame game) throws SlickException {
-    LoadingList.setDeferredLoading(true);
     ImagesManager.shared();
     BlockResources.shared();
     SoundManager.shared();
     ParticleManager.shared();
     Log.info("Init LoadingResourceScreen");
     initFinished = true;
-    
   }
 
   @Override
   public void render(GameContainer arg0, StateBasedGame arg1, Graphics g) throws SlickException {
     UnicodeFont font = Core.instance().getFont();
     if (nextResource != null) {
-      font.drawString(100, 100, "Loading: "+nextResource.getDescription());
+      font.drawString(100, 100, "Loading");
     }
 
     int total = LoadingList.get().getTotalResources();

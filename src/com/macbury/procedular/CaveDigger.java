@@ -8,13 +8,16 @@ import com.macbury.unamed.level.Sidewalk;
 
 public class CaveDigger {
   private static final float CHANCE_TO_SPAWN_NEW_MINER = 0.92f;
+  private static final int MAX_MOVE_DISTANCE = 10;
   private int x = 0;
   private int y = 0;
   
   private int dy = 0;
   private int dx = 0;
+  int distance = 0;
   private Level level;
   private Random random;
+  private int digAmount;
   
   public CaveDigger(Level level, Random random) {
     this.level = level;
@@ -58,11 +61,26 @@ public class CaveDigger {
     }
   }
   
+  public void digAt(int x, int y) {
+    Block block = level.getBlockForPosition(x, y);
+    if (block != null && (block.isDirt() || block.isCobbleStone())) {
+      digAmount++;
+      this.level.setBlock(x, y, new Sidewalk(x, y));
+    }
+  }
+  
+  public int getDigAmount() {
+    return digAmount;
+  }
+  
   public boolean dig() {
     if (random.nextBoolean()) {
       randomDirection();
+    } else if (distance > MAX_MOVE_DISTANCE) {
+      randomDirection();
     }
     
+    this.digAmount = 0;
     int nx = dx + this.x;
     int ny = dy + this.y;
     
@@ -71,7 +89,11 @@ public class CaveDigger {
     if (block != null && (block.isDirt() || block.isCobbleStone())) {
       this.x = nx;
       this.y = ny;
-      this.level.setBlock(this.x, this.y, new Sidewalk(this.x, this.y));
+      digAt(this.x, this.y);
+      /*digAt(this.x+1, this.y+1);
+      digAt(this.x+1, this.y);
+      digAt(this.x, this.y+1);*/
+      distance++;
       return true;
     } else {
       randomDirection();
@@ -82,7 +104,7 @@ public class CaveDigger {
   private void randomDirection() {
     dx = 0;
     dy = 0;
-    
+    distance = 0;
     switch (random.nextInt(7)) {
       case 0:
         dx = 1;

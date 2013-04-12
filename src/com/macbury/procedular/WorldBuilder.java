@@ -47,7 +47,7 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
   public static final int CRASH_MY_COMPUTER   = 6000;
   private static final int MIN_DIGGER_COUNT   = 50;
   private static final int MAX_DIGGER_COUNT   = MIN_DIGGER_COUNT * 10;
-  private static final float CAVE_COUNT_FACTOR  = 0.70f;
+  private static final float CAVE_COUNT_FACTOR  = 0.60f;
   
   private static final int MAX_LOOPS_WITHOUT_SPAWN = 2000;
 
@@ -214,8 +214,8 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
       for (int i = 0; i < this.diggers.size(); i++) {
         CaveDigger digger = this.diggers.get(i);
         if (digger.dig()) {
-          dirtCellsLeft -= 2;
-          
+          dirtCellsLeft -= digger.getDigAmount();
+          dirtCellsLeft--;
           CaveDigger newCaveDigger = digger.tryToSpawnDigger();
           
           if (newCaveDigger != null) {
@@ -244,19 +244,25 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
     this.progress = 50;
     currentStatus = "Cleaning caves";
     
-    for (int x = 1; x < this.size-1; x++) {
-      this.subProgress = (float)x / (float)this.size;
-      for (int y = 1; y < this.size-1; y++) {
-        if (level.getBlockForPosition(x, y).isDirt()) {
-          
-          if (level.getBlockForPosition(x, y-1).isAir() && level.getBlockForPosition(x, y+1).isAir() && level.getBlockForPosition(x-1, y).isAir() && level.getBlockForPosition(x+1, y).isAir()) {
-            level.setBlockForPosition(new Sidewalk(x, y), x, y);
-          } else {
-            if (isIsland(x,y, 2) || isIsland(x,y, 3) || isIsland(x,y,4)) {
+    int times = 3;
+    while(times  > 0) {
+      times--;
+      for (int x = 1; x < this.size-1; x++) {
+        this.subProgress = (float)x / (float)this.size;
+        for (int y = 1; y < this.size-1; y++) {
+          if (level.getBlockForPosition(x, y).isDirt()) {
+            if (level.getBlockForPosition(x-1, y).isAir() && level.getBlockForPosition(x+1, y).isAir()) {
               level.setBlockForPosition(new Sidewalk(x, y), x, y);
+            } else if (level.getBlockForPosition(x, y-1).isAir() && level.getBlockForPosition(x, y+1).isAir()) {
+              level.setBlockForPosition(new Sidewalk(x, y), x, y);
+            } else if (level.getBlockForPosition(x, y-1).isAir() && level.getBlockForPosition(x, y+1).isAir() && level.getBlockForPosition(x-1, y).isAir() && level.getBlockForPosition(x+1, y).isAir()) {
+              level.setBlockForPosition(new Sidewalk(x, y), x, y);
+            } else {
+              if (isIsland(x,y, 2) || isIsland(x,y, 3) || isIsland(x,y,4)) {
+                level.setBlockForPosition(new Sidewalk(x, y), x, y);
+              }
             }
           }
-          
         }
       }
     }
@@ -298,6 +304,10 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
     digger.setY(block.y);
     Log.info("Spawning Miner at position: " + block.x + " x " + block.y);
     this.diggers.add(digger);
+    
+    if (this.diggers.size() > MAX_DIGGER_COUNT) {
+      diggers.remove(0);
+    }
   }
 
   private void buildDungeon() {
