@@ -214,7 +214,7 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
       for (int i = 0; i < this.diggers.size(); i++) {
         CaveDigger digger = this.diggers.get(i);
         if (digger.dig()) {
-          dirtCellsLeft -= 4;
+          dirtCellsLeft -= 2;
           
           CaveDigger newCaveDigger = digger.tryToSpawnDigger();
           

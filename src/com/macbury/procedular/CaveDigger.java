@@ -57,8 +57,6 @@ public class CaveDigger {
       return null;
     }
   }
-
-  
   
   public boolean dig() {
     if (random.nextBoolean()) {
