@@ -24,6 +24,7 @@ public class GeneratingWorldState extends BasicGameState implements WorldBuilder
   public int worldSize = WorldBuilder.NORMAL;
   private BigImage preview;
   private int seed;
+  private Thread builderThread;
   @Override
   public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
     this.font          = Core.instance().getFont();
@@ -31,19 +32,15 @@ public class GeneratingWorldState extends BasicGameState implements WorldBuilder
   @Override
   public void enter(GameContainer container, StateBasedGame game) throws SlickException {
     super.enter(container, game);
-    this.seed          = 1323;
-    world              = new WorldBuilder(worldSize, seed);
-    Thread newThread   = new Thread(world);
-    newThread.setPriority(Thread.MIN_PRIORITY);
-    world.setListener(this);
-    newThread.start();
+    this.seed          = 97384593;
   }
   
   @Override
   public void render(GameContainer arg0, StateBasedGame arg1, Graphics gr) throws SlickException {
     if (preview != null) {
       preview.draw();
-    } else if (world.progress > 0) {
+    } else if (world != null && world.progress > 0) {
+      font.drawString(100, 80, "Seed: " + this.seed);
       font.drawString(100, 110, "Creating world: " + world.currentStatus);
       
       float total = 1.0f;
@@ -60,10 +57,10 @@ public class GeneratingWorldState extends BasicGameState implements WorldBuilder
   public void update(GameContainer arg0, StateBasedGame arg1, int arg2) throws SlickException {
     if (world == null) {
       world              = new WorldBuilder(worldSize, seed);
-      Thread newThread   = new Thread(world);
-      newThread.setPriority(Thread.MIN_PRIORITY);
+      builderThread      = new Thread(world);
+      builderThread.setPriority(Thread.MIN_PRIORITY);
       world.setListener(this);
-      newThread.start();
+      builderThread.start();
     }
     
     if (world.progress == 100) {

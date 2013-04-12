@@ -1,5 +1,7 @@
 package com.macbury.unamed;
 
+import javax.swing.JOptionPane;
+
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.SlickException;
 
@@ -8,7 +10,7 @@ import com.macbury.procedular.WorldBuilder;
 public class Main {
   public static void main(String[] args) {
     Core core = new Core(Core.title);
-   
+    
     AppGameContainer app;
     try {
       app = new AppGameContainer(core);
@@ -19,9 +21,12 @@ public class Main {
       //app.setFullscreen(true);
       app.setShowFPS(false);
       app.start();
-      System.exit(0);
     } catch (SlickException e) {
       e.printStackTrace();
+      JOptionPane.showMessageDialog(null,
+          e.toString(),
+          "Error",
+          JOptionPane.ERROR_MESSAGE);
     }
   }
 }

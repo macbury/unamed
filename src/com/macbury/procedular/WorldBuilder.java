@@ -97,7 +97,7 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
   private void applyStone() throws SlickException {
     this.perlinNoise   = pg.generate(size, 7, getSeed());
     applyDataFromPerlinNoise(0.0f,0.4f, Block.RESOURCE_STONE);
-    applyDataFromPerlinNoise(0.1f,0.2f, Block.RESOURCE_LAVA); //lava
+    applyDataFromPerlinNoise(0.1f,0.3f, Block.RESOURCE_LAVA); //lava
   }
 
   private void applyCoal() throws SlickException {
