@@ -58,6 +58,8 @@ public class CaveDigger {
     }
   }
 
+  
+  
   public boolean dig() {
     if (random.nextBoolean()) {
       randomDirection();

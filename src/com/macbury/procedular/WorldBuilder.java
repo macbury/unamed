@@ -34,6 +34,7 @@ import com.macbury.unamed.level.Lava;
 import com.macbury.unamed.level.Level;
 import com.macbury.unamed.level.Rock;
 import com.macbury.unamed.level.Sand;
+import com.macbury.unamed.level.Sidewalk;
 import com.macbury.unamed.level.Water;
 
 public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCallback, DungeonBSPNodeRoomGenerateCallback {
@@ -41,14 +42,16 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
   private static final int ROOM_COUNT         = 60;
   private static final int CELL_SIZE          = 256;
   
-  public static final int NORMAL              = 1024;
+  public static final int NORMAL              = 1000;
   public static final int BIG                 = 4000;
   public static final int CRASH_MY_COMPUTER   = 6000;
   private static final int MIN_DIGGER_COUNT   = 50;
-  private static final int MAX_DIGGER_COUNT   = MIN_DIGGER_COUNT * 800;
-  private static final float CAVE_COUNT_FACTOR  = 0.45f;
+  private static final int MAX_DIGGER_COUNT   = MIN_DIGGER_COUNT * 10;
+  private static final float CAVE_COUNT_FACTOR  = 0.70f;
   
   private static final int MAX_LOOPS_WITHOUT_SPAWN = 2000;
+
+
   
   public float perlinNoise[][];
   public int size;
@@ -61,6 +64,7 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
   public int progress;
   private Level level;
   public float subProgress;
+  public String currentStatus;
   private Random random;
   private int dirtCellCount = 0;
   
@@ -72,6 +76,7 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
     this.diggers       = new ArrayList<CaveDigger>();
     this.level         = new Level();
     this.level.setSize(size);
+    currentStatus = "Initializing world...";
   }
   
   public void setListener(WorldBuilderListener listener) {
@@ -85,8 +90,8 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
 
   private void applySandAndWater() throws SlickException {
     this.perlinNoise   = pg.generate(size, 6, getSeed());
-    applyDataFromPerlinNoise(0.0f,0.35f, Block.RESOURCE_SAND);
-    applyDataFromPerlinNoise(0.0f,0.2f, Block.RESOURCE_WATER); //water
+    applyDataFromPerlinNoise(0.0f,0.38f, Block.RESOURCE_SAND);
+    applyDataFromPerlinNoise(0.0f,0.3f, Block.RESOURCE_WATER); //water
   }
   
   private void applyStone() throws SlickException {
@@ -178,6 +183,7 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
   }
   
   private void digCaves() {
+    currentStatus = "Creating cave system";
     this.progress = 45;
     
     while(this.diggers.size() < MIN_DIGGER_COUNT) {
@@ -185,6 +191,17 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
     }
     
     this.progress = 46;
+    
+    this.dirtCellCount = 0;
+    this.subProgress = 0;
+    for (int x = 0; x < this.size; x++) {
+      this.subProgress = (float)x / (float)this.size;
+      for (int y = 0; y < this.size; y++) {
+        if (level.getBlockForPosition(x, y).isDirt()) {
+          dirtCellCount++;
+        }
+      }
+    }
     
     int loopWithoutSpawning = 0;
     int totalDirtCells = Math.round(this.dirtCellCount * CAVE_COUNT_FACTOR);
@@ -197,7 +214,7 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
       for (int i = 0; i < this.diggers.size(); i++) {
         CaveDigger digger = this.diggers.get(i);
         if (digger.dig()) {
-          dirtCellsLeft--;
+          dirtCellsLeft -= 4;
           
           CaveDigger newCaveDigger = digger.tryToSpawnDigger();
           
@@ -219,10 +236,59 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
       if (loopWithoutSpawning > MAX_LOOPS_WITHOUT_SPAWN) {
         loopWithoutSpawning = 0;
         spawnRandomDigger();
+        
+        dirtCellsLeft -= dirtCellsLeft * 0.01f;
       }
     }
     
     this.progress = 50;
+    currentStatus = "Cleaning caves";
+    
+    for (int x = 1; x < this.size-1; x++) {
+      this.subProgress = (float)x / (float)this.size;
+      for (int y = 1; y < this.size-1; y++) {
+        if (level.getBlockForPosition(x, y).isDirt()) {
+          
+          if (level.getBlockForPosition(x, y-1).isAir() && level.getBlockForPosition(x, y+1).isAir() && level.getBlockForPosition(x-1, y).isAir() && level.getBlockForPosition(x+1, y).isAir()) {
+            level.setBlockForPosition(new Sidewalk(x, y), x, y);
+          } else {
+            if (isIsland(x,y, 2) || isIsland(x,y, 3) || isIsland(x,y,4)) {
+              level.setBlockForPosition(new Sidewalk(x, y), x, y);
+            }
+          }
+          
+        }
+      }
+    }
+  }
+  
+  public boolean isIsland(int sx, int sy, int size) {
+    boolean island = true;
+    int ex = sx + size;
+    int ey = sy + size;
+    for (int x = 1; x <= ex; x++) {
+      for (int y = 1; y <= ey; y++) {
+        Block block = level.getBlockForPosition(x, y);
+        if (block != null) {
+          if (x == ex && y == ey) {
+            
+            if (!block.isAir()) {
+              island = false;
+              return false;
+            }
+            
+          } else {
+            if (!block.isDirt() || !block.isAir()) {
+              island = false;
+              return false;
+            }
+          }
+        }
+        
+      }
+    }
+    
+    return island;
   }
 
   private void spawnRandomDigger() {
@@ -237,6 +303,8 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
   private void buildDungeon() {
     int cellCount = this.size / CELL_SIZE;
     Log.info("Cell size: " + cellCount); 
+    
+    currentStatus = "Creating dungeon";
     
     int minCellCount = Math.round(cellCount * cellCount * 0.5f);
     
@@ -450,7 +518,8 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
   
   private void applyBedrockBorder() {
     Log.info("Adding bedrock border");
-    this.progress = 37;
+    currentStatus = "Adding bedrock";
+    this.progress = 70;
     int y = this.level.mapTileHeight-1;
     int x = 0;
     for (x = 0; x < this.level.mapTileWidth; x++) {
@@ -459,34 +528,40 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
     }
     
     x = this.level.mapTileWidth-1;
-    this.progress = 39;
+    this.progress = 71;
     for (y = 0; y < this.level.mapTileHeight; y++) {
       this.level.setBlock(0, y, new Bedrock(0,y));
       this.level.setBlock(x, y, new Bedrock(x,y));
     }
     
-    this.progress = 40;
+    this.progress = 75;
   }
   
   private void applyResources() throws SlickException {
     Log.info("Starting building world");
     this.progress = 5;
+    currentStatus = "Filling with ground";
     fillWithGround();
 
     this.progress = 10;
+    currentStatus = "Adding sand and water";
     applySandAndWater();
     this.progress = 15;
     Log.info("Building stone");
     this.progress = 22;
+    currentStatus = "Adding stone";
     applyStone();
     Log.info("Building copper");
     this.progress = 25;
+    currentStatus = "Adding copper";
     applyCopper();
     Log.info("Building coal");
     this.progress = 30;
+    currentStatus = "Adding coal";
     applyCoal();
     Log.info("Building gold");
     this.progress = 35;
+    currentStatus = "Adding gold";
     applyGold();
   }
 

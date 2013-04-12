@@ -44,7 +44,7 @@ public class GeneratingWorldState extends BasicGameState implements WorldBuilder
     if (preview != null) {
       preview.draw();
     } else if (world.progress > 0) {
-      font.drawString(100, 110, "Creating world: " + world.progress + "%");
+      font.drawString(100, 110, "Creating world: " + world.currentStatus);
       
       float total = 1.0f;
       float loaded = world.subProgress;
