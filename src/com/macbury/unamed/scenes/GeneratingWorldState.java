@@ -15,6 +15,7 @@ import com.macbury.unamed.Core;
 import com.macbury.unamed.ImagesManager;
 import com.macbury.unamed.SoundManager;
 import com.macbury.unamed.level.BlockResources;
+import com.macbury.unamed.level.LevelLoader;
 
 public class GeneratingWorldState extends BasicGameState implements WorldBuilderListener {
   private UnicodeFont font;
@@ -64,17 +65,16 @@ public class GeneratingWorldState extends BasicGameState implements WorldBuilder
     }
     
     if (world.progress == 100) {
-      world.dumpTo("screenshoot.png");
-      preview = new BigImage("screenshoot.png");
       this.seed++;
+      world.save();
       world = null;
+      
       Core.instance().enterState(GameplayScene.STATE_GAMEPLAY);
     }
   }
 
   @Override
   public int getID() {
-    // TODO Auto-generated method stub
     return STATE_GENERATIING;
   }
 

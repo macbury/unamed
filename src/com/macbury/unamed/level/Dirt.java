@@ -15,7 +15,7 @@ public class Dirt extends HarvestableBlock {
 
   @Override
   public int getHardness() {
-    return 6;
+    return 3;
   }
 
   @Override

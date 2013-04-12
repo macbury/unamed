@@ -12,6 +12,7 @@ import org.newdawn.slick.util.Log;
 
 import com.macbury.procedular.WorldBuilder;
 import com.macbury.unamed.Core;
+import com.macbury.unamed.intefrace.MenuItem;
 import com.macbury.unamed.intefrace.MenuList;
 import com.macbury.unamed.intefrace.MenuListManager;
 import com.macbury.unamed.intefrace.MenuListManagerInterface;
@@ -23,6 +24,7 @@ public class MenuScene extends BasicGameState implements MenuListManagerInterfac
   private static final int MENU_ITEM_SIZE_NORMAL            = 0;
   private static final int MENU_ITEM_SIZE_BIG               = 1;
   private static final int MENU_ITEM_SIZE_CRASH_MY_COMPUTER = 2;
+  private static final int ITEM_INDEX_LOAD_GAME = 1;
   private MenuList mainMenuList;
   private MenuList selectGeneratedWorldSizeMenu;
   MenuListManager menuManager = null;
@@ -35,16 +37,16 @@ public class MenuScene extends BasicGameState implements MenuListManagerInterfac
     menuManager.setMenuListener(this);
     
     mainMenuList = new MenuList();
-    mainMenuList.add("Create new world");
-    mainMenuList.add("Load world");
-    mainMenuList.add("Options");
-    mainMenuList.add("Exit");
+    mainMenuList.add("New game", ITEM_INDEX_START_GAME);
+    mainMenuList.add("Continue", ITEM_INDEX_LOAD_GAME);
+    mainMenuList.add("Options", 3);
+    mainMenuList.add("Exit", ITEM_INDEX_EXIT);
     
     selectGeneratedWorldSizeMenu = new MenuList();
     selectGeneratedWorldSizeMenu.setTitle("Select world size:");
-    selectGeneratedWorldSizeMenu.add("Normal");
-    selectGeneratedWorldSizeMenu.add("Big");
-    selectGeneratedWorldSizeMenu.add("Crash my computer");
+    selectGeneratedWorldSizeMenu.add("Normal", MENU_ITEM_SIZE_NORMAL);
+    selectGeneratedWorldSizeMenu.add("Big", MENU_ITEM_SIZE_BIG);
+    selectGeneratedWorldSizeMenu.add("Crash my computer", MENU_ITEM_SIZE_CRASH_MY_COMPUTER);
     menuManager.pushList(mainMenuList);
   }
 
@@ -70,14 +72,14 @@ public class MenuScene extends BasicGameState implements MenuListManagerInterfac
   }
 
   @Override
-  public void onItemChange(int index, MenuList currentMenuList) {
-    Log.info("Selected index: "+ index);
+  public void onItemChange(MenuItem item, MenuList currentMenuList) {
+    Log.info("Selected index: "+ item.getName());
   }
 
   @Override
-  public void onSelectItem(int index, MenuList currentMenuList) {
+  public void onSelectItem(MenuItem item, MenuList currentMenuList) {
     if (selectGeneratedWorldSizeMenu == currentMenuList) {
-      switch (index) {
+      switch (item.getId()) {
       case MENU_ITEM_SIZE_NORMAL:
         Core.instance().getGeneratingWorldState().setWorldSize(WorldBuilder.NORMAL);
       break;
@@ -92,17 +94,17 @@ public class MenuScene extends BasicGameState implements MenuListManagerInterfac
       }
       Core.instance().enterState(GeneratingWorldState.STATE_GENERATIING, new FadeOutTransition(), new FadeInTransition());
     } else if (currentMenuList == mainMenuList) {
-      if (index == ITEM_INDEX_START_GAME) {
+      if (item.getId() == ITEM_INDEX_START_GAME) {
         menuManager.pushList(selectGeneratedWorldSizeMenu);
       }
-      if (index == 1) {
+      if (item.getId() == ITEM_INDEX_LOAD_GAME) {
         Core.instance().enterState(GameplayScene.STATE_GAMEPLAY);
       }
-      if (index == ITEM_INDEX_EXIT) {
+      if (item.getId() == ITEM_INDEX_EXIT) {
         System.exit(0);
       }
     }
-    Log.info("Action on index: "+ index);
+    Log.info("Action on index: "+ item.getName());
   }
 
 }

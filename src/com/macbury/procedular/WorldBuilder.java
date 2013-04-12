@@ -32,6 +32,7 @@ import com.macbury.unamed.level.Dirt;
 import com.macbury.unamed.level.GoldOre;
 import com.macbury.unamed.level.Lava;
 import com.macbury.unamed.level.Level;
+import com.macbury.unamed.level.LevelLoader;
 import com.macbury.unamed.level.Rock;
 import com.macbury.unamed.level.Sand;
 import com.macbury.unamed.level.Sidewalk;
@@ -145,9 +146,9 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
     }
   }
   
-  public void dumpTo(String filePath) throws SlickException {
-    this.level.dumpTo(filePath);
-  }
+  //public void dumpTo(String filePath) throws SlickException {
+  //  this.level.dumpTo(filePath);
+ // }
   
   @Override
   public void run() {
@@ -161,8 +162,8 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
       e.printStackTrace();
     }
     //applyRooms();
-
-    this.level.save();
+    
+    
     this.progress = 100;
     Log.info("Finished...");
     this.listener.onWorldBuildingFinish();
@@ -579,6 +580,17 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
     this.seed = i;
     this.random = new Random(seed);
     this.progress = 0;
+  }
+
+  public void save() {
+    LevelLoader ll = new LevelLoader(level);
+    try {
+      level.spawnPlayer();
+    } catch (SlickException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    ll.save();
   }
   
 }

@@ -47,7 +47,7 @@ public class MenuListManager extends ArrayList<MenuList> {
           font.drawString(0, y, ">");
         }
         
-        font.drawString(x, y, currentMenuList.get(i));
+        font.drawString(x, y, currentMenuList.get(i).getName());
       }
       
       gr.popTransform(); 
@@ -91,7 +91,7 @@ public class MenuListManager extends ArrayList<MenuList> {
           startMoving = true;
         }
       } else if (input.isKeyDown(Core.ACTION_KEY)) {
-        menuListener.onSelectItem(currentItemIndex, currentMenuList);
+        menuListener.onSelectItem(this.currentMenuList.get(currentItemIndex), currentMenuList);
         startMoving = true;
       } else if (input.isKeyDown(Core.CANCEL_KEY)) {
         popList();
@@ -99,7 +99,7 @@ public class MenuListManager extends ArrayList<MenuList> {
       }
       
       if (startMoving) {
-        menuListener.onItemChange(currentItemIndex, currentMenuList);
+        menuListener.onItemChange(this.currentMenuList.get(currentItemIndex), currentMenuList);
       }
     }
   }

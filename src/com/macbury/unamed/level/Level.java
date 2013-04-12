@@ -84,8 +84,10 @@ public class Level{
     return null;
   }
   
-  public void addEntity(Entity e) {
-    if (this.entities.indexOf(e) == -1) {
+  public void addEntity(Entity e) throws SlickException {
+    if (e == null) {
+      throw new SlickException("Cannot add null entity");
+    } else if (this.entities.indexOf(e) == -1) {
       e.setLevel(this);
       this.entities.add(e);
       refreshEntityList  = true;
@@ -363,48 +365,6 @@ public class Level{
     player.setTileY(block.y);
   }
   
-  public void generateWorld(int size) throws SlickException {
-    Log.info("Tile size is: "+ this.tileWidth + "x" + this.tileHeight);
-    
-    this.tileCountHorizontal =  Math.round((this.viewPort.getWidth() / this.tileWidth) + 2);
-    this.tileCountVertical   =  Math.round((this.viewPort.getHeight() / this.tileHeight) + 2);
-    
-    Log.info("Tile count is: "+ this.tileCountHorizontal + "x" + this.tileCountVertical);
-    fillWorldWithBlocks(size);
-    applyBedrockBorder();
-
-    createRoom(1,1, 4, 4);
-    
-
-    this.world[1][1] = new GoldOre(1, 1);
-    this.world[2][1] = new CopperOre(2, 1);
-    this.world[3][1] = new DiamondOre(3, 1);
-    this.world[4][1] = new CoalOre(4, 1);
-    this.world[5][1] = new Water(5, 1);
-    this.world[5][2] = new Water(5, 2);
-    this.world[5][3] = new Water(5, 3);
-    this.world[5][4] = new Water(5, 4);
-    this.world[6][1] = new Lava(6, 1);
-    this.world[7][1] = new Lava(7, 1);
-    this.world[8][1] = new Lava(8, 1);
-    this.world[6][2] = new Lava(6, 2);
-  }
-  
-  private void applyBedrockBorder() {
-    int y = mapTileHeight-1;
-    int x = 0;
-    for (x = 0; x < mapTileWidth; x++) {
-      this.world[x][0] = new Bedrock(x,0);
-      this.world[x][y] = new Bedrock(x,y);
-    }
-    
-    x = mapTileWidth-1;
-    
-    for (y = 0; y < mapTileHeight; y++) {
-      this.world[0][y] = new Bedrock(0,y);
-      this.world[x][y] = new Bedrock(x,y);
-    }
-  }
 
   public void fillWorldWithBlocks(int size) {
     this.mapTileWidth  = size;
@@ -415,18 +375,6 @@ public class Level{
     for (int x = 0; x < this.mapTileWidth; x++) {
       for (int y = 0; y < this.mapTileHeight; y++) {
         this.world[x][y] = new Dirt(x,y);
-        //Log.debug("Building block: "+ x + "x" +y + " with id: "+ block.id);
-      }
-    }
-    
-  }
-  
-  private void createRoom(int sx, int sy, int width, int height) {
-    int ex = width  + sx;
-    int ey = height + sy;
-    for (int x = sx; x <= ex; x++) {
-      for (int y = sy; y <= ey; y++) {
-        this.world[x][y] = new Sidewalk(x,y);
       }
     }
   }
@@ -492,131 +440,7 @@ public class Level{
     this.world = new Block[size][size]; 
   }
   
-  public void dumpTo(String filePath) throws SlickException {
-    Log.info("Saving dump");
-    Image localImg = Image.createOffscreenImage(this.mapTileWidth,this.mapTileHeight);
-    Graphics localImgG = localImg.getGraphics();
-    localImgG.setBackground(Color.black);
-    localImgG.clear();
-    
-    Log.info("Creating bitmap");
-    for (int x = 0; x < this.mapTileWidth; x++) {
-      for (int y = 0; y < this.mapTileHeight; y++) {
-        Block block      = this.world[x][y];
-        boolean render   = true;
-        Color color      = null;
-        
-        if (block.isCobbleStone()) {
-          color = new Color(50,50,50);
-        } else if (block.isBedrock()) {
-          color = Color.cyan;
-        } else if (block.isDirt()) {
-          color = Color.black;
-        } else if (block.isCopper()) {
-          color = new Color(127,0,0); 
-        } else if (block.isAir()) {
-          color = new Color(255, 0, 153);
-        } else if (block.isCoal()) {
-          color = Color.darkGray; 
-        } else if (block.isGold()) {
-          color = Color.yellow; 
-        } else if (block.isWater()) {
-          color = Color.blue; 
-        } else if (block.isDiamond()) {
-          color = Color.white; 
-        } else if (block.isLava()) {
-          color = Color.red; 
-        } else if (block.isSand()) {
-          color = Color.green; 
-        } else if (block.isRock()) {
-          color = Color.gray; 
-        } else {
-          throw new SlickException("Undefined block to dump: " + block.getClass().getName());
-        }
-        
-        if (render) {
-          localImgG.setColor(color);
-          localImgG.drawRect(x, y, 1, 1);
-        }
-      }
-    }
-    
-    /*for (Room room : this.rooms) {
-      localImgG.setColor(new Color(255,255,255, 100));
-      localImgG.fill(room);
-    }*/
-    
-    Log.info("Flushing bitmap");
-    localImgG.flush();
-    Log.info("Writing bitmap");
-    ImageOut.write(localImg, filePath, false);
-  }
   
-  public static Level load() throws SlickException {
-    Kryo kryo = Core.instance().setupKryo();
-    Input input;
-    Level level = null;
-    try {
-      InputStream inputStream = new FileInputStream("maps/1.dungeon");
-      input = new Input(inputStream);
-      level = kryo.readObject(input, Level.class);
-      BlockSerializer blockSerializer = new BlockSerializer();
-      
-      for (int x = 0; x < level.mapTileWidth; x++) {
-        for (int y = 0; y < level.mapTileHeight; y++) {
-          try {
-            Block block = kryo.readObject(input, Block.class, blockSerializer);
-            if (block != null) {
-              level.setBlock(x, y, block);
-            }
-            
-          } catch (IndexOutOfBoundsException e) {
-            //Log.error("X: " + x + " Y: " + y);
-            //e.printStackTrace();
-          }
-        }
-      //  
-      }
-      
-      input.close();
-      //level.dumpTo("loadTest.png");
-    } catch (FileNotFoundException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-    
-    level.spawnPlayer();
-    
-    return level;
-  }
-  
-  public void save() {
-    Log.info("Saving map...");
-    Kryo kryo = Core.instance().setupKryo();
-    BlockSerializer blockSerializer = new BlockSerializer();
-    try {
-      OutputStream outputStream = new FileOutputStream("maps/1.dungeon");
-      Output  output            = new Output(outputStream);
-      
-      kryo.writeObject(output, this);
-      for (int x = 0; x < this.mapTileWidth; x++) {
-        for (int y = 0; y < this.mapTileHeight; y++) {
-          kryo.writeObject(output, this.world[x][y], blockSerializer);
-        }
-      //  output.endChunks();
-      }
-      
-      for (Entity entity : this.entities) {
-        kryo.writeObject(output, entity);
-      }
- //     output.endChunks();
-      //kryo.writeObject(this.world, this);
-      output.close();
-    } catch (FileNotFoundException e1) {
-      // TODO Auto-generated catch block
-      e1.printStackTrace();
-    }  
-  }
   
   public Block[][] getWorld() {
     return this.world;
@@ -684,5 +508,33 @@ public class Level{
     this.tileHeight    = Core.TILE_SIZE;
 
     this.world         = new Block[mapTileWidth][mapTileHeight];
+  }
+
+  public ArrayList<Entity> getEntities() {
+    return this.entities;
+  }
+  
+  public void setPlayer(Player newPlayer) throws SlickException {
+    if (newPlayer == null) {
+      throw new SlickException("Player cannot be null!");
+    } else if (player == null) {
+      player = newPlayer;
+      lookAt(player);
+    } else {
+      throw new SlickException("There can be only one player on scene!");
+    }
+  }
+  
+  public Entity findEntityOfType(Class klass) {
+    for (Entity entity : this.entities) {
+      if (klass.isInstance(entity)){
+        return entity;
+      }
+    }
+    return null;
+  }
+  
+  public void setupWorld() throws SlickException {
+    setPlayer((Player) findEntityOfType(Player.class));
   }
 }

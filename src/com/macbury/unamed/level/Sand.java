@@ -14,7 +14,7 @@ public class Sand extends HarvestableBlock {
 
   @Override
   public int getHardness() {
-    return 3;
+    return 2;
   }
 
   @Override

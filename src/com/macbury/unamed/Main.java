@@ -4,6 +4,7 @@ import javax.swing.JOptionPane;
 
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.util.Log;
 
 import com.macbury.procedular.WorldBuilder;
 
@@ -22,6 +23,7 @@ public class Main {
       app.setShowFPS(false);
       app.start();
     } catch (Exception e) {
+      Log.error(e.toString());
       e.printStackTrace();
       JOptionPane.showMessageDialog(null,
           e.toString(),

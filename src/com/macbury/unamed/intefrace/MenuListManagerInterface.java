@@ -1,6 +1,6 @@
 package com.macbury.unamed.intefrace;
 
 public interface MenuListManagerInterface {
-  void onItemChange(int index, MenuList currentMenuList);
-  void onSelectItem(int index, MenuList currentMenuList);
+  void onItemChange(MenuItem item, MenuList currentMenuList);
+  void onSelectItem(MenuItem item, MenuList currentMenuList);
 }

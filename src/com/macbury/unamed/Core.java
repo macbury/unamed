@@ -40,14 +40,6 @@ public class Core extends StateBasedGame {
   static public Core instance() {
     return Core.coreInstance;
   }
-  
-  public Kryo setupKryo() {
-    Kryo kryo = new Kryo();
-    kryo.register(Level.class,  new LevelSerializer());
-    kryo.register(Entity.class, new EntitySerializer());
-    kryo.setReferences(false);
-    return kryo;
-  }
 
   public UnicodeFont getFont() throws SlickException {
     if (font == null) {

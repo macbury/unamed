@@ -7,7 +7,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
-public class MenuList extends ArrayList<String> {
+public class MenuList extends ArrayList<MenuItem> {
   private String title;
 
   public String getTitle() {
@@ -20,5 +20,9 @@ public class MenuList extends ArrayList<String> {
   
   public boolean haveTitle() {
     return getTitle() != null;
+  }
+
+  public void add(String name, int id) {
+    super.add(new MenuItem(name, id));
   }
 }

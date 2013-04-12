@@ -264,4 +264,12 @@ public class Entity implements Comparable<Entity> {
   public void onCollideWith(Entity entity) {
     
   }
+
+  public void setId(int readInt) {
+    this.id = readInt;
+  }
+  
+  public String toString() {
+    return "Entity: " + getX() + "x" + getY() + " - " + getClass().getSimpleName();
+  }
 }

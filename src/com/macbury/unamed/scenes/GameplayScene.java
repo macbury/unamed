@@ -11,6 +11,7 @@ import com.macbury.unamed.Core;
 import com.macbury.unamed.SoundManager;
 import com.macbury.unamed.intefrace.InGameInterface;
 import com.macbury.unamed.level.Level;
+import com.macbury.unamed.level.LevelLoader;
 
 public class GameplayScene extends BasicGameState {
   public final static int STATE_GAMEPLAY = 0;
@@ -29,7 +30,7 @@ public class GameplayScene extends BasicGameState {
     super.enter(container, game);
     SoundManager.shared();
     if (this.level == null) {
-      this.level         = Level.load();
+      this.level         = LevelLoader.load();
       this.gameInterface = new InGameInterface(this.level);
       this.level.setupViewport(container);
       //this.level.generateWorld(100);
