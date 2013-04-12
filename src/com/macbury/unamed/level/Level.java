@@ -128,7 +128,12 @@ public class Level{
           if (image != null) {
             visibleBlocks.add(block);
             
-            image.draw(tx,ty);
+            if (block.isSidewalk()) {
+              image.draw(tx,ty, Block.HARVESTED_SIDEWALK_COLOR);
+            } else {
+              image.draw(tx,ty);
+            }
+            
             block.computeWallShadow(this);
             
             if (block.isWall()) {

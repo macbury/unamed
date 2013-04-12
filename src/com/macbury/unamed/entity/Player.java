@@ -51,9 +51,9 @@ public class Player extends Entity {
     
     this.collidable = true;
     this.inventory  = new InventoryManager();
-    TorchItem item  = new TorchItem(this);
-    item.addItem(99);
-    this.inventory.add(item);
+    //TorchItem item  = new TorchItem(this);
+    //item.addItem(99);
+    //this.inventory.add(item);
     
     /*BlockItem blockItem = new BlockItem(this, Dirt.class);
     blockItem.addItem(98);

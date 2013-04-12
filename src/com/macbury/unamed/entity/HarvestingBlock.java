@@ -61,7 +61,9 @@ public class HarvestingBlock extends BlockEntity {
 
   @Override
   public InventoryItem harvestedByPlayer(Player byPlayer) {
-    this.getLevel().setBlockForPosition(new Sidewalk(this.getTileX(), this.getTileY()), this.getTileX(), this.getTileY());
+    Sidewalk sidewalk = new Sidewalk(this.getTileX(), this.getTileY());
+    sidewalk.setHarvestedBlockType(currentBlock.getClass());
+    this.getLevel().setBlockForPosition(sidewalk, this.getTileX(), this.getTileY());
     this.destroy();
     return currentBlock.harvestedByPlayer(byPlayer);
   }

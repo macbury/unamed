@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.SlickException;
 
 
@@ -36,6 +37,7 @@ public abstract class Block {
   public static final byte RESOURCE_GOLD        = 9;
   public static final byte RESOURCE_BEDROCK     = 10;
   public static final byte RESOURCE_COBBLESTONE = 11;
+  public static final Color HARVESTED_SIDEWALK_COLOR = new Color(100,100,100);
   
   public  boolean harvestable         = false;
   public  boolean solid               = false;
@@ -337,5 +339,9 @@ public abstract class Block {
       e.printStackTrace();
     }
     return block;
+  }
+
+  public boolean isSidewalk() {
+    return Sidewalk.class.isInstance(this);
   }
 }

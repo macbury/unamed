@@ -38,16 +38,16 @@ public class BlockResources {
   public BlockResources() throws SlickException {
     spriteSheet = ImagesManager.shared().getSpriteSheet("terrain.png", Core.TILE_SIZE, Core.TILE_SIZE);
     
-    sidewalkImage = spriteSheet.getSprite(1, 1);
-    bedrockImage  = spriteSheet.getSprite(0, 14);
+    sidewalkImage = spriteSheet.getSprite(0, 0);
+    bedrockImage  = spriteSheet.getSprite(1, 1);
     rockImage     = spriteSheet.getSprite(1, 0);
-    dirtImage     = spriteSheet.getSprite(3, 1);
+    dirtImage     = spriteSheet.getSprite(2, 0);
     coalImage     = spriteSheet.getSprite(2, 2);
     sandImage     = spriteSheet.getSprite(2, 1);
     copperImage   = spriteSheet.getSprite(1, 2);
     goldImage     = spriteSheet.getSprite(0, 2);
     diamondImage  = spriteSheet.getSprite(2, 3);
-    cobblestone   = spriteSheet.getSprite(7, 0);
+    cobblestone   = spriteSheet.getSprite(4, 6);
     
     SpriteSheet waterSpriteSheet = ImagesManager.shared().getSpriteSheet("water.png", Core.TILE_SIZE, Core.TILE_SIZE);
     Image[] liquidImages         = new Image[waterSpriteSheet.getVerticalCount()];
@@ -70,7 +70,17 @@ public class BlockResources {
   }
   
   public Image imageForBlock(Block block) {
-    return imageForBlockClass(block.getClass());
+    if (Sidewalk.class.isInstance(block)) {
+      Sidewalk sidewalk = (Sidewalk) block;
+      if (sidewalk.getHarvestedBlockType() == null) {
+        return imageForBlockClass(block.getClass());
+      } else {
+        return imageForBlockClass(sidewalk.getHarvestedBlockType());
+      }
+    } else {
+      return imageForBlockClass(block.getClass());
+    }
+    
   }
   
   public Image imageForBlockClass(Class klass) {
