@@ -344,4 +344,12 @@ public abstract class Block {
   public boolean isSidewalk() {
     return Sidewalk.class.isInstance(this);
   }
+
+  public Sidewalk asSidewalk() {
+    return (Sidewalk)this;
+  }
+  
+  public String toString() {
+    return getClass().getSimpleName() + " at: " + x + "x" + y;
+  }
 }

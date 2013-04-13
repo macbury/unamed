@@ -444,9 +444,7 @@ public class Level{
     
     this.world = new Block[size][size]; 
   }
-  
-  
-  
+
   public Block[][] getWorld() {
     return this.world;
   }
@@ -458,7 +456,6 @@ public class Level{
   public void setRooms(ArrayList<Room> rooms) {
     this.rooms = rooms;
   }
- 
 
   public void applyRooms(ArrayList<Room> allRooms) {
     this.setRooms(allRooms);
@@ -476,7 +473,9 @@ public class Level{
     
     for (int x = sx; x <= ex; x++) {
       for (int y = sy; y <= ey; y++) {
-        this.world[x][y] = new Sidewalk(x,y);
+        Sidewalk sidewalk = new Sidewalk(x,y);
+        sidewalk.setHarvestedBlockType(Cobblestone.class);
+        this.world[x][y] = sidewalk;
       }
     }
     

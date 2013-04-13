@@ -251,18 +251,26 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
       for (int x = 1; x < this.size-1; x++) {
         this.subProgress = (float)x / (float)this.size;
         for (int y = 1; y < this.size-1; y++) {
+          boolean setSidewalk = false;
+          
           if (level.getBlockForPosition(x, y).isDirt()) {
             if (level.getBlockForPosition(x-1, y).isAir() && level.getBlockForPosition(x+1, y).isAir()) {
-              level.setBlockForPosition(new Sidewalk(x, y), x, y);
+              setSidewalk = true;
             } else if (level.getBlockForPosition(x, y-1).isAir() && level.getBlockForPosition(x, y+1).isAir()) {
-              level.setBlockForPosition(new Sidewalk(x, y), x, y);
+              setSidewalk = true;
             } else if (level.getBlockForPosition(x, y-1).isAir() && level.getBlockForPosition(x, y+1).isAir() && level.getBlockForPosition(x-1, y).isAir() && level.getBlockForPosition(x+1, y).isAir()) {
-              level.setBlockForPosition(new Sidewalk(x, y), x, y);
+              setSidewalk = true;
             } else {
               if (isIsland(x,y, 2) || isIsland(x,y, 3) || isIsland(x,y,4)) {
-                level.setBlockForPosition(new Sidewalk(x, y), x, y);
+                setSidewalk = true;
               }
             }
+          }
+          
+          if (setSidewalk) {
+            Sidewalk sidewalk = new Sidewalk(x, y);
+            sidewalk.setHarvestedBlockType(Dirt.class);
+            level.setBlockForPosition(sidewalk, x, y);
           }
         }
       }

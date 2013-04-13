@@ -129,16 +129,11 @@ public class LevelLoader {
       int entityCount = input.readInt();
       
       while(entityCount > 0) {
-        Class klass = null;
-        try {
-          klass = Class.forName(input.readString());
-          Entity entity = (Entity) kryo.readObject(input, klass);
-          Log.info("Loading entity: " + entity.toString());
-          level.addEntity(entity);
-        } catch (ClassNotFoundException e) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
-        }
+        Class<? extends Entity> klass = null;
+        klass = kryo.readClass(input).getType();
+        Entity entity = (Entity) kryo.readObject(input, klass);
+        Log.info("Loading entity: " + entity.toString());
+        level.addEntity(entity);
         
         entityCount--;
       }
@@ -171,7 +166,7 @@ public class LevelLoader {
       
       output.writeInt(this.level.getEntities().size());
       for (Entity entity : this.level.getEntities()) {
-        output.writeString(entity.getClass().getName());
+        kryo.writeClass(output, entity.getClass());
         kryo.writeObject(output, entity);
       }
  //     output.endChunks();

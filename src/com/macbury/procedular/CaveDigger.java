@@ -3,6 +3,7 @@ package com.macbury.procedular;
 import java.util.Random;
 
 import com.macbury.unamed.level.Block;
+import com.macbury.unamed.level.Dirt;
 import com.macbury.unamed.level.Level;
 import com.macbury.unamed.level.Sidewalk;
 
@@ -65,7 +66,9 @@ public class CaveDigger {
     Block block = level.getBlockForPosition(x, y);
     if (block != null && (block.isDirt() || block.isCobbleStone())) {
       digAmount++;
-      this.level.setBlock(x, y, new Sidewalk(x, y));
+      Sidewalk sidewalk = new Sidewalk(x, y);
+      sidewalk.setHarvestedBlockType(Dirt.class);
+      this.level.setBlock(x, y, sidewalk);
     }
   }
   

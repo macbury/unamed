@@ -84,7 +84,9 @@ public class CorridorDigger {
   }
 
   public void floor(int x, int y) {
-    level.setBlock(x, y, new Sidewalk(x, y));
+    Sidewalk sidewalk = new Sidewalk(x, y);
+    sidewalk.setHarvestedBlockType(Cobblestone.class);
+    level.setBlock(x, y, sidewalk);
   }
   
   public void digDownRightCorridor(int tunnelMeetX, int tunnelMeetY, int endX, int endY) {
