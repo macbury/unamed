@@ -24,7 +24,7 @@ import com.macbury.unamed.inventory.TorchItem;
 import com.macbury.unamed.level.BlockResources;
 import com.macbury.unamed.level.Level;
 
-public class InGameInterface {
+public class InGameInterface extends Interface{
   final static int HOTBAR_PADDING = 10;
   public final static int HOTBAR_CELL_SIZE = 34;
   public final static int HOTBAR_CELL_TEXT_PADDING = -2;
@@ -47,7 +47,6 @@ public class InGameInterface {
     this.hotBarSpriteSheet = spriteSheet;
     
   }
-
   
   public void render(GameContainer gc, StateBasedGame sb, Graphics gr) throws SlickException {
     Player player = level.getPlayer();
@@ -100,6 +99,14 @@ public class InGameInterface {
   private void drawTextWithShadow(int textX, int textY, String text) {
     font.drawString(textX+2, textY+2, text, Color.black);
     font.drawString(textX, textY, text);
+  }
+
+
+  @Override
+  public void update(GameContainer gc, StateBasedGame sb, int delta)
+      throws SlickException {
+    // TODO Auto-generated method stub
+    
   }
 
 }

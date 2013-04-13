@@ -9,6 +9,8 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EmptyStackException;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Random;
 import java.util.Stack;
 import java.util.zip.DeflaterInputStream;
@@ -35,6 +37,7 @@ import com.macbury.procedular.Room;
 import com.macbury.unamed.Core;
 import com.macbury.unamed.ImagesManager;
 import com.macbury.unamed.ParticleManager;
+import com.macbury.unamed.component.Light;
 import com.macbury.unamed.entity.Entity;
 import com.macbury.unamed.entity.Player;
 import com.macbury.unamed.serializers.BlockSerializer;
@@ -42,6 +45,8 @@ import com.macbury.unamed.serializers.LevelSerializer;
 
 public class Level{
   public static final int SMALL  = 100;
+
+  private static final Color VISITED_BLOCK_COLOR = new Color(0,0,0, Block.VISITED_ALPHA);
 
   private ArrayList<Room> rooms;
   private Block[][] world;
@@ -64,8 +69,11 @@ public class Level{
   Entity        cameraTarget;
   Player        player;
   private ArrayList<Entity> entities;
+  private Stack<Block> visibleBlocks;
   private Stack<Entity> collidableEntities;
   private boolean refreshEntityList = true;
+
+  private HashMap<Integer, Color> lightColorMap;
 
   
   public Level() throws SlickException {
@@ -73,6 +81,8 @@ public class Level{
     this.entities           = new ArrayList<Entity>();
     this.blockResources     = BlockResources.shared();
     this.shadowMap          = ImagesManager.shared().getShadowMapSpriteSheet();
+    this.visibleBlocks      = new Stack<Block>();
+    this.lightColorMap      = new HashMap<Integer, Color>();
   }
   
   public Entity getEntityForTilePosition(int x, int y) {
@@ -83,6 +93,8 @@ public class Level{
     }
     return null;
   }
+  
+
   
   public void addEntity(Entity e) throws SlickException {
     if (e == null) {
@@ -111,8 +123,7 @@ public class Level{
     
     int shiftX = -shiftXRound - this.tileWidth;
     int shiftY = -shiftYRound - this.tileHeight;
-    
-    ArrayList<Block> visibleBlocks = new ArrayList<Block>();
+
     
     gr.pushTransform();
     gr.translate(viewportTileOffsetX, viewportTileOffsetY);
@@ -126,7 +137,7 @@ public class Level{
         if (block != null && block.isVisibleOrVisited()) {
           Image image = this.blockResources.imageForBlock(block);
           if (image != null) {
-            visibleBlocks.add(block);
+            visibleBlocks.push(block);
             
             if (block.isSidewalk()) {
               image.draw(tx,ty, Block.HARVESTED_SIDEWALK_COLOR);
@@ -173,18 +184,35 @@ public class Level{
         }
       }
     }
-
-    for( Block block : visibleBlocks ) {
+    
+    Block block = null;
+    while(true) {
+      try {
+        block = visibleBlocks.pop();
+      } catch (EmptyStackException e) {
+        break;
+      }
+      
       if (block.isVisible()) {
-        gr.setColor(new Color(0,0,0,block.getLightPower()));
+        gr.setColor(colorForLightPower(block.getLightPower()));
       } else {
-        gr.setColor(new Color(0,0,0, Block.VISITED_ALPHA));
+        gr.setColor(VISITED_BLOCK_COLOR);
       }
       
       gr.fillRect(block.x*this.tileWidth, block.y*this.tileHeight, this.tileWidth, this.tileHeight);
     }
     
     gr.popTransform();
+  }
+  
+  public Color colorForLightPower(Integer power) {
+    Color color = lightColorMap.get(power);
+    if (color == null) {
+      color = new Color(0,0,0, power);
+      lightColorMap.put(power, color);
+    }
+    
+    return color;
   }
   
   public boolean checkIfInBounds(int x, int y) {
