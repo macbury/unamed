@@ -50,13 +50,13 @@ public class CollectableItem extends Entity {
   }
 
   @Override
-  public void onCollideWith(Entity entity) {
+  public void onCollideWith(Entity entity) throws SlickException {
     if (Player.class.isInstance(entity)) {
       loot();
     }
   }
 
-  public void loot() {
+  public void loot() throws SlickException {
     InventoryManager.shared().addItem(itemToCollect);
     SoundManager.shared().loot.playAsSoundEffect(1.0f, 1.0f, false);
     this.destroy();

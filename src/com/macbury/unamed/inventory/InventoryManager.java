@@ -19,8 +19,11 @@ public class InventoryManager extends ArrayList<InventoryItem> {
   private SpriteSheet spriteSheet;
   private HashMap<String, Image> itemImageCache;
   
-  public static InventoryManager shared() {
-    return InventoryManager.shared;
+  public static InventoryManager shared() throws SlickException {
+    if (shared == null) {
+      shared = new InventoryManager();
+    }
+    return shared;
   }
   
   public InventoryManager() throws SlickException {

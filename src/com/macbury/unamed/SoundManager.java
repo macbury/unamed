@@ -13,6 +13,8 @@ import org.newdawn.slick.openal.AudioLoader;
 import org.newdawn.slick.util.Log;
 
 import com.macbury.unamed.level.Block;
+import com.macbury.unamed.level.Dirt;
+import com.macbury.unamed.level.Sand;
 import com.macbury.unamed.level.Sidewalk;
 import com.macbury.unamed.level.Water;
 
@@ -36,11 +38,13 @@ public class SoundManager {
   public Audio loot;
   public Audio miss;
   private ArrayList<Audio> stepsStone;
-  private ArrayList<Audio> waterStone;
+  private ArrayList<Audio> waterSteps;
   public Audio pop;
   
   private int x = 0;
   private int y = 0;
+  private ArrayList<Audio> gravelSteps;
+  private ArrayList<Audio> sandSteps;
   
   private Audio loadOgg(String filename) {
     try {
@@ -64,14 +68,25 @@ public class SoundManager {
     this.igniteSound      = loadOgg("Ignite");
     this.theme            = loadOgg("Theme");
     this.pop              = loadOgg("pop");
+    
     this.stepsStone       = new ArrayList<Audio>();
     for (int i = 1; i <= 6; i++) {
-      this.stepsStone.add(loadOgg("stone"+i));
+      this.stepsStone.add(loadOgg("steps/stone"+i));
     }
     
-    this.waterStone       = new ArrayList<Audio>();
+    this.waterSteps       = new ArrayList<Audio>();
     for (int i = 1; i <= 4; i++) {
-      this.waterStone.add(loadOgg("swim"+i));
+      this.waterSteps.add(loadOgg("steps/swim"+i));
+    }
+    
+    this.gravelSteps       = new ArrayList<Audio>();
+    for (int i = 1; i <= 4; i++) {
+      this.gravelSteps.add(loadOgg("steps/gravel"+i));
+    }
+    
+    this.sandSteps       = new ArrayList<Audio>();
+    for (int i = 1; i <= 4; i++) {
+      this.sandSteps.add(loadOgg("steps/sand"+i));
     }
   }
 
@@ -90,16 +105,25 @@ public class SoundManager {
       }
     }
     lastIndex = index;  
-    array.get(index).playAsSoundEffect(1.0f, 0.5f, false);
+    array.get(index).playAsSoundEffect(1.0f, 1.0f, false, 0, 0,0);
   }
 
   public void playStepForBlock(Block blockForPosition) {
+
     if (Sidewalk.class.isInstance(blockForPosition)) {
-      playStepArray(this.stepsStone);
+      Class sidewalkClass = blockForPosition.asSidewalk().getHarvestedBlockType();
+      
+      if (sidewalkClass == Sand.class) {
+        playStepArray(this.sandSteps);
+      } else if (sidewalkClass == Dirt.class) {
+        playStepArray(this.gravelSteps);
+      } else {
+        playStepArray(this.stepsStone);
+      }
     }
     
     if (Water.class.isInstance(blockForPosition)) {
-      playStepArray(this.waterStone);
+      playStepArray(this.waterSteps);
     }
   }
 

@@ -261,7 +261,7 @@ public class Entity implements Comparable<Entity> {
     this.getLevel().removeEntity(this);
   }
   
-  public void onCollideWith(Entity entity) {
+  public void onCollideWith(Entity entity) throws SlickException {
     
   }
 

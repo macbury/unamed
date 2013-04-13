@@ -46,10 +46,12 @@ public class LoadingResourceScreen extends BasicGameState {
       font.drawString(100, 100, "Loading");
     }
 
-    int total = LoadingList.get().getTotalResources();
-    int loaded = LoadingList.get().getTotalResources() - LoadingList.get().getRemainingResources();
-    g.fillRect(100,150,loaded*40,20);
-    g.drawRect(100,150,total*40,20);
+    
+    float total  = 1.0f;
+    float loaded = LoadingList.get().getRemainingResources() / LoadingList.get().getTotalResources();
+    
+    g.fillRect(100,150,loaded*480,20);
+    g.drawRect(100,150,total*480,20);
   }
 
   @Override

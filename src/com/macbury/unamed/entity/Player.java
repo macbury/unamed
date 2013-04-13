@@ -40,17 +40,20 @@ public class Player extends Entity {
   private boolean pressedPlaceKey   = false;
   private boolean pressedTakeKey    = false;
   
-  public InventoryManager inventory;
   private int buttonPlacingThrottle = 0;
   private int buttonTakingThrottle  = 0;
   private Sprite punchSprite;
+  public InventoryManager inventory;
   
+  public void setKeyboardEnabled(boolean enabled) {
+    this.keyboardMovement.enabled = enabled;
+  }
   
   public Player() throws SlickException {
     super();
     
     this.collidable = true;
-    this.inventory  = new InventoryManager();
+    this.inventory  = InventoryManager.shared();
     //TorchItem item  = new TorchItem(this);
     //item.addItem(99);
     //this.inventory.add(item);
@@ -143,59 +146,61 @@ public class Player extends Entity {
     super.update(gc, sb, delta);
     SoundManager.shared().setPosition(getTileX(), getTileY());
     
-    Input input    = gc.getInput();
-    
-    if (pressedPlaceKey) {
-      buttonPlacingThrottle += delta;
-    }
-    
-    if (pressedTakeKey) {
-      buttonTakingThrottle += delta;
-    }
-    
-    if (buttonPlacingThrottle > MAX_PLACING_TIME) {
-      pressedPlaceKey = false;
-    }
-    
-    if (buttonTakingThrottle > MAX_TAKING_TIME) {
-      pressedTakeKey = false;
-    }
-    
-    if (!tileMovement.isMoving()) {
-      if (input.isKeyDown(Input.KEY_X) && !pressedTakeKey) {
-        pressedTakeKey       = true;
-        buttonTakingThrottle = 0;
-        
-        useElementInFrontOfMe();
+    if (this.keyboardMovement.enabled) {
+      Input input    = gc.getInput();
+      
+      if (pressedPlaceKey) {
+        buttonPlacingThrottle += delta;
       }
       
-      if(input.isKeyDown(Input.KEY_Z) && !pressedPlaceKey) {
-        pressedPlaceKey         = true;
-        buttonPlacingThrottle   = 0;
-        placeOrUseElementInFrontOfMe();
+      if (pressedTakeKey) {
+        buttonTakingThrottle += delta;
       }
-    }
-    
-    if (input.isKeyPressed(Input.KEY_0)) {
-      inventory.setInventoryIndex(10);
-    } else if (input.isKeyPressed(Input.KEY_1)) {
-      inventory.setInventoryIndex(1);
-    } else if (input.isKeyPressed(Input.KEY_2)) {
-      inventory.setInventoryIndex(2);
-    } else if (input.isKeyPressed(Input.KEY_3)) {
-      inventory.setInventoryIndex(3);
-    } else if (input.isKeyPressed(Input.KEY_4)) {
-      inventory.setInventoryIndex(4);
-    } else if (input.isKeyPressed(Input.KEY_5)) {
-      inventory.setInventoryIndex(5);
-    } else if (input.isKeyPressed(Input.KEY_6)) {
-      inventory.setInventoryIndex(6);
-    } else if (input.isKeyPressed(Input.KEY_7)) {
-      inventory.setInventoryIndex(7);
-    } else if (input.isKeyPressed(Input.KEY_8)) {
-      inventory.setInventoryIndex(8);
-    } else if (input.isKeyPressed(Input.KEY_9)) {
-      inventory.setInventoryIndex(9);
+      
+      if (buttonPlacingThrottle > MAX_PLACING_TIME) {
+        pressedPlaceKey = false;
+      }
+      
+      if (buttonTakingThrottle > MAX_TAKING_TIME) {
+        pressedTakeKey = false;
+      }
+      
+      if (!tileMovement.isMoving()) {
+        if (input.isKeyDown(Input.KEY_X) && !pressedTakeKey) {
+          pressedTakeKey       = true;
+          buttonTakingThrottle = 0;
+          
+          useElementInFrontOfMe();
+        }
+        
+        if(input.isKeyDown(Input.KEY_Z) && !pressedPlaceKey) {
+          pressedPlaceKey         = true;
+          buttonPlacingThrottle   = 0;
+          placeOrUseElementInFrontOfMe();
+        }
+      }
+      
+      if (input.isKeyPressed(Input.KEY_0)) {
+        inventory.setInventoryIndex(10);
+      } else if (input.isKeyPressed(Input.KEY_1)) {
+        inventory.setInventoryIndex(1);
+      } else if (input.isKeyPressed(Input.KEY_2)) {
+        inventory.setInventoryIndex(2);
+      } else if (input.isKeyPressed(Input.KEY_3)) {
+        inventory.setInventoryIndex(3);
+      } else if (input.isKeyPressed(Input.KEY_4)) {
+        inventory.setInventoryIndex(4);
+      } else if (input.isKeyPressed(Input.KEY_5)) {
+        inventory.setInventoryIndex(5);
+      } else if (input.isKeyPressed(Input.KEY_6)) {
+        inventory.setInventoryIndex(6);
+      } else if (input.isKeyPressed(Input.KEY_7)) {
+        inventory.setInventoryIndex(7);
+      } else if (input.isKeyPressed(Input.KEY_8)) {
+        inventory.setInventoryIndex(8);
+      } else if (input.isKeyPressed(Input.KEY_9)) {
+        inventory.setInventoryIndex(9);
+      }
     }
   }
 

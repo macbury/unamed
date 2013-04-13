@@ -109,4 +109,16 @@ public class InGameInterface extends Interface{
     
   }
 
+  @Override
+  public void onEnter() {
+    Player player = level.getPlayer();
+    player.setKeyboardEnabled(true);
+  }
+
+  @Override
+  public void onExit() {
+    Player player = level.getPlayer();
+    player.setKeyboardEnabled(false);
+  }
+
 }

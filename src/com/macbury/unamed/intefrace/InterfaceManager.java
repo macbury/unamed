@@ -66,9 +66,17 @@ public class InterfaceManager extends Stack<Interface> {
       }
     }
     
-    Interface inte = this.get(this.size() - 1);
+    Interface inte = currentInterface();
     if (inte != null) {
       inte.update(gc, sb, delta);
+    }
+  }
+
+  private Interface currentInterface() {
+    try {
+      return this.get(this.size() - 1);
+    } catch (ArrayIndexOutOfBoundsException e) {
+      return null;
     }
   }
 
@@ -76,4 +84,23 @@ public class InterfaceManager extends Stack<Interface> {
     return cursorText;
   }
 
+  @Override
+  public synchronized Interface pop() {
+    Interface inte = super.pop(); 
+    inte.onExit();
+    currentInterface().onEnter();
+    return inte;
+  }
+
+  @Override
+  public Interface push(Interface inte) {
+    if (currentInterface() != null) {
+      currentInterface().onExit();
+    }
+    
+    inte.onEnter();
+    return super.push(inte);
+  }
+  
+  
 }
