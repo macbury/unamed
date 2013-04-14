@@ -16,6 +16,8 @@ public class ImagesManager {
   private HashMap<String, SpriteSheet> spriteSheetCache;
   private SpriteSheet hotBarCellSpriteSheet;
   private SpriteSheet shadowMapSpriteSheet;
+  private SpriteSheet inventorySpriteSheet;
+  public Image iconDynamite;
   
   public static ImagesManager shared() throws SlickException {
     if (ImagesManager.sharedInstance == null) {
@@ -26,12 +28,18 @@ public class ImagesManager {
   }
   
   public ImagesManager() throws SlickException {
-    this.imagesCache      = new HashMap<>();
-    this.spriteSheetCache = new HashMap<>();
+    this.imagesCache           = new HashMap<>();
+    this.spriteSheetCache      = new HashMap<>();
     this.hotBarCellSpriteSheet = getSpriteSheet("hud/hotbar_cell.png", InGameInterface.HOTBAR_CELL_SIZE, InGameInterface.HOTBAR_CELL_SIZE);
     this.shadowMapSpriteSheet  = getSpriteSheet("effects/shadowmap.png", Core.TILE_SIZE, Core.TILE_SIZE);
+    this.inventorySpriteSheet  = getSpriteSheet("hud/items.png", Core.TILE_SIZE, Core.TILE_SIZE);
+    buildItemsCache();
   }
   
+  private void buildItemsCache() {
+    this.iconDynamite = this.inventorySpriteSheet.getSprite(4, 7);
+  }
+
   public Image getImage(String name) throws SlickException {
     Image image = imagesCache.get(name);
     

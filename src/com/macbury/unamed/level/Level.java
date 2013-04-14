@@ -421,6 +421,22 @@ public class Level{
     return this.player;
   }
 
+  public void digSidewalk(int x, int y, boolean updateLighting) {
+    Block block = this.getBlockForPosition(x, y);
+    if (block != null && block.isHarvestable()) {
+      Sidewalk sidewalk = new Sidewalk(x, y);
+      Class<HarvestableBlock> klass = (Class<HarvestableBlock>) block.getClass();
+      sidewalk.setHarvestedBlockType(klass);
+      
+      if (updateLighting) {
+        this.setBlockForPosition(sidewalk, x, y);
+      } else {
+        this.setBlock(x, y, sidewalk);
+      }
+      
+    }
+  }
+  
   public void removeEntity(Entity entity) {
     this.entities.remove(entity);
     entity.afterRemove();

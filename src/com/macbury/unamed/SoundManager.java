@@ -38,7 +38,8 @@ public class SoundManager {
   public Audio loot;
   public Audio miss;
   public Audio pop;
-  
+  public Audio fuse;
+  public Audio explode;
   private int x = 0;
   private int y = 0;
   private ArrayList<Audio> gravelSteps;
@@ -50,6 +51,8 @@ public class SoundManager {
   private ArrayList<Audio> sandDig;
   private ArrayList<Audio> stoneDig;
   private ArrayList<Audio> waterDig;
+  
+  
   
   private Audio loadOgg(String filename) {
     try {
@@ -73,7 +76,8 @@ public class SoundManager {
     this.igniteSound      = loadOgg("Ignite");
     this.theme            = loadOgg("Theme");
     this.pop              = loadOgg("pop");
-    
+    this.fuse             = loadOgg("dynamite/fuse");
+    this.explode          = loadOgg("dynamite/Explode1");
     this.stepsStone       = new ArrayList<Audio>();
     for (int i = 1; i <= 6; i++) {
       this.stepsStone.add(loadOgg("steps/stone"+i));
@@ -113,7 +117,7 @@ public class SoundManager {
   public void playAt(int tx, int ty, Audio sound) {
     Line line = new Line(tx, ty, this.x, this.y);
    
-    sound.playAsSoundEffect(1.0f, 1.0f, true, 0, 0, 0.0f);
+    sound.playAsSoundEffect(1.0f, 1.0f, false, 0, 0, 0.0f);
   }
   
   public void playStepArray(ArrayList<Audio> array){

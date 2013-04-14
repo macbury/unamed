@@ -66,9 +66,7 @@ public class CaveDigger {
     Block block = level.getBlockForPosition(x, y);
     if (block != null && (block.isDirt() || block.isCobbleStone())) {
       digAmount++;
-      Sidewalk sidewalk = new Sidewalk(x, y);
-      sidewalk.setHarvestedBlockType(Dirt.class);
-      this.level.setBlock(x, y, sidewalk);
+      this.level.digSidewalk(x, y, false);
     }
   }
   

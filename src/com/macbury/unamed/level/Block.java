@@ -352,4 +352,8 @@ public abstract class Block {
   public String toString() {
     return getClass().getSimpleName() + " at: " + x + "x" + y;
   }
+
+  public boolean isHarvestable() {
+    return HarvestableBlock.class.isInstance(this);
+  }
 }
