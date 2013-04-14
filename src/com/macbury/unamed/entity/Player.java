@@ -278,7 +278,7 @@ public class Player extends Entity {
         
         InventoryItem item = usableEntity.harvest(currentHarvestPower(), this);
         if (item == null) {
-          SoundManager.shared().dig.playAsSoundEffect(1.0f, 1.0f, false);
+          SoundManager.shared().playDigForBlock(entityInFront.getBlock());
         } else {
           entityInFront.destroy();
           SoundManager.shared().pop.playAsSoundEffect(1.0f, 1.0f, false);

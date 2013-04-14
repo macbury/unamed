@@ -46,6 +46,11 @@ public class SoundManager {
   private ArrayList<Audio> stepsStone;
   private ArrayList<Audio> waterSteps;
   
+  private ArrayList<Audio> gravelDig;
+  private ArrayList<Audio> sandDig;
+  private ArrayList<Audio> stoneDig;
+  private ArrayList<Audio> waterDig;
+  
   private Audio loadOgg(String filename) {
     try {
       String filepath = "res/sounds/"+filename+".ogg";
@@ -88,6 +93,21 @@ public class SoundManager {
     for (int i = 1; i <= 4; i++) {
       this.sandSteps.add(loadOgg("steps/sand"+i));
     }
+    
+    this.stoneDig       = new ArrayList<Audio>();
+    for (int i = 1; i <= 4; i++) {
+      this.stoneDig.add(loadOgg("dig/stone"+i));
+    }
+    
+    this.gravelDig       = new ArrayList<Audio>();
+    for (int i = 1; i <= 4; i++) {
+      this.gravelDig.add(loadOgg("dig/gravel"+i));
+    }
+    
+    this.sandDig       = new ArrayList<Audio>();
+    for (int i = 1; i <= 4; i++) {
+      this.sandDig.add(loadOgg("dig/sand"+i));
+    }
   }
 
   public void playAt(int tx, int ty, Audio sound) {
@@ -124,6 +144,16 @@ public class SoundManager {
     
     if (Water.class.isInstance(blockForPosition)) {
       playStepArray(this.waterSteps);
+    }
+  }
+  
+  public void playDigForBlock(Block block) {
+    if (Sand.class.isInstance(block)) {
+      playStepArray(this.sandDig);
+    } else if (Dirt.class.isInstance(block)) {
+      playStepArray(this.gravelDig);
+    } else {
+      playStepArray(this.stoneDig);
     }
   }
 
