@@ -20,7 +20,7 @@ public class CopperOre extends HarvestableBlock {
 
   @Override
   public InventoryItem harvestedByPlayer(Player byPlayer) {
-    return new CopperItem(byPlayer);
+    return new CopperItem();
   }
 
   @Override

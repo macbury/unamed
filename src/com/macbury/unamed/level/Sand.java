@@ -19,7 +19,7 @@ public class Sand extends HarvestableBlock {
 
   @Override
   public InventoryItem harvestedByPlayer(Player byPlayer) {
-    return new BlockItem(byPlayer, Sand.class);
+    return new BlockItem(Sand.class);
   }
 
   @Override

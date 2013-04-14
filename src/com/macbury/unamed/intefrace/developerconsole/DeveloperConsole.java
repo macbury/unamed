@@ -30,6 +30,7 @@ public class DeveloperConsole extends Interface implements KeyListener {
     commands    = new ArrayList<ConsoleCommand>();
     registerCommand(HelpCommand.class);
     registerCommand(ClearCommand.class);
+    registerCommand(GiveCommand.class);
   }
   
   public void registerCommand(Class<? extends ConsoleCommand> klass) {
@@ -116,6 +117,10 @@ public class DeveloperConsole extends Interface implements KeyListener {
         }
       break;
       
+      case Input.KEY_SPACE:
+        currentCommand += " ";
+      break;
+      
       case Input.KEY_BACK:
         if (currentCommand.length() > 0) {
           currentCommand = currentCommand.substring(0, currentCommand.length()-1);
@@ -123,7 +128,10 @@ public class DeveloperConsole extends Interface implements KeyListener {
       break;
       
       default:
-        currentCommand += c;
+        if (Character.isLetter(c) || Character.isDigit(c)) {
+          currentCommand += c;
+        }
+
       break;
     }
   }

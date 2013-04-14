@@ -20,7 +20,7 @@ public class Dirt extends HarvestableBlock {
 
   @Override
   public InventoryItem harvestedByPlayer(Player byPlayer) {
-    return new BlockItem(byPlayer, Dirt.class);
+    return new BlockItem(Dirt.class);
   }
 
   @Override

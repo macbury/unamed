@@ -11,10 +11,8 @@ public abstract class InventoryItem {
   public static final int STANDARD_HARVEST_POWER = 1;
   public static final int INFINITY_COUNT = -666;
   protected int elementCount = 0;
-  protected Player owner;
-  
-  public InventoryItem(Player entity) {
-    this.owner        = entity;
+
+  public InventoryItem() {
     this.elementCount = 1;
   }
   

@@ -69,7 +69,7 @@ public class Torch extends BlockEntity {
 
   @Override
   public InventoryItem harvestedByPlayer(Player byPlayer) {
-    return new TorchItem(byPlayer);
+    return new TorchItem();
   }
 
   @Override

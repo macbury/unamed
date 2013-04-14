@@ -44,6 +44,7 @@ import com.macbury.unamed.serializers.BlockSerializer;
 import com.macbury.unamed.serializers.LevelSerializer;
 
 public class Level{
+  private static Level shared;
   public static final int SMALL  = 100;
 
   private static final Color VISITED_BLOCK_COLOR = new Color(0,0,0, Block.VISITED_ALPHA);
@@ -74,9 +75,13 @@ public class Level{
   private boolean refreshEntityList = true;
 
   private HashMap<Integer, Color> lightColorMap;
-
+  
+  public static Level shared() {
+    return shared;
+  }
   
   public Level() throws SlickException {
+    Level.shared            = this;
     this.collidableEntities = new Stack<Entity>();
     this.entities           = new ArrayList<Entity>();
     this.blockResources     = BlockResources.shared();

@@ -7,18 +7,16 @@ import com.macbury.unamed.SoundManager;
 import com.macbury.unamed.entity.Entity;
 import com.macbury.unamed.entity.Player;
 import com.macbury.unamed.entity.Torch;
+import com.macbury.unamed.level.Level;
 
 public class TorchItem extends InventoryItem {
 
-  public TorchItem(Player entity) {
-    super(entity);
-  }
 
   @Override
   public boolean place(Vector2f tilePos) throws SlickException {
     if(haveItems()) {
       Torch torch = new Torch();
-      this.owner.getLevel().addEntity(torch);
+      Level.shared().addEntity(torch);
       
       torch.setTilePosition((int)tilePos.x, (int)tilePos.y);
       SoundManager.shared().placeBlockSound.playAsSoundEffect(1.0f, 1.0f, false);

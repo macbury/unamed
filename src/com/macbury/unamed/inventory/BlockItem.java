@@ -8,14 +8,14 @@ import com.macbury.unamed.entity.Player;
 import com.macbury.unamed.level.Cobblestone;
 import com.macbury.unamed.level.Dirt;
 import com.macbury.unamed.level.HarvestableBlock;
+import com.macbury.unamed.level.Level;
 import com.macbury.unamed.level.Rock;
 import com.macbury.unamed.level.Sand;
 
 public class BlockItem extends InventoryItem {
   public Class<HarvestableBlock> blockType;
   
-  public BlockItem(Player entity, Class blockType) {
-    super(entity);
+  public BlockItem(Class blockType) {
     this.blockType = blockType;
   }
   
@@ -52,7 +52,7 @@ public class BlockItem extends InventoryItem {
     }
     
     if (block != null) {
-      this.owner.getLevel().setBlockForPosition(block, (int)tilePos.x, (int)tilePos.y);
+      Level.shared().setBlockForPosition(block, (int)tilePos.x, (int)tilePos.y);
       SoundManager.shared().placeBlockSound.playAsSoundEffect(1.0f, 1.0f, false);
       this.popItem();
       return true;

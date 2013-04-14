@@ -37,14 +37,14 @@ public class SoundManager {
   public Audio theme;
   public Audio loot;
   public Audio miss;
-  private ArrayList<Audio> stepsStone;
-  private ArrayList<Audio> waterSteps;
   public Audio pop;
   
   private int x = 0;
   private int y = 0;
   private ArrayList<Audio> gravelSteps;
   private ArrayList<Audio> sandSteps;
+  private ArrayList<Audio> stepsStone;
+  private ArrayList<Audio> waterSteps;
   
   private Audio loadOgg(String filename) {
     try {

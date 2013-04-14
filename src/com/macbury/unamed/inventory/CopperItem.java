@@ -7,9 +7,6 @@ import com.macbury.unamed.entity.Player;
 
 public class CopperItem extends InventoryItem {
 
-  public CopperItem(Player entity) {
-    super(entity);
-  }
 
   @Override
   public String getKey() {

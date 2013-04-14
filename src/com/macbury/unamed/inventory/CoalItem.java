@@ -7,11 +7,6 @@ import com.macbury.unamed.entity.Player;
 
 public class CoalItem extends InventoryItem {
 
-  public CoalItem(Player entity) {
-    super(entity);
-    // TODO Auto-generated constructor stub
-  }
-
   @Override
   public String getKey() {
     // TODO Auto-generated method stub

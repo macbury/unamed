@@ -22,7 +22,7 @@ public class CoalOre extends HarvestableBlock {
 
   @Override
   public InventoryItem harvestedByPlayer(Player byPlayer) {
-    CoalItem coal = new CoalItem(byPlayer);
+    CoalItem coal = new CoalItem();
     coal.addItem((int) Math.floor(Math.random() * MAX_SPAWN));
     return coal;
   }
