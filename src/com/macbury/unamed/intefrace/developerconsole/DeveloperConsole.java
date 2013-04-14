@@ -1,4 +1,4 @@
-package com.macbury.unamed.intefrace;
+package com.macbury.unamed.intefrace.developerconsole;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,17 +14,35 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.Log;
 
 import com.macbury.unamed.Core;
+import com.macbury.unamed.intefrace.Interface;
+import com.macbury.unamed.intefrace.InterfaceManager;
 
 public class DeveloperConsole extends Interface implements KeyListener {
-  public final static Color consoleColor = new Color(0,0,0,0.5f);
-  private static final float CONSOLE_HEIGHT = 250.0f;
+  public final static Color consoleColor = new Color(0,0,0,0.7f);
+  private static final float CONSOLE_HEIGHT = 320.0f;
   private static final float LINE_HEIGHT = 24;
   private static final float CONSOLE_PADDING = 10;
   private String currentCommand = "";
   ArrayList<String> commandsLog;
-
+  public ArrayList<ConsoleCommand> commands;
   public DeveloperConsole() {
     commandsLog = new ArrayList<String>();
+    commands    = new ArrayList<ConsoleCommand>();
+    registerCommand(HelpCommand.class);
+    registerCommand(ClearCommand.class);
+  }
+  
+  public void registerCommand(Class<? extends ConsoleCommand> klass) {
+    ConsoleCommand command = null;
+    try {
+      command = klass.newInstance();
+    } catch (InstantiationException e) {
+      e.printStackTrace();
+    } catch (IllegalAccessException e) {
+      e.printStackTrace();
+    }
+    command.setConsole(this);
+    commands.add(command);
   }
   
   @Override
@@ -87,19 +105,49 @@ public class DeveloperConsole extends Interface implements KeyListener {
   public void keyPressed(int code, char c) {
     Input input = Core.instance().getContainer().getInput();
     
-    if (code == Input.KEY_ENTER) {
-      commandsLog.add(currentCommand);
-      if (commandsLog.size() > 8) {
-        commandsLog.remove(0);
-      }
-      currentCommand = "";
-    } else if (code == Input.KEY_BACK) {
-      if (currentCommand.length() > 0) {
-        currentCommand = currentCommand.substring(0, currentCommand.length()-1);
-      }
-    } else { 
-      currentCommand += c;
+    switch (code) {
+      case Input.KEY_ENTER:
+        parseCommand();
+      break;
+      
+      case Input.KEY_UP:
+        if (commandsLog.size() > 0) {
+          currentCommand = commandsLog.get(commandsLog.size() - 1);
+        }
+      break;
+      
+      case Input.KEY_BACK:
+        if (currentCommand.length() > 0) {
+          currentCommand = currentCommand.substring(0, currentCommand.length()-1);
+        }
+      break;
+      
+      default:
+        currentCommand += c;
+      break;
     }
+  }
+  
+  public void print(String string) {
+    commandsLog.add(string);
+    if (commandsLog.size() > CONSOLE_HEIGHT / LINE_HEIGHT  - 2) {
+      commandsLog.remove(0);
+    }
+  }
+
+  private void parseCommand() {
+    currentCommand = currentCommand.trim();
+    boolean foundCommand = false;
+    for (ConsoleCommand command : this.commands) {
+      if (command.parseCommand(currentCommand)) {
+        foundCommand = true;
+        break;
+      }
+    }
+    if (!foundCommand) {
+      print("Undefined command: " + currentCommand + " type 'help' for more commands");
+    }
+    currentCommand = "";
   }
 
   @Override

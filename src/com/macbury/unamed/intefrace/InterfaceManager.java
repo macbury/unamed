@@ -10,6 +10,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.Log;
 
 import com.macbury.unamed.Core;
+import com.macbury.unamed.intefrace.developerconsole.DeveloperConsole;
 import com.macbury.unamed.scenes.MenuScene;
 
 public class InterfaceManager extends Stack<Interface> {
