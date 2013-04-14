@@ -14,8 +14,14 @@ import com.macbury.unamed.level.HarvestableBlock;
 public class Dynamite extends BlockEntity {
   
   private static final int IGNITE_POWER = 3;
-  private short timeToExplosion = 0;
+  private short timer = 0;
   private final static short TIME_TO_EXPLOSION = 5 * 1000;
+  private static final byte STATE_COUNTDOWN = 0;
+  private static final byte STATE_EXPLOSION = 1;
+  private static final short TIME_AFTER_EXPLOSION = 500;
+  
+  private byte state = STATE_COUNTDOWN;
+  private Sprite sprite;
   
   public Dynamite() throws SlickException {
     super();
@@ -26,23 +32,79 @@ public class Dynamite extends BlockEntity {
     light.updateLight();
     addComponent(light);
     
-    Sprite sprite = new Sprite(ImagesManager.shared().iconDynamite);
+    this.sprite = new Sprite(ImagesManager.shared().iconDynamite);
     addComponent(sprite);
-    this.timeToExplosion = TIME_TO_EXPLOSION;
+    this.timer = TIME_TO_EXPLOSION;
   }
   
   @Override
   public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
     super.update(gc, sb, delta);
-    if (timeToExplosion == TIME_TO_EXPLOSION) {
+    switch (this.state) {
+      case STATE_COUNTDOWN:
+        stateCountdown(delta);
+      break;
+      case STATE_EXPLOSION:
+        stateExplosion(delta);
+      break;
+    }
+  }
+
+  private void stateExplosion(int delta) {
+    timer -= delta;
+    
+    if (timer <= 0) {
+      this.destroy();
+    }
+  }
+
+  private void stateCountdown(int delta) {
+    if (timer == TIME_TO_EXPLOSION) {
       SoundManager.shared().playAt(this.getTileX(), this.getTileY(), SoundManager.shared().fuse);
     }
     
-    timeToExplosion -= delta;
+    timer -= delta;
 
-    if (timeToExplosion <= 0) {
+    if (timer <= 0) {
+      this.sprite.enabled = false;
+      this.state = STATE_EXPLOSION;
+      this.timer = TIME_AFTER_EXPLOSION;
       SoundManager.shared().playAt(this.getTileX(), this.getTileY(), SoundManager.shared().explode);
-      this.destroy();
+      for (int i = 1; i <= 5; i++) {
+        digCircle(this.getTileX(), this.getTileY(), i);
+      }
+      this.getLight().setLightPower(IGNITE_POWER * 4);
+      this.getLight().updateLight();
+      
+    }
+  }
+  
+  public void digCircle(int x0, int y0, int radius) {
+    int x = radius, y = 0;
+    int xChange = 1 - (radius << 1);
+    int yChange = 0;
+    int radiusError = 0;
+   
+    while(x >= y)  {
+      this.getLevel().digSidewalk(x + x0, y + y0, true);
+      this.getLevel().digSidewalk(y + x0, x + y0, true);
+      this.getLevel().digSidewalk(-x + x0, y + y0, true);
+      this.getLevel().digSidewalk(-y + x0, x + y0, true);
+      this.getLevel().digSidewalk(-y + x0, x + y0, true);
+      this.getLevel().digSidewalk(-x + x0, -y + y0, true);
+      this.getLevel().digSidewalk(-y + x0, -x + y0, true);
+      this.getLevel().digSidewalk(x + x0, -y + y0, true);
+      this.getLevel().digSidewalk(y + x0, -x + y0, true);
+   
+      y++;
+      radiusError += yChange;
+      yChange += 2;
+      if(((radiusError << 1) + xChange) > 0)
+      {
+        x--;
+        radiusError += xChange;
+        xChange += 2;
+      }
     }
   }
 
