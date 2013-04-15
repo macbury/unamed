@@ -19,5 +19,5 @@ public abstract class Component {
   }
 
   public abstract void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException;
-  public abstract void render(GameContainer gc, StateBasedGame sb, Graphics gr);
+  public abstract void render(GameContainer gc, StateBasedGame sb, Graphics gr) throws SlickException;
 }

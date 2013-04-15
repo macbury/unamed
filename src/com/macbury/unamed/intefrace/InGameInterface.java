@@ -11,9 +11,11 @@ import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.state.StateBasedGame;
+import org.newdawn.slick.util.Log;
 
 import com.macbury.unamed.Core;
 import com.macbury.unamed.ImagesManager;
+import com.macbury.unamed.component.HealthComponent;
 import com.macbury.unamed.entity.Player;
 import com.macbury.unamed.inventory.BlockItem;
 import com.macbury.unamed.inventory.CoalItem;
@@ -28,6 +30,7 @@ public class InGameInterface extends Interface{
   final static int HOTBAR_PADDING = 10;
   public final static int HOTBAR_CELL_SIZE = 34;
   public final static int HOTBAR_CELL_TEXT_PADDING = -2;
+  private static final int HEALTH_BAR_BOTTOM = 66;
   Level level;
   private UnicodeFont font;
   private Image cellImage;
@@ -49,13 +52,24 @@ public class InGameInterface extends Interface{
   }
   
   public void render(GameContainer gc, StateBasedGame sb, Graphics gr) throws SlickException {
-    Player player = level.getPlayer();
+    Player player          = level.getPlayer();
+    HealthComponent health = player.getHealth();
     gr.setColor(Color.white);
     
     font.drawString(10, 10, "FPS: "+ gc.getFPS());
     
     int cellCount = InventoryManager.MAX_HOTBAR_INVENTORY_INDEX - InventoryManager.MIN_HOTBAR_INVENTORY_INDEX;
-
+    
+    gr.pushTransform();
+    gr.translate(HOTBAR_PADDING, gc.getHeight() - HEALTH_BAR_BOTTOM);
+    
+    gr.setColor(Color.red);
+    gr.fillRect(0, 0, 320 * health.getHealthProgress(), 14);
+    gr.setColor(Color.white);
+    gr.drawRect(0, 0, 320, 14);
+    
+    gr.popTransform();
+    
     gr.pushTransform();
     gr.translate(HOTBAR_PADDING, gc.getHeight() - HOTBAR_CELL_SIZE - HOTBAR_PADDING); // MOVE origin to left bottom corner of the screem 
     

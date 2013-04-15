@@ -103,7 +103,7 @@ public class Entity implements Comparable<Entity> {
     }
   }
 
-  public void render(GameContainer gc, StateBasedGame sb, Graphics gr) {
+  public void render(GameContainer gc, StateBasedGame sb, Graphics gr) throws SlickException {
     gr.pushTransform();
     gr.translate(this.getX(), this.getY());
     for(Component component : components) {

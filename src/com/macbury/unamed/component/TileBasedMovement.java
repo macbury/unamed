@@ -8,11 +8,14 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import com.macbury.unamed.Core;
 import com.macbury.unamed.SoundManager;
+import com.macbury.unamed.Timer;
+import com.macbury.unamed.TimerInterface;
 import com.macbury.unamed.Util;
 import com.macbury.unamed.level.Block;
+import com.macbury.unamed.level.Lava;
 import com.macbury.unamed.level.PassableBlock;
 
-public class TileBasedMovement extends Component {
+public class TileBasedMovement extends Component implements TimerInterface {
   public final static String NAME = "TileBasedMovement"; 
   public final static byte DIRECTION_LEFT  = 0;
   public final static byte DIRECTION_RIGHT = 1;
@@ -22,10 +25,14 @@ public class TileBasedMovement extends Component {
   public  byte  direction                  = DIRECTION_DOWN;
   public  float speed                      = 0.0035f;
   private float totalMoveTime              = 0.0f;
-  
+  private Timer lavaDamageTimer            = null;
   private boolean moveInProgress = false;
   private Vector2f basePosition;
   private float blockMoveSpeed;
+  
+  public TileBasedMovement() {
+    lavaDamageTimer = new Timer(Lava.APPLY_DAMAGE_EVERY_MILISECONDS, this);
+  }
   
   public boolean isMoving() {
     return moveInProgress;
@@ -106,6 +113,9 @@ public class TileBasedMovement extends Component {
         }
       }
     }
+    
+    lavaDamageTimer.update(delta);
+    lavaDamageTimer.setEnabled(this.owner.getBlock().isLava());
   }
 
   @Override
@@ -127,5 +137,20 @@ public class TileBasedMovement extends Component {
 
   public byte getDirection() {
     return this.direction;
+  }
+
+  @Override
+  public void onTimerFire(Timer timer) {
+    if (timer == lavaDamageTimer) {
+      if (this.owner.haveHealth()) {
+        Block block = this.owner.getBlock();
+        
+        if (Lava.class.isInstance(block)) {
+          Lava lavaBlock = (Lava)block;
+          
+          this.owner.getHealth().applyDamage(lavaBlock.getDamage());
+        }
+      }
+    }
   }
 }

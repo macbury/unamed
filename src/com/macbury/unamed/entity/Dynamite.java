@@ -6,6 +6,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import com.macbury.unamed.ImagesManager;
 import com.macbury.unamed.SoundManager;
+import com.macbury.unamed.combat.Damage;
 import com.macbury.unamed.component.Light;
 import com.macbury.unamed.component.Sprite;
 import com.macbury.unamed.inventory.InventoryItem;
@@ -82,11 +83,12 @@ public class Dynamite extends BlockEntity {
     this.getLevel().digSidewalk(x, y, true, true);
     Entity attackedEntity = this.getLevel().getEntityForTilePosition(x, y);
     if (attackedEntity != null) {
+      Damage damage = new Damage(power);
       if (BlockEntity.class.isInstance(attackedEntity)) {
         BlockEntity entity = (BlockEntity)attackedEntity;
         InventoryItem item = entity.harvest(power);
       } else if (attackedEntity.haveHealth()) {
-        attackedEntity.getHealth().applyDamage((short) power);
+        attackedEntity.getHealth().applyDamage(damage);
       }
     }
   }

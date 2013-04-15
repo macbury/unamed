@@ -1,10 +1,13 @@
 package com.macbury.unamed.level;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
+import com.macbury.unamed.combat.Damage;
 import com.macbury.unamed.serializers.BlockSerializer;
 
 @DefaultSerializer(BlockSerializer.class)
 public class Lava extends LiquidBlock {
+  private static final short LAVA_DAMAGE                    = 5;
+  public static final  short APPLY_DAMAGE_EVERY_MILISECONDS = 1000;
 
   public Lava(int x, int y) {
     super(x, y);
@@ -35,5 +38,7 @@ public class Lava extends LiquidBlock {
     return RESOURCE_LAVA;
   }
   
-  
+  public Damage getDamage() {
+    return new Damage(LAVA_DAMAGE);
+  }
 }

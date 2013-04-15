@@ -35,7 +35,7 @@ public class Player extends Entity {
   TileBasedMovement tileMovement;
   KeyboardMovement  keyboardMovement;
   
-  final static int MAX_PLACING_TIME = 250;
+  final static int MAX_PLACING_TIME         = 250;
   private static final int MAX_TAKING_TIME  = 300;
   private static final short START_HEALTH   = 100;
   
@@ -56,25 +56,6 @@ public class Player extends Entity {
     
     this.collidable = true;
     this.inventory  = InventoryManager.shared();
-    //TorchItem item  = new TorchItem(this);
-    //item.addItem(99);
-    //this.inventory.add(item);
-    
-    /*BlockItem blockItem = new BlockItem(this, Dirt.class);
-    blockItem.addItem(98);
-    this.inventory.add(blockItem);
-    
-    blockItem = new BlockItem(this, Rock.class);
-    blockItem.addItem(98);
-    this.inventory.add(blockItem);
-    
-    blockItem = new BlockItem(this, Sand.class);
-    blockItem.addItem(98);
-    this.inventory.add(blockItem);
-    
-    blockItem = new BlockItem(this, Cobblestone.class);
-    blockItem.addItem(98);
-    this.inventory.add(blockItem);*/
     
     this.z = ENTITY_ZINDEX;
     tileMovement = new TileBasedMovement();
@@ -82,12 +63,6 @@ public class Player extends Entity {
     
     keyboardMovement = new KeyboardMovement();
     addComponent(keyboardMovement);
-    
-    //addComponent(new Sprite(ImagesManager.shared().getImage("Shadow.png")));
-
-    //punchSprite = new Sprite(ImagesManager.shared().getImage("base_punch.png"));
-    //addComponent(punchSprite);
-   // punchSprite.enabled = true;
     
     CharacterAnimation characterAnimationComponent = new CharacterAnimation();
     addComponent(characterAnimationComponent);
