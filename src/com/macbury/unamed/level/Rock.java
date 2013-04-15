@@ -19,7 +19,7 @@ public class Rock extends HarvestableBlock {
   }
 
   @Override
-  public InventoryItem harvestedByPlayer(Player byPlayer) {
+  public InventoryItem harvestedByPlayer() {
     return new BlockItem(Rock.class);
   }
 

@@ -13,9 +13,9 @@ public abstract class BlockEntity extends Entity {
   protected boolean isHarvesting     = false;
   public abstract boolean use();
   public abstract int getHardness();
-  public abstract InventoryItem harvestedByPlayer(Player byPlayer);
+  public abstract InventoryItem harvestedByPlayer() throws SlickException;
   
-  public InventoryItem harvest(int power, Player byPlayer) throws SlickException {
+  public InventoryItem harvest(int power) throws SlickException {
     if (!isHarvesting) {
       hardness       = getHardness();
     }
@@ -24,12 +24,10 @@ public abstract class BlockEntity extends Entity {
     hardness       -= power;
     
     if (hardness <= 0) {
-      InventoryItem item        = harvestedByPlayer(byPlayer);
+      InventoryItem item        = harvestedByPlayer();
       if (item != null) {
-        CollectableItem spawnItem = new CollectableItem(item);
-        this.getLevel().addEntity(spawnItem);
-        spawnItem.setTileX(this.getTileX());
-        spawnItem.setTileY(this.getTileY());
+        this.getLevel().spawnItem(item, this.getTileX(), this.getTileY());
+        this.destroy();
       }
       return item;
     } else {

@@ -19,7 +19,7 @@ public class CopperOre extends HarvestableBlock {
   }
 
   @Override
-  public InventoryItem harvestedByPlayer(Player byPlayer) {
+  public InventoryItem harvestedByPlayer() {
     return new CopperItem();
   }
 
@@ -28,4 +28,8 @@ public class CopperOre extends HarvestableBlock {
     return Block.RESOURCE_COPPER;
   }
 
+  @Override
+  public Class<?> getHarvestableClass() {
+    return Rock.class;
+  }
 }

@@ -17,7 +17,7 @@ public class Bedrock extends HarvestableBlock {
   }
 
   @Override
-  public InventoryItem harvestedByPlayer(Player byPlayer) {
+  public InventoryItem harvestedByPlayer() {
     // TODO Auto-generated method stub
     return null;
   }

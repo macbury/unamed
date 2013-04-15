@@ -9,6 +9,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import com.macbury.unamed.Core;
 import com.macbury.unamed.SoundManager;
 import com.macbury.unamed.component.CharacterAnimation;
+import com.macbury.unamed.component.HealthComponent;
 import com.macbury.unamed.component.HitBox;
 import com.macbury.unamed.component.KeyboardMovement;
 import com.macbury.unamed.component.Light;
@@ -35,7 +36,8 @@ public class Player extends Entity {
   KeyboardMovement  keyboardMovement;
   
   final static int MAX_PLACING_TIME = 250;
-  private static final int MAX_TAKING_TIME = 300;
+  private static final int MAX_TAKING_TIME  = 300;
+  private static final short START_HEALTH   = 100;
   
   private boolean pressedPlaceKey   = false;
   private boolean pressedTakeKey    = false;
@@ -100,6 +102,8 @@ public class Player extends Entity {
     light.setLightPower(LIGHT_POWER);
     light.updateLight();
     addComponent(light);
+    
+    addComponent(new HealthComponent(START_HEALTH));
   }
  
   
@@ -276,11 +280,10 @@ public class Player extends Entity {
       if (BlockEntity.class.isInstance(entityInFront)) {
         BlockEntity usableEntity = (BlockEntity) entityInFront;
         
-        InventoryItem item = usableEntity.harvest(currentHarvestPower(), this);
+        InventoryItem item = usableEntity.harvest(currentHarvestPower());
         if (item == null) {
           SoundManager.shared().playDigForBlock(entityInFront.getBlock());
         } else {
-          entityInFront.destroy();
           SoundManager.shared().pop.playAsSoundEffect(1.0f, 1.0f, false);
         }
       }

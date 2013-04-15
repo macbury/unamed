@@ -19,13 +19,18 @@ public class DiamondOre extends HarvestableBlock {
   }
 
   @Override
-  public InventoryItem harvestedByPlayer(Player byPlayer) {
+  public InventoryItem harvestedByPlayer() {
     return null;
   }
 
   @Override
   public byte getBlockTypeId() {
     return Block.RESOURCE_DIAMOND;
+  }
+  
+  @Override
+  public Class<?> getHarvestableClass() {
+    return Rock.class;
   }
 
 }

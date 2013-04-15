@@ -18,9 +18,13 @@ abstract public class HarvestableBlock extends Block {
   
   abstract public int getHardness();
 
-  abstract public InventoryItem harvestedByPlayer(Player byPlayer);
+  abstract public InventoryItem harvestedByPlayer();
 
   public Rectangle toRect() {
     return new Rectangle(x * Core.TILE_SIZE, y * Core.TILE_SIZE, Core.TILE_SIZE, Core.TILE_SIZE);
+  }
+
+  public Class<?> getHarvestableClass() {
+    return (Class<?>) this.getClass();
   }
 }

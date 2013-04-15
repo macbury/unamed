@@ -38,8 +38,10 @@ import com.macbury.unamed.Core;
 import com.macbury.unamed.ImagesManager;
 import com.macbury.unamed.ParticleManager;
 import com.macbury.unamed.component.Light;
+import com.macbury.unamed.entity.CollectableItem;
 import com.macbury.unamed.entity.Entity;
 import com.macbury.unamed.entity.Player;
+import com.macbury.unamed.inventory.InventoryItem;
 import com.macbury.unamed.serializers.BlockSerializer;
 import com.macbury.unamed.serializers.LevelSerializer;
 
@@ -48,6 +50,7 @@ public class Level{
   public static final int SMALL  = 100;
 
   private static final Color VISITED_BLOCK_COLOR = new Color(0,0,0, Block.VISITED_ALPHA);
+  private static final Color WALL_SHADE_COLOR    = new Color(0,0,0,180);
 
   private ArrayList<Room> rooms;
   private Block[][] world;
@@ -153,7 +156,7 @@ public class Level{
             block.computeWallShadow(this);
             
             if (block.isWall()) {
-              gr.setColor(new Color(0,0,0,180));
+              gr.setColor(WALL_SHADE_COLOR);
               gr.fillRect(tx, ty + Core.SHADOW_SIZE, Core.TILE_SIZE, Core.TILE_SIZE - Core.SHADOW_SIZE);
             }
             
@@ -270,6 +273,20 @@ public class Level{
         collidableEntities.remove(i);
       }
     }
+  }
+  
+  public Entity getColliderEntityForTile(int tileX, int tileY) {
+    int x          = tileX * Core.TILE_SIZE;
+    int y          = tileY * Core.TILE_SIZE;
+    Rectangle rect = new Rectangle(x, y, Core.TILE_SIZE, Core.TILE_SIZE);
+    for (int i = 0; i < this.entities.size(); i++) {
+      Entity e    = this.entities.get(i);
+      if (e.collidable && e.getRect().intersects(rect)) {
+        return e;
+      }
+    }
+    
+    return null;
   }
   
 
@@ -420,12 +437,12 @@ public class Level{
   public Player getPlayer() {
     return this.player;
   }
-
-  public void digSidewalk(int x, int y, boolean updateLighting) {
+  
+  public void digSidewalk(int x, int y, boolean updateLighting, boolean dropItem) throws SlickException {
     Block block = this.getBlockForPosition(x, y);
     if (block != null && block.isHarvestable()) {
       Sidewalk sidewalk = new Sidewalk(x, y);
-      Class<HarvestableBlock> klass = (Class<HarvestableBlock>) block.getClass();
+      Class<HarvestableBlock> klass = (Class<HarvestableBlock>) block.asHarvestableBlock().getHarvestableClass();
       sidewalk.setHarvestedBlockType(klass);
       
       if (updateLighting) {
@@ -434,7 +451,17 @@ public class Level{
         this.setBlock(x, y, sidewalk);
       }
       
+      if (dropItem) {
+        InventoryItem item = block.asHarvestableBlock().harvestedByPlayer();
+        if (item != null) {
+          this.spawnItem(item, x, y);
+        }
+      }
     }
+  }
+  
+  public void digSidewalk(int x, int y, boolean updateLighting) throws SlickException {
+    this.digSidewalk(x, y, updateLighting, false);
   }
   
   public void removeEntity(Entity entity) {
@@ -589,5 +616,17 @@ public class Level{
   
   public void setupWorld() throws SlickException {
     setPlayer((Player) findEntityOfType(Player.class));
+  }
+
+  public void spawnItem(InventoryItem item, int tileX, int tileY) throws SlickException {
+    Block block = this.getBlockForPosition(tileX, tileY);
+    if (block == null || !block.isPassable()) {
+      throw new SlickException("Cannot spawn item on not passable block on position: " + tileX + "x" + tileY);
+    } else {
+      CollectableItem spawnItem = new CollectableItem(item);
+      this.addEntity(spawnItem);
+      spawnItem.setTileX(tileX);
+      spawnItem.setTileY(tileY);
+    }
   }
 }

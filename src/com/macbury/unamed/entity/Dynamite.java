@@ -58,7 +58,7 @@ public class Dynamite extends BlockEntity {
     }
   }
 
-  private void stateCountdown(int delta) {
+  private void stateCountdown(int delta) throws SlickException {
     if (timer == TIME_TO_EXPLOSION) {
       SoundManager.shared().playAt(this.getTileX(), this.getTileY(), SoundManager.shared().fuse);
     }
@@ -69,32 +69,43 @@ public class Dynamite extends BlockEntity {
       this.sprite.enabled = false;
       this.state = STATE_EXPLOSION;
       this.timer = TIME_AFTER_EXPLOSION;
-      SoundManager.shared().playAt(this.getTileX(), this.getTileY(), SoundManager.shared().explode);
-      for (int i = 1; i <= 5; i++) {
+      SoundManager.shared().playExplode();
+      for (int i = 1; i <= 4; i++) {
         digCircle(this.getTileX(), this.getTileY(), i);
       }
       this.getLight().setLightPower(IGNITE_POWER * 4);
       this.getLight().updateLight();
-      
     }
   }
   
-  public void digCircle(int x0, int y0, int radius) {
+  public void applyDamage(int x, int y, int power) throws SlickException {
+    this.getLevel().digSidewalk(x, y, true, true);
+    Entity attackedEntity = this.getLevel().getEntityForTilePosition(x, y);
+    if (attackedEntity != null) {
+      if (BlockEntity.class.isInstance(attackedEntity)) {
+        BlockEntity entity = (BlockEntity)attackedEntity;
+        InventoryItem item = entity.harvest(power);
+        
+      }
+    }
+  }
+  
+  public void digCircle(int x0, int y0, int radius) throws SlickException {
     int x = radius, y = 0;
     int xChange = 1 - (radius << 1);
     int yChange = 0;
     int radiusError = 0;
-   
+    int power = 80;
     while(x >= y)  {
-      this.getLevel().digSidewalk(x + x0, y + y0, true);
-      this.getLevel().digSidewalk(y + x0, x + y0, true);
-      this.getLevel().digSidewalk(-x + x0, y + y0, true);
-      this.getLevel().digSidewalk(-y + x0, x + y0, true);
-      this.getLevel().digSidewalk(-y + x0, x + y0, true);
-      this.getLevel().digSidewalk(-x + x0, -y + y0, true);
-      this.getLevel().digSidewalk(-y + x0, -x + y0, true);
-      this.getLevel().digSidewalk(x + x0, -y + y0, true);
-      this.getLevel().digSidewalk(y + x0, -x + y0, true);
+      applyDamage(x + x0, y + y0, power);
+      applyDamage(y + x0, x + y0, power);
+      applyDamage(-x + x0, y + y0, power);
+      applyDamage(-y + x0, x + y0, power);
+      applyDamage(-y + x0, x + y0, power);
+      applyDamage(-x + x0, -y + y0, power);
+      applyDamage(-y + x0, -x + y0, power);
+      applyDamage(x + x0, -y + y0, power);
+      applyDamage(y + x0, -x + y0, power);
    
       y++;
       radiusError += yChange;
@@ -115,11 +126,14 @@ public class Dynamite extends BlockEntity {
 
   @Override
   public int getHardness() {
-    return HarvestableBlock.HARDNESS_INFITNITY;
+    return 5;
   }
 
   @Override
-  public InventoryItem harvestedByPlayer(Player byPlayer) {
+  public InventoryItem harvestedByPlayer() {
+    if (this.state == STATE_COUNTDOWN) {
+      this.timer = (short) (TIME_AFTER_EXPLOSION * 0.3);
+    }
     return null;
   }
 

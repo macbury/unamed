@@ -39,7 +39,6 @@ public class SoundManager {
   public Audio miss;
   public Audio pop;
   public Audio fuse;
-  public Audio explode;
   private int x = 0;
   private int y = 0;
   private ArrayList<Audio> gravelSteps;
@@ -52,7 +51,7 @@ public class SoundManager {
   private ArrayList<Audio> stoneDig;
   private ArrayList<Audio> waterDig;
   
-  
+  private ArrayList<Audio> explodes;
   
   private Audio loadOgg(String filename) {
     try {
@@ -77,8 +76,13 @@ public class SoundManager {
     this.theme            = loadOgg("Theme");
     this.pop              = loadOgg("pop");
     this.fuse             = loadOgg("dynamite/fuse");
-    this.explode          = loadOgg("dynamite/Explode1");
     this.stepsStone       = new ArrayList<Audio>();
+    
+    this.explodes       = new ArrayList<Audio>();
+    for (int i = 1; i <= 5; i++) {
+      this.explodes.add(loadOgg("dynamite/Explode"+i));
+    }
+    
     for (int i = 1; i <= 6; i++) {
       this.stepsStone.add(loadOgg("steps/stone"+i));
     }
@@ -120,7 +124,7 @@ public class SoundManager {
     sound.playAsSoundEffect(1.0f, 1.0f, false, 0, 0, 0.0f);
   }
   
-  public void playStepArray(ArrayList<Audio> array){
+  public void playRandomArray(ArrayList<Audio> array){
     int index = 0;
     while(true) {
       index = (int)Math.round(Math.random() * (array.size()-1));
@@ -131,6 +135,10 @@ public class SoundManager {
     lastIndex = index;  
     array.get(index).playAsSoundEffect(1.0f, 1.0f, false, 0, 0,0);
   }
+  
+  public void playExplode() {
+    playRandomArray(this.explodes);
+  }
 
   public void playStepForBlock(Block blockForPosition) {
 
@@ -138,26 +146,26 @@ public class SoundManager {
       Class sidewalkClass = blockForPosition.asSidewalk().getHarvestedBlockType();
       
       if (sidewalkClass == Sand.class) {
-        playStepArray(this.sandSteps);
+        playRandomArray(this.sandSteps);
       } else if (sidewalkClass == Dirt.class) {
-        playStepArray(this.gravelSteps);
+        playRandomArray(this.gravelSteps);
       } else {
-        playStepArray(this.stepsStone);
+        playRandomArray(this.stepsStone);
       }
     }
     
     if (Water.class.isInstance(blockForPosition)) {
-      playStepArray(this.waterSteps);
+      playRandomArray(this.waterSteps);
     }
   }
   
   public void playDigForBlock(Block block) {
     if (Sand.class.isInstance(block)) {
-      playStepArray(this.sandDig);
+      playRandomArray(this.sandDig);
     } else if (Dirt.class.isInstance(block)) {
-      playStepArray(this.gravelDig);
+      playRandomArray(this.gravelDig);
     } else {
-      playStepArray(this.stoneDig);
+      playRandomArray(this.stoneDig);
     }
   }
 

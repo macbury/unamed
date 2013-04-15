@@ -183,7 +183,7 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
     return dirt;
   }
   
-  private void digCaves() {
+  private void digCaves() throws SlickException {
     currentStatus = "Creating cave system";
     this.progress = 45;
     

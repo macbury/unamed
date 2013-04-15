@@ -2,6 +2,8 @@ package com.macbury.procedular;
 
 import java.util.Random;
 
+import org.newdawn.slick.SlickException;
+
 import com.macbury.unamed.level.Block;
 import com.macbury.unamed.level.Dirt;
 import com.macbury.unamed.level.Level;
@@ -62,7 +64,7 @@ public class CaveDigger {
     }
   }
   
-  public void digAt(int x, int y) {
+  public void digAt(int x, int y) throws SlickException {
     Block block = level.getBlockForPosition(x, y);
     if (block != null && (block.isDirt() || block.isCobbleStone())) {
       digAmount++;
@@ -74,7 +76,7 @@ public class CaveDigger {
     return digAmount;
   }
   
-  public boolean dig() {
+  public boolean dig() throws SlickException {
     if (random.nextBoolean()) {
       randomDirection();
     } else if (distance > MAX_MOVE_DISTANCE) {

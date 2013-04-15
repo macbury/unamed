@@ -68,7 +68,7 @@ public class Torch extends BlockEntity {
   }
 
   @Override
-  public InventoryItem harvestedByPlayer(Player byPlayer) {
+  public InventoryItem harvestedByPlayer() {
     return new TorchItem();
   }
 

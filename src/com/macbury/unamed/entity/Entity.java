@@ -11,6 +11,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.Log;
 
 import com.macbury.unamed.component.Component;
+import com.macbury.unamed.component.HealthComponent;
 import com.macbury.unamed.component.Light;
 import com.macbury.unamed.level.Block;
 import com.macbury.unamed.level.Level;
@@ -25,13 +26,14 @@ public class Entity implements Comparable<Entity> {
   protected int id;
   
   private Rectangle rectangle;
-  private Vector2f  futurePosition = null; // this is future position of entity
+  private Vector2f  futurePosition     = null; // this is future position of entity
   public  boolean   solid              = false;
   public  boolean   collidable         = false;
   public  boolean   visibleUnderTheFog = false;
   
   public int z                    = ENTITY_BASE_LAYER;
   private Light lightComponent    = null;
+  private HealthComponent health  = null;
   ArrayList<Component> components = null;
   
   private Level level;
@@ -51,6 +53,13 @@ public class Entity implements Comparable<Entity> {
         throw new SlickException("You can only assign one light component to entity");
       }
       lightComponent = (Light) component;
+    }
+    
+    if(HealthComponent.class.isInstance(component)){
+      if (health != null) {
+        throw new SlickException("You can only assign one health component to entity");
+      }
+      health = (HealthComponent) component;
     }
     
     component.setOwnerEntity(this);
@@ -271,5 +280,17 @@ public class Entity implements Comparable<Entity> {
   
   public String toString() {
     return "Entity: " + getX() + "x" + getY() + " - " + getClass().getSimpleName();
+  }
+
+  public HealthComponent getHealth() {
+    return health;
+  }
+
+  public void setHealth(HealthComponent health) {
+    this.health = health;
+  }
+  
+  public boolean haveHealth() {
+    return this.health != null;
   }
 }

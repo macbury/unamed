@@ -37,7 +37,7 @@ public abstract class Block {
   public static final byte RESOURCE_GOLD        = 9;
   public static final byte RESOURCE_BEDROCK     = 10;
   public static final byte RESOURCE_COBBLESTONE = 11;
-  public static final Color HARVESTED_SIDEWALK_COLOR = new Color(100,100,100);
+  public static final Color HARVESTED_SIDEWALK_COLOR = new Color(130,130,130);
   
   public  boolean harvestable         = false;
   public  boolean solid               = false;
@@ -355,5 +355,9 @@ public abstract class Block {
 
   public boolean isHarvestable() {
     return HarvestableBlock.class.isInstance(this);
+  }
+
+  public HarvestableBlock asHarvestableBlock() {
+    return (HarvestableBlock) this;
   }
 }

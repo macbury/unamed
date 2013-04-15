@@ -3,6 +3,7 @@ package com.macbury.unamed.inventory;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
 
+import com.macbury.unamed.entity.CollectableItem;
 import com.macbury.unamed.entity.Entity;
 import com.macbury.unamed.entity.Player;
 
@@ -58,4 +59,6 @@ public abstract class InventoryItem {
   public int getQuantity() {
     return elementCount;
   }
+
+
 }

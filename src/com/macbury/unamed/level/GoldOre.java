@@ -18,13 +18,18 @@ public class GoldOre extends HarvestableBlock {
   }
 
   @Override
-  public InventoryItem harvestedByPlayer(Player byPlayer) {
+  public InventoryItem harvestedByPlayer() {
     return null;
   }
 
   @Override
   public byte getBlockTypeId() {
     return Block.RESOURCE_GOLD;
+  }
+
+  @Override
+  public Class<?> getHarvestableClass() {
+    return Rock.class;
   }
 
 }

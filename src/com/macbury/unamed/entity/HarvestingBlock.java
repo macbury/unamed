@@ -60,9 +60,9 @@ public class HarvestingBlock extends BlockEntity {
   }
 
   @Override
-  public InventoryItem harvestedByPlayer(Player byPlayer) {
+  public InventoryItem harvestedByPlayer() throws SlickException {
     this.getLevel().digSidewalk(this.getTileX(), this.getTileY(), true);
     this.destroy();
-    return currentBlock.harvestedByPlayer(byPlayer);
+    return currentBlock.harvestedByPlayer();
   }
 }

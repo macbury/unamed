@@ -21,7 +21,7 @@ public class CoalOre extends HarvestableBlock {
   }
 
   @Override
-  public InventoryItem harvestedByPlayer(Player byPlayer) {
+  public InventoryItem harvestedByPlayer() {
     CoalItem coal = new CoalItem();
     coal.addItem((int) Math.floor(Math.random() * MAX_SPAWN));
     return coal;
@@ -31,5 +31,9 @@ public class CoalOre extends HarvestableBlock {
   public byte getBlockTypeId() {
     return Block.RESOURCE_COAL;
   }
-
+  
+  @Override
+  public Class<?> getHarvestableClass() {
+    return Rock.class;
+  }
 }

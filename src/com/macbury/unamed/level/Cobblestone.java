@@ -18,7 +18,7 @@ public class Cobblestone extends HarvestableBlock {
   }
 
   @Override
-  public InventoryItem harvestedByPlayer(Player byPlayer) {
+  public InventoryItem harvestedByPlayer() {
     return null;
   }
 
