@@ -4,6 +4,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
+import org.newdawn.slick.util.Log;
 
 public class HealthComponent extends Component {
   private short health = 0;
@@ -36,6 +37,7 @@ public class HealthComponent extends Component {
   
   public void applyDamage(short damage) {
     this.health -= damage;
+    Log.debug("Apply damage: " + damage);
   }
 
 }

@@ -85,7 +85,8 @@ public class Dynamite extends BlockEntity {
       if (BlockEntity.class.isInstance(attackedEntity)) {
         BlockEntity entity = (BlockEntity)attackedEntity;
         InventoryItem item = entity.harvest(power);
-        
+      } else if (attackedEntity.haveHealth()) {
+        attackedEntity.getHealth().applyDamage((short) power);
       }
     }
   }
