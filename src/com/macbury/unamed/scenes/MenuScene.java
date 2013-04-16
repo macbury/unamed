@@ -1,5 +1,7 @@
 package com.macbury.unamed.scenes;
 
+import java.io.File;
+
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
@@ -37,8 +39,14 @@ public class MenuScene extends BasicGameState implements MenuListManagerInterfac
     menuManager.setMenuListener(this);
     
     mainMenuList = new MenuList();
+    
+    File saveDirectory = Core.instance().getSaveDirectory(Core.DUNGON_FILE_NAME);
+    
+    if (saveDirectory.exists()) {
+      mainMenuList.add("Continue", ITEM_INDEX_LOAD_GAME);
+    }
+    
     mainMenuList.add("New game", ITEM_INDEX_START_GAME);
-    mainMenuList.add("Continue", ITEM_INDEX_LOAD_GAME);
     mainMenuList.add("Options", 3);
     mainMenuList.add("Exit", ITEM_INDEX_EXIT);
     

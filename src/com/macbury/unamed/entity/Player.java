@@ -28,12 +28,9 @@ import com.macbury.unamed.level.PassableBlock;
 import com.macbury.unamed.level.Rock;
 import com.macbury.unamed.level.Sand;
 
-public class Player extends Entity {
-  public final static int  FOG_OF_WAR_RADIUS = 10;
-  private static final int ENTITY_ZINDEX    = Entity.ENTITY_BASE_LAYER+1;
-  private static final int LIGHT_POWER      = 11;
-  TileBasedMovement tileMovement;
-  KeyboardMovement  keyboardMovement;
+public class Player extends Character {
+  //public final static int  FOG_OF_WAR_RADIUS = 10;
+  private static final int LIGHT_POWER       = 10;
   
   final static int MAX_PLACING_TIME         = 250;
   private static final int MAX_TAKING_TIME  = 300;
@@ -45,7 +42,6 @@ public class Player extends Entity {
   
   private int buttonPlacingThrottle = 0;
   private int buttonTakingThrottle  = 0;
-  private Sprite punchSprite;
   public InventoryManager inventory;
   
   public void setKeyboardEnabled(boolean enabled) {
@@ -54,73 +50,15 @@ public class Player extends Entity {
   
   public Player() throws SlickException {
     super();
-    
-    this.collidable = true;
     this.inventory  = InventoryManager.shared();
+    this.getHealth().setRegenerateFactor(PLAYER_REGENERATE_FACTOR);
+    this.getHealth().setMaxHelath(START_HEALTH);
+    this.getLight().setLightPower(LIGHT_POWER);
+    this.getLight().updateLight();
     
-    this.z = ENTITY_ZINDEX;
-    tileMovement = new TileBasedMovement();
-    addComponent(tileMovement);
-    
-    keyboardMovement = new KeyboardMovement();
-    addComponent(keyboardMovement);
-    
-    CharacterAnimation characterAnimationComponent = new CharacterAnimation();
-    addComponent(characterAnimationComponent);
-    characterAnimationComponent.loadCharacterImage("chars/dman");
+    charactedAnimation.loadCharacterImage("chars/dman");
+  }
 
-    solid = true;
-    if (Core.DEBUG) {
-      addComponent(new HitBox());
-    }
-    
-    Light light = new Light();
-    light.setLightPower(LIGHT_POWER);
-    light.updateLight();
-    addComponent(light);
-    
-    addComponent(new HealthComponent(START_HEALTH));
-  }
- 
-  
-  public Vector2f getTilePositionInFront() {
-    int dx = this.getTileX();
-    int dy = this.getTileY();
-    
-    switch (tileMovement.direction) {
-      case TileBasedMovement.DIRECTION_DOWN:
-        dy += 1;
-      break;
-
-      case TileBasedMovement.DIRECTION_TOP:
-        dy -= 1;
-      break;
-      
-      case TileBasedMovement.DIRECTION_LEFT:
-        dx -= 1;
-      break;
-      
-      case TileBasedMovement.DIRECTION_RIGHT:
-        dx += 1;
-      break;
-    }
-    
-    return new Vector2f(dx, dy);
-  }
-  
-  /*
-   * Return position as tiles cordinates for empty tile that is not solid
-   */
-  public Vector2f getNotSolidTilePositionInFront() {
-    Vector2f tileInFront = getTilePositionInFront();
-    
-    if (!this.getLevel().isSolid((int)tileInFront.getX(), (int)tileInFront.getY())) {
-      return tileInFront;
-    } else {
-      return null;
-    }
-  }
-  
   @Override
   public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
     super.update(gc, sb, delta);

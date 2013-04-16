@@ -1,5 +1,7 @@
 package com.macbury.unamed;
 
+import java.io.File;
+
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
@@ -33,7 +35,7 @@ public class Core extends StateBasedGame {
   public static final int CANCEL_KEY  = Input.KEY_X;
   private static Core coreInstance;
   public static String title = "Unamed";
-  
+  public static final String DUNGON_FILE_NAME = "my.dungeon";
   private UnicodeFont font;
   private GeneratingWorldState generatingWorldState;
   
@@ -72,5 +74,19 @@ public class Core extends StateBasedGame {
     }
     
     return generatingWorldState;
+  }
+  
+  public File getSaveDirectory(String filename) {
+    String homeDirectory = System.getProperty("user.home");
+    homeDirectory += File.separator + "Saved Games" + File.separator + "Unamed" + File.separator;
+    
+    File dir = new File(homeDirectory);
+    
+    if (!dir.exists()) {
+      dir.mkdir();
+    }
+    
+    homeDirectory += "my.dungeon";
+    return new File(homeDirectory);
   }
 }

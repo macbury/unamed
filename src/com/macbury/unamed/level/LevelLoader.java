@@ -105,7 +105,7 @@ public class LevelLoader {
     Input input;
     Level level = null;
     try {
-      InputStream inputStream = new FileInputStream("my.dungeon");
+      InputStream inputStream = new FileInputStream(Core.instance().getSaveDirectory(Core.DUNGON_FILE_NAME).getAbsolutePath());
       input = new Input(inputStream);
       level = kryo.readObject(input, Level.class);
       BlockSerializer blockSerializer = new BlockSerializer();
@@ -153,7 +153,7 @@ public class LevelLoader {
     Kryo kryo = setupKryo();
     BlockSerializer blockSerializer = new BlockSerializer();
     try {
-      OutputStream outputStream = new FileOutputStream("my.dungeon");
+      OutputStream outputStream = new FileOutputStream(Core.instance().getSaveDirectory(Core.DUNGON_FILE_NAME).getAbsolutePath());
       Output  output            = new Output(outputStream);
       
       kryo.writeObject(output, level);

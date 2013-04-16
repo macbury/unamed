@@ -107,6 +107,7 @@ public class HealthComponent extends Component implements TimerInterface {
 
   public void setMaxHelath(short maxHelath) {
     this.maxHelath = maxHelath;
+    this.health    = this.maxHelath;
   }
   
   public float getHealthProgress() {
