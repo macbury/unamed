@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.Sound;
 import org.newdawn.slick.geom.Line;
+import org.newdawn.slick.geom.Point;
+import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.openal.Audio;
 import org.newdawn.slick.openal.AudioLoader;
 import org.newdawn.slick.util.Log;
@@ -19,6 +21,7 @@ import com.macbury.unamed.level.Sidewalk;
 import com.macbury.unamed.level.Water;
 
 public class SoundManager {
+  private static final float SUPPRESION_PER_TILE_FACTOR = 10;
   public static SoundManager sharedInstance = null;
   
   public static SoundManager shared() {
@@ -119,12 +122,15 @@ public class SoundManager {
   }
 
   public void playAt(int tx, int ty, Audio sound) {
-    Line line = new Line(tx, ty, this.x, this.y);
-   
-    sound.playAsSoundEffect(1.0f, 1.0f, false, 0, 0, 0.0f);
+    Vector2f direction  = new Vector2f(tx - this.x, ty - this.y);
+    direction           = direction.normalise();
+    Vector2f reciver    = new Vector2f(x,y);
+    Vector2f source     = new Vector2f(tx,ty);
+    
+    sound.playAsSoundEffect(1.0f, 1.0f, false, direction.getX(), direction.getY(), Math.min(SUPPRESION_PER_TILE_FACTOR * reciver.distance(source), SUPPRESION_PER_TILE_FACTOR));
   }
   
-  public void playRandomArray(ArrayList<Audio> array){
+  private void playRandomArray(ArrayList<Audio> array, int tileX, int tileY) {
     int index = 0;
     while(true) {
       index = (int)Math.round(Math.random() * (array.size()-1));
@@ -132,8 +138,12 @@ public class SoundManager {
         break;
       }
     }
-    lastIndex = index;  
-    array.get(index).playAsSoundEffect(1.0f, 1.0f, false, 0, 0,0);
+    lastIndex = index;
+    playAt(tileX, tileY, array.get(index));
+  }
+  
+  public void playRandomArray(ArrayList<Audio> array){
+    playRandomArray(array, 0,0);
   }
   
   public void playExplode() {
@@ -141,24 +151,29 @@ public class SoundManager {
   }
 
   public void playStepForBlock(Block blockForPosition) {
-
+    playStepForBlock(blockForPosition, 0, 0);
+  }
+  
+  public void playStepForBlock(Block blockForPosition, int tileX, int tileY) {
     if (Sidewalk.class.isInstance(blockForPosition)) {
       Class sidewalkClass = blockForPosition.asSidewalk().getHarvestedBlockType();
       
       if (sidewalkClass == Sand.class) {
-        playRandomArray(this.sandSteps);
+        playRandomArray(this.sandSteps, tileX, tileY);
       } else if (sidewalkClass == Dirt.class) {
-        playRandomArray(this.gravelSteps);
+        playRandomArray(this.gravelSteps, tileX, tileY);
       } else {
-        playRandomArray(this.stepsStone);
+        playRandomArray(this.stepsStone, tileX, tileY);
       }
     }
     
     if (Water.class.isInstance(blockForPosition)) {
-      playRandomArray(this.waterSteps);
+      playRandomArray(this.waterSteps, tileX, tileY);
     }
   }
   
+  
+
   public void playDigForBlock(Block block) {
     if (Sand.class.isInstance(block)) {
       playRandomArray(this.sandDig);
@@ -189,4 +204,6 @@ public class SoundManager {
     this.x = x;
     this.y = y;
   }
+
+  
 }

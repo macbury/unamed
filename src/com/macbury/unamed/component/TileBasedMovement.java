@@ -87,7 +87,7 @@ public class TileBasedMovement extends Component implements TimerInterface {
       if (block.isPassable()) {
         PassableBlock passableBlock = (PassableBlock) block;
         this.blockMoveSpeed = passableBlock.getSpeed();
-        SoundManager.shared().playStepForBlock(block);
+        SoundManager.shared().playStepForBlock(block, this.owner.getTileX(), this.owner.getTileY());
       }
       
       return true;
