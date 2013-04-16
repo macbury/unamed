@@ -30,11 +30,11 @@ import com.macbury.unamed.level.Sand;
 
 public class Player extends Character {
   //public final static int  FOG_OF_WAR_RADIUS = 10;
-  private static final int LIGHT_POWER       = 10;
+  private static final int LIGHT_POWER                = 10;
   
-  final static int MAX_PLACING_TIME         = 250;
-  private static final int MAX_TAKING_TIME  = 300;
-  private static final short START_HEALTH   = 100;
+  final static int MAX_PLACING_TIME                   = 250;
+  private static final int MAX_TAKING_TIME            = 300;
+  private static final short START_HEALTH             = 100;
   private static final float PLAYER_REGENERATE_FACTOR = 0.1F;
   
   private boolean pressedPlaceKey   = false;
@@ -43,6 +43,8 @@ public class Player extends Character {
   private int buttonPlacingThrottle = 0;
   private int buttonTakingThrottle  = 0;
   public InventoryManager inventory;
+
+  KeyboardMovement   keyboardMovement;
   
   public void setKeyboardEnabled(boolean enabled) {
     this.keyboardMovement.enabled = enabled;
@@ -53,10 +55,18 @@ public class Player extends Character {
     this.inventory  = InventoryManager.shared();
     this.getHealth().setRegenerateFactor(PLAYER_REGENERATE_FACTOR);
     this.getHealth().setMaxHelath(START_HEALTH);
-    this.getLight().setLightPower(LIGHT_POWER);
-    this.getLight().updateLight();
+
+    
+    Light light = new Light();
+    light.setLightPower(LIGHT_POWER);
+    light.updateLight();
+    light.setUpdateFogOfWar(true);
+    addComponent(light);
     
     charactedAnimation.loadCharacterImage("chars/dman");
+    
+    keyboardMovement = new KeyboardMovement();
+    addComponent(keyboardMovement);
   }
 
   @Override

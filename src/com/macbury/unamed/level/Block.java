@@ -61,7 +61,7 @@ public abstract class Block {
     this.y = y;
   }
   
-  public void markAsVisible() {
+  public void markAsVisibleAndVisited() {
     this.visited = true;
     this.visible = true;
   }
@@ -109,12 +109,21 @@ public abstract class Block {
     }
   }
   
+  private void markAsVisible() {
+    this.visible = true;
+  }
+
   public void applyLight(Light light, int power) {
     if (lightMapping == null) {
       lightMapping = new HashMap<Light, Integer>();
     } else {
       lightMapping.remove(light);
     }
+    
+    if (light.getUpdateFogOfWar()) {
+      this.visited = true;
+    }
+    
     lightMapping.put(light, power);
     calculateLightPower();
   }

@@ -11,10 +11,8 @@ import com.macbury.unamed.component.TileBasedMovement;
 
 public class Character extends Entity {
   private static final int ENTITY_ZINDEX    = Entity.ENTITY_BASE_LAYER+1;
-  private static final int LIGHT_POWER      = 4;
   private static final short START_HEALTH   = 20;
   TileBasedMovement  tileMovement;
-  KeyboardMovement   keyboardMovement;
   CharacterAnimation charactedAnimation;
   public Character() throws SlickException {
     super();
@@ -25,16 +23,8 @@ public class Character extends Entity {
     tileMovement = new TileBasedMovement();
     addComponent(tileMovement);
     
-    keyboardMovement = new KeyboardMovement();
-    addComponent(keyboardMovement);
-    
     charactedAnimation = new CharacterAnimation();
     addComponent(charactedAnimation);
-    
-    Light light = new Light();
-    light.setLightPower(LIGHT_POWER);
-    light.updateLight();
-    addComponent(light);
     
     addComponent(new HealthComponent(START_HEALTH));
   }

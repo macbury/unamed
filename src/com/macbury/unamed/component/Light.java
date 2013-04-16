@@ -17,6 +17,7 @@ public class Light extends Component {
   private int power                 = 5;
   private boolean needToUpdateLight = true;
   private boolean enabled           = true;
+  private boolean updateFogOfWar    = false;
   List<Block> lightedBlocks;
   
   private static final float FULL_CIRCLE_IN_RADIANTS     = 6.28f;
@@ -153,6 +154,14 @@ public class Light extends Component {
   
   public boolean getEnabled() {
     return this.enabled;
+  }
+
+  public boolean getUpdateFogOfWar() {
+    return updateFogOfWar;
+  }
+
+  public void setUpdateFogOfWar(boolean updateFogOfWar) {
+    this.updateFogOfWar = updateFogOfWar;
   }
 
 }
