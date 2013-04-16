@@ -13,6 +13,7 @@ import org.newdawn.slick.util.Log;
 import com.macbury.unamed.component.Component;
 import com.macbury.unamed.component.HealthComponent;
 import com.macbury.unamed.component.Light;
+import com.macbury.unamed.intefrace.InterfaceManager;
 import com.macbury.unamed.level.Block;
 import com.macbury.unamed.level.Level;
 import com.macbury.unamed.monkey.GroupObject;
@@ -106,11 +107,13 @@ public class Entity implements Comparable<Entity> {
   public void render(GameContainer gc, StateBasedGame sb, Graphics gr) throws SlickException {
     gr.pushTransform();
     gr.translate(this.getX(), this.getY());
+    
     for(Component component : components) {
       if (component.enabled) {
         component.render(gc, sb, gr);
       }
     }
+    
     gr.popTransform();
   }
   

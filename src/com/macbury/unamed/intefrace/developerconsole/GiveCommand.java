@@ -43,6 +43,10 @@ public class GiveCommand extends ConsoleCommand {
         this.console.print("Error: " + e.toString());
         e.printStackTrace();
         return true;
+      } catch (NoClassDefFoundError e) {
+        this.console.print("Error: " + e.toString());
+        e.printStackTrace();
+        return true;
       }
       
     } else {

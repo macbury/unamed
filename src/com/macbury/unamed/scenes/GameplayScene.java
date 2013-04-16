@@ -1,5 +1,7 @@
 package com.macbury.unamed.scenes;
 
+import java.awt.RenderingHints;
+
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -45,6 +47,7 @@ public class GameplayScene extends BasicGameState {
 
   @Override
   public void render(GameContainer gc, StateBasedGame sb, Graphics gr) throws SlickException {
+    gr.setAntiAlias(false);
     level.render(gc, sb, gr);
     interfaceManager.render(gc, sb, gr);
   }

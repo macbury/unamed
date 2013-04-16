@@ -38,6 +38,7 @@ public class Player extends Entity {
   final static int MAX_PLACING_TIME         = 250;
   private static final int MAX_TAKING_TIME  = 300;
   private static final short START_HEALTH   = 100;
+  private static final float PLAYER_REGENERATE_FACTOR = 0.1F;
   
   private boolean pressedPlaceKey   = false;
   private boolean pressedTakeKey    = false;
@@ -180,6 +181,12 @@ public class Player extends Entity {
       } else if (input.isKeyPressed(Input.KEY_9)) {
         inventory.setInventoryIndex(9);
       }
+    }
+    
+    if (tileMovement.isMoving()) {
+      this.getHealth().setRegenerateFactor(PLAYER_REGENERATE_FACTOR);
+    } else {
+      this.getHealth().setRegenerateFactor(PLAYER_REGENERATE_FACTOR * 4);
     }
   }
 

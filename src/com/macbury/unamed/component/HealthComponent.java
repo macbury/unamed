@@ -11,24 +11,33 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.Log;
 
 import com.macbury.unamed.Core;
+import com.macbury.unamed.Timer;
+import com.macbury.unamed.TimerInterface;
 import com.macbury.unamed.combat.Damage;
+import com.macbury.unamed.intefrace.InterfaceManager;
 
-public class HealthComponent extends Component {
+public class HealthComponent extends Component implements TimerInterface {
   private short health    = 1;
   private short maxHelath = 1;
+  private float regenerateFactor = 0.1f;
   private ArrayList<Damage> damages;
   private Damage lastDamage = null;
   private final static short DAMAGE_ANIMATION_LIFESPAN = 500;
   private final static short DAMAGE_ANIMATION_OFFSET_Y = -34;
+  private final static short REGENERATE_EVERY = 1500;
+  private Timer regenerateTimer;
   
   public HealthComponent(short startHealth) {
     this.setMaxHelath(startHealth);
     this.setHealth(startHealth);
+    regenerateTimer = new Timer(REGENERATE_EVERY, this);
   }
   
   @Override
   public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
-    lastDamage = null;
+    regenerateTimer.update(delta);
+    lastDamage         = null;
+    boolean tookDamage = false;
     if (this.damages != null && this.damages.size() > 0) {
       for (int i = 0; i < damages.size(); i++) {
         Damage damage = damages.get(i);
@@ -38,8 +47,14 @@ public class HealthComponent extends Component {
         if (time < 0) {
           this.damages.remove(damage);
         }
+        
       }
+      tookDamage = true;
+    } else {
+      tookDamage = false;
     }
+    
+    regenerateTimer.setEnabled(!tookDamage);
   }
 
   @Override
@@ -47,7 +62,7 @@ public class HealthComponent extends Component {
     if (this.damages != null && this.damages.size() > 0) {
       for (int i = 0; i < damages.size(); i++) {
         Damage damage = damages.get(i);
-        Core.instance().getFont().drawString(0, DAMAGE_ANIMATION_OFFSET_Y - DAMAGE_ANIMATION_OFFSET_Y * ((float)damage.getLifeTime() / (float)DAMAGE_ANIMATION_LIFESPAN), "- "+damage.getPower());
+        Core.instance().getFont().drawString(0, (float)DAMAGE_ANIMATION_OFFSET_Y - DAMAGE_ANIMATION_OFFSET_Y * ((float)damage.getLifeTime() / (float)DAMAGE_ANIMATION_LIFESPAN), "- "+damage.getPower());
       }
     }
   }
@@ -96,6 +111,28 @@ public class HealthComponent extends Component {
   
   public float getHealthProgress() {
     return ((float)this.getHealth() / (float)this.getMaxHelath());
+  }
+
+  public float getRegenerateFactor() {
+    return regenerateFactor;
+  }
+
+  public void setRegenerateFactor(float regenerateFactor) {
+    this.regenerateFactor = regenerateFactor;
+  }
+
+  public short getHealthDiff() {
+    return (short) (this.maxHelath - this.health);
+  }
+  
+  @Override
+  public void onTimerFire(Timer timer) {
+    if (timer == regenerateTimer) {
+      this.health += Math.min(this.maxHelath* this.regenerateFactor, 1);
+    }
+    if (this.health > this.maxHelath) {
+      this.health = this.maxHelath;
+    }
   }
 
 }

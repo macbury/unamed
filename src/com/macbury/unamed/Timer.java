@@ -4,7 +4,7 @@ public class Timer {
   private short maxTime;
   private short time;
   private TimerInterface delegate;
-  private boolean enabled;
+  private boolean enabled = true;
   public Timer(short fireEveryMiliseconds, TimerInterface delegate) {
     this.maxTime  = fireEveryMiliseconds;
     this.delegate = delegate;

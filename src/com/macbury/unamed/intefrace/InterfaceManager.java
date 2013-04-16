@@ -4,6 +4,7 @@ import java.util.Stack;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
@@ -16,15 +17,17 @@ import com.macbury.unamed.scenes.MenuScene;
 public class InterfaceManager extends Stack<Interface> {
   
   private DeveloperConsole developerConsole;
-  private final static String CURSOR_TEXT = "|";
-  private String cursorText = "";
+  private final static String CURSOR_TEXT     = "|";
+  private String cursorText                   = "";
   
   private final static int CURSOR_BLINK_DELAY = 500;
-  private int cursorBlinkTime = 0;
-  
+  private int cursorBlinkTime                 = 0;
   private static InterfaceManager shared;
   
-  public static InterfaceManager shared() {
+  Graphics interfaceGraphics;
+  Image    interfaceImage;
+  
+  public static InterfaceManager shared() throws SlickException {
     if (shared == null) {
       shared = new InterfaceManager();
     }
@@ -32,14 +35,29 @@ public class InterfaceManager extends Stack<Interface> {
     return shared;
   }
   
-  public InterfaceManager() {
-    this.developerConsole = new DeveloperConsole();
+  public InterfaceManager() throws SlickException {
+    this.developerConsole  = new DeveloperConsole();
+    
   }
   
   public void render(GameContainer gc, StateBasedGame sb, Graphics gr) throws SlickException {
+    if (this.interfaceGraphics != null) {
+      gr.drawImage(interfaceImage, 0, 0);
+    }
+    
     for (Interface inte : this) {
       inte.render(gc, sb, gr);
     }
+  }
+  
+  public Graphics getInterfaceContexts() throws SlickException {
+    if (this.interfaceGraphics == null) {
+      GameContainer gc       = Core.instance().getContainer();
+      this.interfaceImage    = new Image(gc.getWidth(), gc.getHeight());
+      Log.info("Initializing interface Context: " + gc.getWidth() + " x " + gc.getHeight());
+      this.interfaceGraphics = interfaceImage.getGraphics();
+    }
+    return this.interfaceGraphics;
   }
   
   public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
@@ -59,17 +77,19 @@ public class InterfaceManager extends Stack<Interface> {
       Core.instance().enterState(MenuScene.STATE_MENU);
     }
     
-    if (input.isKeyPressed(Input.KEY_GRAVE)) {
-      if (this.indexOf(developerConsole) == -1) {
-        this.push(developerConsole);
-      } else {
-        this.pop();
+    if (Core.DEBUG) {
+      if (input.isKeyPressed(Input.KEY_GRAVE)) {
+        if (this.indexOf(developerConsole) == -1) {
+          this.push(developerConsole);
+        } else {
+          this.pop();
+        }
       }
-    }
-    
-    Interface inte = currentInterface();
-    if (inte != null) {
-      inte.update(gc, sb, delta);
+      
+      Interface inte = currentInterface();
+      if (inte != null) {
+        inte.update(gc, sb, delta);
+      }
     }
   }
 

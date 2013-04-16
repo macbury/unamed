@@ -41,6 +41,7 @@ import com.macbury.unamed.component.Light;
 import com.macbury.unamed.entity.CollectableItem;
 import com.macbury.unamed.entity.Entity;
 import com.macbury.unamed.entity.Player;
+import com.macbury.unamed.intefrace.InterfaceManager;
 import com.macbury.unamed.inventory.InventoryItem;
 import com.macbury.unamed.serializers.BlockSerializer;
 import com.macbury.unamed.serializers.LevelSerializer;
@@ -135,7 +136,7 @@ public class Level{
     
     gr.pushTransform();
     gr.translate(viewportTileOffsetX, viewportTileOffsetY);
-    
+
     for(int x = 0; x < tileCountHorizontal; x++) {
       for(int y = 0; y < tileCountVertical; y++) {
         int tx = x * this.tileWidth;
@@ -177,6 +178,7 @@ public class Level{
       }
     }
     
+
     gr.popTransform();
     
     gr.pushTransform();
