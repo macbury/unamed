@@ -20,11 +20,11 @@ public class Character extends Entity {
     this.solid      = true;
     this.z = ENTITY_ZINDEX;
     
-    tileMovement = new TileBasedMovement();
-    addComponent(tileMovement);
-    
     charactedAnimation = new CharacterAnimation();
     addComponent(charactedAnimation);
+
+    tileMovement = new TileBasedMovement();
+    addComponent(tileMovement);
     
     addComponent(new HealthComponent(START_HEALTH));
   }

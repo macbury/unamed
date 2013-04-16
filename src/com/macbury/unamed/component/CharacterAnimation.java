@@ -105,13 +105,14 @@ public class CharacterAnimation extends RenderComponent {
       currentAnimation.restart();
     }
     
-    if(lastMovingStatus == false && tileBasedMovement.isMoving()) {
+    if(!lastMovingStatus && tileBasedMovement.isMoving()) {
+      currentAnimation.setCurrentFrame(0);
       currentAnimation.restart();
-      lastMovingStatus = tileBasedMovement.isMoving();
-    } else if(lastMovingStatus == true && !tileBasedMovement.isMoving()) {
+      lastMovingStatus = true;
+    } else if(lastMovingStatus && !tileBasedMovement.isMoving()) {
       currentAnimation.stop();
       currentAnimation.setCurrentFrame(0);
-      lastMovingStatus = tileBasedMovement.isMoving();
+      lastMovingStatus = false;
     }
     
     currentAnimation.update(delta);
