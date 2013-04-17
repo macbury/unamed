@@ -34,4 +34,8 @@ public class Timer {
       this.time = 0;
     }
   }
+
+  public void stop() {
+    setEnabled(false);
+  }
 }
