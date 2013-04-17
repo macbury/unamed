@@ -32,6 +32,7 @@ public class Npc extends Character implements PlayerTriggers, MessageInterface {
     movement.lookAt(player);
     
     MessagesQueue dialog = new MessagesQueue();
+    dialog.add("This is multiline testing of long text inputed inside eclipse, it should word wrap and do other crazy stuff like not going from borders and other funny shit like doing other stuff and aother doing it bla bla bla bla do here something, dragons here, hero bla bla long time ago");
     dialog.add("Hello!");
     dialog.add("I m simple npc!");
     dialog.add("I just live here underground and wait for my death");
@@ -39,7 +40,7 @@ public class Npc extends Character implements PlayerTriggers, MessageInterface {
     dialog.add("Testing new line\nline1\nline2\nline3\nline4\nline5\nline6\nline7");
     dialog.add("Testing tabs \t\t\t TEST");
     dialog.add("Testing very long text");
-    dialog.add("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam sed hendrerit dolor. Duis eget congue velit. Donec neque leo, viverra eget condimentum ultricies, cursus id dui. Nulla facilisi. Nam ut quam eu dolor consectetur tempus. Quisque gravida pulvinar arcu, non vehicula dolor congue quis. Morbi at odio non dolor bibendum sodales eget eget tellus. Ut rhoncus risus sit amet arcu aliquam tincidunt. Suspendisse at nibh sapien. Fusce elit libero, tempor quis suscipit sit amet, hendrerit et arcu. Donec quam justo, tincidunt quis vulputate quis, pharetra ut augue. Proin at nulla ut nulla dictum eleifend. Aenean facilisis ornare urna, sit amet ullamcorper risus suscipit eu. Morbi mi sapien, tincidunt vulputate dictum ac, mollis non mauris.");
+    
     InterfaceManager.shared().showDialogue(dialog, this);
   }
 

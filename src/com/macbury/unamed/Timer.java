@@ -60,4 +60,8 @@ public class Timer {
   public void start() {
     setEnabled(true);
   }
+
+  public short getTime() {
+    return time;
+  }
 }

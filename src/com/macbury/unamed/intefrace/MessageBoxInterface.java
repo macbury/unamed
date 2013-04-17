@@ -18,7 +18,8 @@ public class MessageBoxInterface extends Interface implements TimerInterface {
   private static final byte STATE_WAITING_FOR_INPUT_TO_GO_TO_THE_NEXT_MESSAGE = 2;
   private static final byte STATE_CLOSE_WINDOW = 3;
   private byte currentState = STATE_IDLE;
-  private static final short TEXT_SPEED = 50;
+  private static final short TEXT_SPEED = 45;
+  private static final float INNER_TEXT_PADDING = 15;
   
   private MessagesQueue    messages;
   private MessageInterface delegate;
@@ -37,11 +38,13 @@ public class MessageBoxInterface extends Interface implements TimerInterface {
   
   public void setDialogue(MessagesQueue messages, MessageInterface delegate) throws SlickException {
     this.messages   = (MessagesQueue) messages.clone();
+    this.messages.optimizeFor(this.messageBox.getWidth() - INNER_TEXT_PADDING * 2, this.messageBox.getHeight() - INNER_TEXT_PADDING * 2);
     this.delegate   = delegate;
     currentMessage  = null;
     currentMessageIndex = -1;
     currentTextToDisplay = "";
     this.messageTimer.setEnabled(true);
+    
     if (this.currentState != STATE_IDLE) {
       throw new SlickException("There is ongoing message!");
     }
@@ -54,7 +57,7 @@ public class MessageBoxInterface extends Interface implements TimerInterface {
     messageBox.setY(gc.getHeight() - messageBox.getHeight() - 40);
     messageBox.draw(gr);
     gr.pushTransform();
-    gr.translate(messageBox.getX() + 15, messageBox.getY() + 15);
+    gr.translate(messageBox.getX() + INNER_TEXT_PADDING, messageBox.getY() + INNER_TEXT_PADDING);
     InterfaceManager.shared().drawTextWithShadow(0, 0, currentTextToDisplay);
     gr.popTransform();
   }
@@ -74,6 +77,7 @@ public class MessageBoxInterface extends Interface implements TimerInterface {
       if(input.isKeyPressed(Core.ACTION_KEY)) {
         finishMessage();
       }
+      input.resume();
     } else if (this.currentState == STATE_CLOSE_WINDOW) {
       InterfaceManager.shared().pop();
       this.currentState = STATE_IDLE;
@@ -110,6 +114,8 @@ public class MessageBoxInterface extends Interface implements TimerInterface {
       currentMessage          = this.messages.remove(0).toCharArray();
       currentTextToDisplay    = "";
       currentMessageCharIndex = 0; 
+      Input input = Core.instance().getContainer().getInput();
+      input.pause();
       this.currentState       = STATE_PRINTING;
     }
   }

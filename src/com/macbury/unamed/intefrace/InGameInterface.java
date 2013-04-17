@@ -63,7 +63,7 @@ public class InGameInterface extends Interface{
     int cellCount = InventoryManager.MAX_HOTBAR_INVENTORY_INDEX - InventoryManager.MIN_HOTBAR_INVENTORY_INDEX;
     
     gr.pushTransform();
-    gr.translate(HOTBAR_PADDING, gc.getHeight() - HEALTH_BAR_BOTTOM);
+    gr.translate(HOTBAR_PADDING, HOTBAR_PADDING * 2 + HOTBAR_CELL_SIZE );
     
     gr.setColor(Color.red);
     gr.fillRect(0, 0, 320 * health.getHealthProgress(), 14);

@@ -1,44 +1,42 @@
 package com.macbury.unamed.npc;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Stack;
 
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.UnicodeFont;
+
+import com.macbury.unamed.Core;
 
 public class MessagesQueue extends ArrayList<String> {
 
   private static final int MAX_TEXT_LENGTH_PER_MESSAGE = 255;
-
-  private byte messageCurrentIndex = 0;
   
-  @Override
-  public boolean add(String text) {
-    if (text.length() > MAX_TEXT_LENGTH_PER_MESSAGE) {
-      try {
-        throw new SlickException("text "+ text + " too long!");
-      } catch (SlickException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
+  public void optimizeFor(float width, float height) throws SlickException {
+    UnicodeFont font = Core.instance().getFont();
+    
+    for (int i = 0; i < this.size(); i++) {
+      ArrayList<String> texts = new ArrayList<String>(Arrays.asList(this.get(i).split(" ")));
+      String wholeText        = "";
+      String currentLine      = "";
+      while(texts.size() > 0) {
+        String word = texts.remove(0) + " ";
+        currentLine += word;
+        
+        if (font.getWidth(currentLine + word) > width) {
+          wholeText   += currentLine+"\n";
+          currentLine = "";
+        }
       }
-    }
-    return super.add(text);
-  }
-
-  public String next() {
-    if (messageCurrentIndex >= this.size()) {
-      return null;
-    } else {
-      String currentText = this.get(messageCurrentIndex);
-      messageCurrentIndex++;
-      return currentText;
+      
+      if (currentLine.length() > 0) {
+        wholeText += currentLine;
+      }
+      
+      this.set(i, wholeText);
     }
   }
-  
-  public byte getMessageCurrentIndex() {
-    return messageCurrentIndex;
-  }
-
-  public void setMessageCurrentIndex(byte messageCurrentIndex) {
-    this.messageCurrentIndex = messageCurrentIndex;
-  }
-  
 }
