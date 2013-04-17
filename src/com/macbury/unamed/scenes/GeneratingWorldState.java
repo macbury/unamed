@@ -33,7 +33,7 @@ public class GeneratingWorldState extends BasicGameState implements WorldBuilder
   @Override
   public void enter(GameContainer container, StateBasedGame game) throws SlickException {
     super.enter(container, game);
-    this.seed          = 97384593;
+    this.seed          = 97384594;
   }
   
   @Override

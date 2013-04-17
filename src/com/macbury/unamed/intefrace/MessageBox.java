@@ -23,7 +23,7 @@ public class MessageBox extends Rectangle {
     gr.setColor(MESSAGE_BOX_COLOR);
     gr.pushTransform();
     gr.translate(this.getX(), this.getY());
-    
+
     window.getSubImage(0, 0, 62, 62).draw(BACKGROUND_OFFSET, BACKGROUND_OFFSET, this.getWidth()-BACKGROUND_OFFSET*2, this.getHeight()-BACKGROUND_OFFSET*2, BACKGROUND_COLOR);
     window.getSprite(8, 0).draw();
     window.getSprite(9, 0).draw(MIN_CELL_SIZE, 0, this.getWidth() - MIN_CELL_SIZE*2, MIN_CELL_SIZE);

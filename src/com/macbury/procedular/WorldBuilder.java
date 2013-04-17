@@ -43,14 +43,14 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
   private static final int ROOM_COUNT         = 60;
   private static final int CELL_SIZE          = 256;
   
-  public static final int NORMAL              = 1000;
+  public static final int NORMAL              = 2000;
   public static final int BIG                 = 4000;
   public static final int CRASH_MY_COMPUTER   = 6000;
   private static final int MIN_DIGGER_COUNT   = 50;
   private static final int MAX_DIGGER_COUNT   = MIN_DIGGER_COUNT * 10;
   private static final float CAVE_COUNT_FACTOR  = 0.60f;
   
-  private static final int MAX_LOOPS_WITHOUT_SPAWN = 2000;
+  private static final int MAX_LOOPS_WITHOUT_SPAWN = 1000;
 
 
   
@@ -236,7 +236,11 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
       
       if (loopWithoutSpawning > MAX_LOOPS_WITHOUT_SPAWN) {
         loopWithoutSpawning = 0;
-        spawnRandomDigger();
+        int diggersToSpawn = 5;
+        while(diggersToSpawn > 0) {
+          spawnRandomDigger();
+          diggersToSpawn--;
+        }
         
         dirtCellsLeft -= dirtCellsLeft * 0.01f;
       }

@@ -24,6 +24,10 @@ public class MessageBoxInterface extends Interface {
     messageBox.setCenterX(gc.getWidth()/2);
     messageBox.setY(gc.getHeight() - messageBox.getHeight() - 80);
     messageBox.draw(gr);
+    gr.pushTransform();
+    gr.translate(messageBox.getX() + 15, messageBox.getY() + 15);
+    InterfaceManager.shared().drawTextWithShadow(0, 0, "Hello world!");
+    gr.popTransform();
   }
 
   @Override
