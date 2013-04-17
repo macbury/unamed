@@ -31,6 +31,7 @@ public class HealthComponent extends Component implements TimerInterface {
     this.setMaxHelath(startHealth);
     this.setHealth(startHealth);
     regenerateTimer = new Timer(REGENERATE_EVERY, this);
+    regenerateTimer.setIsPausableEvent(true);
   }
   
   @Override

@@ -75,7 +75,7 @@ public class CharacterAnimation extends RenderComponent implements TimerInterfac
   }
   
   @Override
-  public void update(GameContainer gc, StateBasedGame sb, int delta) {
+  public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
     if (tileBasedMovement == null) {
       return;
     }

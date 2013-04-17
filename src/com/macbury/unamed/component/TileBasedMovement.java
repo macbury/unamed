@@ -37,6 +37,7 @@ public class TileBasedMovement extends Component implements TimerInterface {
   
   public TileBasedMovement() {
     lavaDamageTimer = new Timer(Lava.APPLY_DAMAGE_EVERY_MILISECONDS, this);
+    lavaDamageTimer.setIsPausableEvent(true);
   }
   
   public boolean isMoving() {

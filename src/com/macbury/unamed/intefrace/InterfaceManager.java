@@ -131,7 +131,7 @@ public class InterfaceManager extends Stack<Interface> {
     return super.push(inte);
   }
   
-  public void showDialogue(MessagesQueue queue, MessageInterface delegate) {
+  public void showDialogue(MessagesQueue queue, MessageInterface delegate) throws SlickException {
     messageBox.setDialogue(queue, delegate);
     push(messageBox);
   }

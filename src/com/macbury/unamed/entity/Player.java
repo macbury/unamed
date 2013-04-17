@@ -147,25 +147,23 @@ public class Player extends Character {
     Block  blockInFront        = this.getLevel().getBlockForPosition((int)frontTilePosition.x, (int)frontTilePosition.y);
     if (HarvestableBlock.class.isInstance(blockInFront)) {
       // Cannot use element because is harvestable block!
-    } else if( PassableBlock.class.isInstance(blockInFront) && !LiquidBlock.class.isInstance(blockInFront) ) {
+    } else if( PassableBlock.class.isInstance(blockInFront) ) {
       Entity entityInFront       = this.getLevel().getEntityForTilePosition((int)frontTilePosition.x, (int)frontTilePosition.y);
       
-      if (entityInFront != null) {
-        if (PlayerTriggers.class.isInstance(entityInFront)) {
-          ((PlayerTriggers) entityInFront).onActionButton(this);
-        } else if (CollectableItem.class.isInstance(entityInFront)) {
-          CollectableItem item = (CollectableItem) entityInFront;
-          item.loot();
-        } else if (BlockEntity.class.isInstance(entityInFront)) {
-          BlockEntity usableEntity = (BlockEntity) entityInFront;
-          if (!usableEntity.use()) {
-            SoundManager.shared().cancelSound.playAsSoundEffect(1.0f, 1.0f, false);
-          }
-        } else {
-          placeCurrentInventoryItemInFront(frontTilePosition);
+      if (PlayerTriggers.class.isInstance(entityInFront)) {
+        ((PlayerTriggers) entityInFront).onActionButton(this);
+      } else if (CollectableItem.class.isInstance(entityInFront)) {
+        CollectableItem item = (CollectableItem) entityInFront;
+        item.loot();
+      } else if (BlockEntity.class.isInstance(entityInFront)) {
+        BlockEntity usableEntity = (BlockEntity) entityInFront;
+        if (!usableEntity.use()) {
+          SoundManager.shared().cancelSound.playAsSoundEffect(1.0f, 1.0f, false);
         }
-      } else {
+      } else if (!LiquidBlock.class.isInstance(blockInFront)) {
         placeCurrentInventoryItemInFront(frontTilePosition);
+      } else {
+        SoundManager.shared().cancelSound.playAsSoundEffect(1.0f, 1.0f, false);
       }
     } else {
       SoundManager.shared().cancelSound.playAsSoundEffect(1.0f, 1.0f, false);

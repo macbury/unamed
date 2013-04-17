@@ -9,6 +9,7 @@ import com.macbury.unamed.SoundManager;
 import com.macbury.unamed.combat.Damage;
 import com.macbury.unamed.component.Light;
 import com.macbury.unamed.component.Sprite;
+import com.macbury.unamed.intefrace.InterfaceManager;
 import com.macbury.unamed.inventory.InventoryItem;
 import com.macbury.unamed.level.HarvestableBlock;
 
@@ -64,7 +65,9 @@ public class Dynamite extends BlockEntity {
       SoundManager.shared().playAt(this.getTileX(), this.getTileY(), SoundManager.shared().fuse);
     }
     
-    timer -= delta;
+    if (!InterfaceManager.shared().shouldBlockGamePlay()) {
+      timer -= delta;
+    }
 
     if (timer <= 0) {
       this.sprite.enabled = false;
