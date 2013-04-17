@@ -34,6 +34,7 @@ public class DeveloperConsole extends Interface implements KeyListener {
     registerCommand(MoveRandomCommand.class);
     registerCommand(DamageCommand.class);
     registerCommand(SpawnNpcCommand.class);
+    registerCommand(MessageCommand.class);
   }
   
   public void registerCommand(Class<? extends ConsoleCommand> klass) {
@@ -131,7 +132,7 @@ public class DeveloperConsole extends Interface implements KeyListener {
       break;
       
       default:
-        if (Character.isLetter(c) || Character.isDigit(c)) {
+        if (Character.isLetter(c) || Character.isDigit(c) || c == '\'') {
           currentCommand += c;
         }
 
@@ -163,6 +164,11 @@ public class DeveloperConsole extends Interface implements KeyListener {
 
   @Override
   public void keyReleased(int code, char c) {
+  }
+
+  @Override
+  public boolean blockEntitiesUpdate() {
+    return true;
   }
 
 }

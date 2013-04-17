@@ -17,6 +17,7 @@ public class ImagesManager {
   private SpriteSheet hotBarCellSpriteSheet;
   private SpriteSheet shadowMapSpriteSheet;
   private SpriteSheet inventorySpriteSheet;
+  public  SpriteSheet windowSpriteSheet;
   public Image iconDynamite;
   
   public static ImagesManager shared() throws SlickException {
@@ -33,6 +34,7 @@ public class ImagesManager {
     this.hotBarCellSpriteSheet = getSpriteSheet("hud/hotbar_cell.png", InGameInterface.HOTBAR_CELL_SIZE, InGameInterface.HOTBAR_CELL_SIZE);
     this.shadowMapSpriteSheet  = getSpriteSheet("effects/shadowmap.png", Core.TILE_SIZE, Core.TILE_SIZE);
     this.inventorySpriteSheet  = getSpriteSheet("hud/items.png", Core.TILE_SIZE, Core.TILE_SIZE);
+    this.windowSpriteSheet     = getSpriteSheet("hud/window-skin.png", 8, 8);
     buildItemsCache();
   }
   

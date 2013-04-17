@@ -10,10 +10,12 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import com.macbury.unamed.Core;
 import com.macbury.unamed.ImagesManager;
+import com.macbury.unamed.Timer;
+import com.macbury.unamed.TimerInterface;
 import com.macbury.unamed.level.LiquidBlock;
 import com.macbury.unamed.level.PassableBlock;
 
-public class CharacterAnimation extends RenderComponent {
+public class CharacterAnimation extends RenderComponent implements TimerInterface {
   public final static int SPRITE_TILE_WIDTH  = 32;
   public final static int SPRITE_TILE_HEIGHT = 32;
   public final static int ANIMATION_SPEED    = 150;
@@ -21,6 +23,7 @@ public class CharacterAnimation extends RenderComponent {
   public final static byte FRAME_IDLE        = 1;
   public final static byte FRAME_LEFT_LEG    = 0;
   public final static byte FRAME_RIGHT_LEG   = 2;
+  private static final short STOP_ANIMATION_AFTER = 100;
   
   SpriteSheet spriteSheet;
   
@@ -33,6 +36,13 @@ public class CharacterAnimation extends RenderComponent {
   private Animation currentAnimation = null;
   
   boolean lastMovingStatus           = true;
+  private Timer stopAnimationTimer; 
+  
+  public CharacterAnimation() {
+    super();
+    this.stopAnimationTimer = new Timer(STOP_ANIMATION_AFTER, this);
+    this.stopAnimationTimer.setEnabled(false);
+  }
   
   public void loadCharacterImage(String characteFileName) throws SlickException{
     spriteSheet = ImagesManager.shared().getSpriteSheet(characteFileName+".png", SPRITE_TILE_WIDTH, SPRITE_TILE_HEIGHT);
@@ -91,10 +101,7 @@ public class CharacterAnimation extends RenderComponent {
     }
     
     if (targetAnimation != currentAnimation) {
-      walkingLeft.stop();
-      walkingTop.stop();
-      walkingRight.stop();
-      walkingDown.stop();
+      
       if (currentAnimation != null) {
         currentAnimation.stop();
         currentAnimation.setCurrentFrame(0);
@@ -115,6 +122,8 @@ public class CharacterAnimation extends RenderComponent {
       lastMovingStatus = false;
     }
     
+    this.stopAnimationTimer.setEnabled(!tileBasedMovement.isMoving());
+    stopAnimationTimer.update(delta);
     currentAnimation.update(delta);
   }
 
@@ -131,6 +140,16 @@ public class CharacterAnimation extends RenderComponent {
       }
       
     }
+  }
+
+  @Override
+  public void onTimerFire(Timer timer) {
+    timer.setEnabled(false);
+    walkingLeft.stop();
+    walkingTop.stop();
+    walkingRight.stop();
+    walkingDown.stop();
+    currentAnimation.stop();
   }
 
 }

@@ -70,7 +70,7 @@ public class Dynamite extends BlockEntity {
       this.sprite.enabled = false;
       this.state = STATE_EXPLOSION;
       this.timer = TIME_AFTER_EXPLOSION;
-      SoundManager.shared().playExplode();
+      SoundManager.shared().playExplode(this.getTileX(), this.getTileY());
       for (int i = 1; i <= 4; i++) {
         digCircle(this.getTileX(), this.getTileY(), i);
       }

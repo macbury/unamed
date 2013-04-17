@@ -21,7 +21,8 @@ import com.macbury.unamed.level.Sidewalk;
 import com.macbury.unamed.level.Water;
 
 public class SoundManager {
-  private static final float SUPPRESION_PER_TILE_FACTOR = 10;
+  private static final float SUPPRESION_PER_TILE_FACTOR = 4;
+  private static final int NO_SOUND_AFTER_TILES         = 20;
   public static SoundManager sharedInstance = null;
   
   public static SoundManager shared() {
@@ -122,12 +123,14 @@ public class SoundManager {
   }
 
   public void playAt(int tx, int ty, Audio sound) {
-    Vector2f direction  = new Vector2f(tx - this.x, ty - this.y);
-    direction           = direction.normalise();
     Vector2f reciver    = new Vector2f(x,y);
     Vector2f source     = new Vector2f(tx,ty);
-    
-    sound.playAsSoundEffect(1.0f, 1.0f, false, direction.getX(), direction.getY(), Math.min(SUPPRESION_PER_TILE_FACTOR * reciver.distance(source), SUPPRESION_PER_TILE_FACTOR));
+    int distanceInTiles = (int) reciver.distance(source);
+    if (distanceInTiles < NO_SOUND_AFTER_TILES) {
+      Vector2f direction  = new Vector2f(tx - this.x, ty - this.y);
+      direction           = direction.normalise();
+      sound.playAsSoundEffect(1.0f, 1.0f, false, direction.getX(), direction.getY(), SUPPRESION_PER_TILE_FACTOR * distanceInTiles);
+    }
   }
   
   private void playRandomArray(ArrayList<Audio> array, int tileX, int tileY) {
@@ -143,11 +146,11 @@ public class SoundManager {
   }
   
   public void playRandomArray(ArrayList<Audio> array){
-    playRandomArray(array, 0,0);
+    playRandomArray(array, this.x,this.y);
   }
   
-  public void playExplode() {
-    playRandomArray(this.explodes);
+  public void playExplode(int tx, int ty) {
+    playRandomArray(this.explodes, tx, ty);
   }
 
   public void playStepForBlock(Block blockForPosition) {

@@ -5,12 +5,15 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
+import org.newdawn.slick.util.Log;
 
 import com.macbury.unamed.Core;
 import com.macbury.unamed.SoundManager;
 import com.macbury.unamed.Timer;
 import com.macbury.unamed.TimerInterface;
 import com.macbury.unamed.Util;
+import com.macbury.unamed.entity.Entity;
+import com.macbury.unamed.entity.Player;
 import com.macbury.unamed.level.Block;
 import com.macbury.unamed.level.Lava;
 import com.macbury.unamed.level.PassableBlock;
@@ -151,6 +154,20 @@ public class TileBasedMovement extends Component implements TimerInterface {
           this.owner.getHealth().applyDamage(lavaBlock.getDamage());
         }
       }
+    }
+  }
+
+  public void lookAt(Entity entity) {
+    Vector2f direction  = (new Vector2f(entity.getTileX() - this.owner.getTileX(), entity.getTileY() - this.owner.getTileY())).normalise();
+    //Log.info(direction.toString());
+    if (direction.getX() > 0.0f) {
+      this.direction = DIRECTION_RIGHT;
+    } else if (direction.getX() < 0.0f) {
+      this.direction = DIRECTION_LEFT;
+    } else if (direction.getY() < 0.0f) {
+      this.direction = DIRECTION_TOP;
+    } else {
+      this.direction = DIRECTION_DOWN;
     }
   }
 }

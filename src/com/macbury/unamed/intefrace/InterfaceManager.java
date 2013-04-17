@@ -2,16 +2,19 @@ package com.macbury.unamed.intefrace;
 
 import java.util.Stack;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.Log;
 
 import com.macbury.unamed.Core;
 import com.macbury.unamed.intefrace.developerconsole.DeveloperConsole;
+import com.macbury.unamed.npc.MessagesQueue;
 import com.macbury.unamed.scenes.MenuScene;
 
 public class InterfaceManager extends Stack<Interface> {
@@ -26,6 +29,7 @@ public class InterfaceManager extends Stack<Interface> {
   
   Graphics interfaceGraphics;
   Image    interfaceImage;
+  private MessageBoxInterface messageBox;
   
   public static InterfaceManager shared() throws SlickException {
     if (shared == null) {
@@ -37,7 +41,7 @@ public class InterfaceManager extends Stack<Interface> {
   
   public InterfaceManager() throws SlickException {
     this.developerConsole  = new DeveloperConsole();
-    
+    this.messageBox        = new MessageBoxInterface();
   }
   
   public void render(GameContainer gc, StateBasedGame sb, Graphics gr) throws SlickException {
@@ -79,10 +83,10 @@ public class InterfaceManager extends Stack<Interface> {
     
     if (Core.DEBUG) {
       if (input.isKeyPressed(Input.KEY_GRAVE)) {
-        if (this.indexOf(developerConsole) == -1) {
-          this.push(developerConsole);
-        } else {
+        if (DeveloperConsole.class.isInstance(this.peek())) {
           this.pop();
+        } else {
+          this.push(developerConsole);
         }
       }
       
@@ -93,7 +97,7 @@ public class InterfaceManager extends Stack<Interface> {
     }
   }
 
-  private Interface currentInterface() {
+  public Interface currentInterface() {
     try {
       return this.get(this.size() - 1);
     } catch (ArrayIndexOutOfBoundsException e) {
@@ -123,5 +127,14 @@ public class InterfaceManager extends Stack<Interface> {
     return super.push(inte);
   }
   
+  public void showDialogue(MessagesQueue queue, MessageInterface delegate) {
+    messageBox.setDialogue(queue, delegate);
+    push(messageBox);
+  }
   
+  public void drawTextWithShadow(int textX, int textY, String text) throws SlickException {
+    UnicodeFont font = Core.instance().getFont();
+    font.drawString(textX+2, textY+2, text, Color.black);
+    font.drawString(textX, textY, text);
+  }
 }

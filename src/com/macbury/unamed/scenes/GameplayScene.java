@@ -13,6 +13,7 @@ import org.newdawn.slick.util.Log;
 import com.macbury.unamed.Core;
 import com.macbury.unamed.SoundManager;
 import com.macbury.unamed.intefrace.InGameInterface;
+import com.macbury.unamed.intefrace.Interface;
 import com.macbury.unamed.intefrace.InterfaceManager;
 import com.macbury.unamed.level.Level;
 import com.macbury.unamed.level.LevelLoader;
@@ -57,7 +58,11 @@ public class GameplayScene extends BasicGameState {
     if (startTime > 0) {
       startTime -= delta;
     } else {
-      level.update(gc, sb, delta);
+      Interface inte = interfaceManager.currentInterface();
+      
+      if (inte == null || !inte.blockEntitiesUpdate()) {
+        level.update(gc, sb, delta);
+      }
       interfaceManager.update(gc, sb, delta);
       
       

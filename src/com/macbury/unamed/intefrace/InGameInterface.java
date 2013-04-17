@@ -110,16 +110,13 @@ public class InGameInterface extends Interface{
     //hotBarImage.drawCentered(gc.getWidth()/2, gc.getHeight() - hotBarImage.getHeight() - 10);
   }
 
-  private void drawTextWithShadow(int textX, int textY, String text) {
-    font.drawString(textX+2, textY+2, text, Color.black);
-    font.drawString(textX, textY, text);
+  private void drawTextWithShadow(int textX, int textY, String text) throws SlickException {
+    InterfaceManager.shared().drawTextWithShadow(textX, textY, text);
   }
 
 
   @Override
-  public void update(GameContainer gc, StateBasedGame sb, int delta)
-      throws SlickException {
-    // TODO Auto-generated method stub
+  public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
     
   }
 
@@ -133,6 +130,11 @@ public class InGameInterface extends Interface{
   public void onExit() {
     Player player = level.getPlayer();
     player.setKeyboardEnabled(false);
+  }
+
+  @Override
+  public boolean blockEntitiesUpdate() {
+    return false;
   }
 
 }

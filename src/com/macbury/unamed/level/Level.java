@@ -295,7 +295,7 @@ public class Level{
   public void setupViewport(GameContainer gc) {
     if (getViewPort() == null) {
       this.viewPort   = new Rectangle(0, 0, gc.getWidth()+this.tileWidth, gc.getHeight()+this.tileHeight);
-      this.updateArea = new Rectangle(0, 0, Math.round(this.viewPort.getWidth()*1.4), Math.round(this.viewPort.getHeight()*1.4));
+      this.updateArea = new Rectangle(0, 0, Math.round(this.viewPort.getWidth()*2.5), Math.round(this.viewPort.getHeight()*2.5));
       Log.info("Viewport size is: " + this.viewPort.getWidth() + "x" + this.viewPort.getHeight() );
       Log.info("Update area size is: " + this.updateArea.getWidth() + "x" + this.updateArea.getHeight() );
       

@@ -27,6 +27,7 @@ import com.macbury.unamed.level.LiquidBlock;
 import com.macbury.unamed.level.PassableBlock;
 import com.macbury.unamed.level.Rock;
 import com.macbury.unamed.level.Sand;
+import com.macbury.unamed.npc.PlayerTriggers;
 
 public class Player extends Character {
   //public final static int  FOG_OF_WAR_RADIUS = 10;
@@ -149,7 +150,9 @@ public class Player extends Character {
       Entity entityInFront       = this.getLevel().getEntityForTilePosition((int)frontTilePosition.x, (int)frontTilePosition.y);
       
       if (entityInFront != null) {
-        if (CollectableItem.class.isInstance(entityInFront)) {
+        if (PlayerTriggers.class.isInstance(entityInFront)) {
+          ((PlayerTriggers) entityInFront).onActionButton(this);
+        } else if (CollectableItem.class.isInstance(entityInFront)) {
           CollectableItem item = (CollectableItem) entityInFront;
           item.loot();
         } else if (BlockEntity.class.isInstance(entityInFront)) {

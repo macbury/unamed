@@ -296,4 +296,8 @@ public class Entity implements Comparable<Entity> {
   public boolean haveHealth() {
     return this.health != null;
   }
+
+  public Vector2f getPosition() {
+    return new Vector2f(this.getX(), this.getY());
+  }
 }
