@@ -104,6 +104,10 @@ public class InterfaceManager extends Stack<Interface> {
       return null;
     }
   }
+  
+  public boolean shouldBlockGamePlay() {
+    return (currentInterface() == null || currentInterface().shouldBlockGamePlay());
+  }
 
   public String getCursorText() {
     return cursorText;

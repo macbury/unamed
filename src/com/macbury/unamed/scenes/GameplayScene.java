@@ -58,13 +58,8 @@ public class GameplayScene extends BasicGameState {
     if (startTime > 0) {
       startTime -= delta;
     } else {
-      Interface inte = interfaceManager.currentInterface();
-      
-      if (inte == null || !inte.blockEntitiesUpdate()) {
-        level.update(gc, sb, delta);
-      }
+      level.update(gc, sb, delta);
       interfaceManager.update(gc, sb, delta);
-      
       
       Input input = gc.getInput();
       

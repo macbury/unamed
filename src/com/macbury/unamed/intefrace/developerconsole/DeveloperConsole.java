@@ -168,8 +168,9 @@ public class DeveloperConsole extends Interface implements KeyListener {
   }
 
   @Override
-  public boolean blockEntitiesUpdate() {
+  public boolean shouldBlockGamePlay() {
     return true;
   }
+
 
 }

@@ -2,6 +2,7 @@ package com.macbury.unamed.component;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
@@ -14,6 +15,7 @@ import com.macbury.unamed.TimerInterface;
 import com.macbury.unamed.Util;
 import com.macbury.unamed.entity.Entity;
 import com.macbury.unamed.entity.Player;
+import com.macbury.unamed.intefrace.InterfaceManager;
 import com.macbury.unamed.level.Block;
 import com.macbury.unamed.level.Lava;
 import com.macbury.unamed.level.PassableBlock;
@@ -98,8 +100,8 @@ public class TileBasedMovement extends Component implements TimerInterface {
   }
   
   @Override
-  public void update(GameContainer gc, StateBasedGame sb, int delta) {
-    if (this.isMoving()) {
+  public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
+    if (this.isMoving() && !InterfaceManager.shared().shouldBlockGamePlay()) {
       totalMoveTime += speed * (float)delta * blockMoveSpeed;
       float x = Math.round(Util.lerp(basePosition.x, this.owner.getFuturePosition().x, totalMoveTime));
       float y = Math.round(Util.lerp(basePosition.y, this.owner.getFuturePosition().y, totalMoveTime));

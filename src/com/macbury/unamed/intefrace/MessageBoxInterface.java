@@ -22,7 +22,7 @@ public class MessageBoxInterface extends Interface {
   @Override
   public void render(GameContainer gc, StateBasedGame sb, Graphics gr) throws SlickException {
     messageBox.setCenterX(gc.getWidth()/2);
-    messageBox.setY(gc.getHeight() - messageBox.getHeight() - 80);
+    messageBox.setY(gc.getHeight() - messageBox.getHeight() - 40);
     messageBox.draw(gr);
     gr.pushTransform();
     gr.translate(messageBox.getX() + 15, messageBox.getY() + 15);
@@ -45,7 +45,7 @@ public class MessageBoxInterface extends Interface {
   }
 
   @Override
-  public boolean blockEntitiesUpdate() {
+  public boolean shouldBlockGamePlay() {
     return true;
   }
 

@@ -56,7 +56,9 @@ public class InGameInterface extends Interface{
     HealthComponent health = player.getHealth();
     gr.setColor(Color.white);
     
-    font.drawString(10, 10, "FPS: "+ gc.getFPS());
+    if (Core.DEBUG) {
+      font.drawString(10, gc.getHeight() - 30, "FPS: "+ gc.getFPS());
+    }
     
     int cellCount = InventoryManager.MAX_HOTBAR_INVENTORY_INDEX - InventoryManager.MIN_HOTBAR_INVENTORY_INDEX;
     
@@ -71,7 +73,7 @@ public class InGameInterface extends Interface{
     gr.popTransform();
     
     gr.pushTransform();
-    gr.translate(HOTBAR_PADDING, gc.getHeight() - HOTBAR_CELL_SIZE - HOTBAR_PADDING); // MOVE origin to left bottom corner of the screem 
+    gr.translate(HOTBAR_PADDING, HOTBAR_PADDING); // MOVE origin to left bottom corner of the screem 
     
     int x = 0;
     for(int i = 0; i <= cellCount; i++) {
@@ -133,7 +135,7 @@ public class InGameInterface extends Interface{
   }
 
   @Override
-  public boolean blockEntitiesUpdate() {
+  public boolean shouldBlockGamePlay() {
     return false;
   }
 

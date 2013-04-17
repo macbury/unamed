@@ -15,6 +15,7 @@ import com.macbury.unamed.component.KeyboardMovement;
 import com.macbury.unamed.component.Light;
 import com.macbury.unamed.component.Sprite;
 import com.macbury.unamed.component.TileBasedMovement;
+import com.macbury.unamed.intefrace.InterfaceManager;
 import com.macbury.unamed.inventory.BlockItem;
 import com.macbury.unamed.inventory.InventoryItem;
 import com.macbury.unamed.inventory.InventoryManager;

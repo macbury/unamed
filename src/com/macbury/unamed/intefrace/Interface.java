@@ -12,5 +12,5 @@ public abstract class Interface {
   public abstract void onEnter();
   public abstract void onExit();
   
-  public abstract boolean blockEntitiesUpdate();
+  public abstract boolean shouldBlockGamePlay();
 }
