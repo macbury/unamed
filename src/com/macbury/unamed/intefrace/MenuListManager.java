@@ -10,6 +10,7 @@ import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.macbury.unamed.Core;
+import com.macbury.unamed.SoundManager;
 
 public class MenuListManager extends ArrayList<MenuList> {
   
@@ -91,14 +92,17 @@ public class MenuListManager extends ArrayList<MenuList> {
           startMoving = true;
         }
       } else if (input.isKeyDown(Core.ACTION_KEY)) {
+        SoundManager.shared().decision.playAsSoundEffect(1.0f, 1.0f, false);
         menuListener.onSelectItem(this.currentMenuList.get(currentItemIndex), currentMenuList);
         startMoving = true;
       } else if (input.isKeyDown(Core.CANCEL_KEY)) {
         popList();
+        SoundManager.shared().cancelSound.playAsSoundEffect(1.0f, 1.0f, false);
         startMoving = true;
       }
       
       if (startMoving) {
+        SoundManager.shared().cursor.playAsSoundEffect(1.0f, 1.0f, false);
         menuListener.onItemChange(this.currentMenuList.get(currentItemIndex), currentMenuList);
       }
     }

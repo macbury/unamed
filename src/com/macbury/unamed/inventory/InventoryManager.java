@@ -8,6 +8,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 
 import com.macbury.unamed.ImagesManager;
+import com.macbury.unamed.SoundManager;
 
 public class InventoryManager extends ArrayList<InventoryItem> {
   private static InventoryManager shared;
@@ -39,6 +40,7 @@ public class InventoryManager extends ArrayList<InventoryItem> {
   }
   
   public void setInventoryIndex(int index) {
+    SoundManager.shared().cursor.playAsSoundEffect(1.0f, 1.0f, false);
     index = Math.min(index, MAX_HOTBAR_INVENTORY_INDEX);
     index = Math.max(index, MIN_HOTBAR_INVENTORY_INDEX);
     this.currentHotBarInventoryIndex = index-1;

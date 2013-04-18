@@ -56,6 +56,8 @@ public class SoundManager {
   private ArrayList<Audio> waterDig;
   
   private ArrayList<Audio> explodes;
+  public Audio decision;
+  public Audio cursor;
   
   private Audio loadOgg(String filename) {
     try {
@@ -79,6 +81,8 @@ public class SoundManager {
     this.igniteSound      = loadOgg("Ignite");
     this.theme            = loadOgg("Theme");
     this.pop              = loadOgg("pop");
+    this.decision         = loadOgg("Decision3");
+    this.cursor           = loadOgg("Cursor2");
     this.fuse             = loadOgg("dynamite/fuse");
     this.stepsStone       = new ArrayList<Audio>();
     

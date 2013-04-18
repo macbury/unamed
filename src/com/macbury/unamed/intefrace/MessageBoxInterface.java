@@ -1,15 +1,21 @@
 package com.macbury.unamed.intefrace;
 
+import org.newdawn.slick.Animation;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.macbury.unamed.Core;
+import com.macbury.unamed.ImagesManager;
+import com.macbury.unamed.SoundManager;
 import com.macbury.unamed.Timer;
 import com.macbury.unamed.TimerInterface;
+import com.macbury.unamed.component.AnimatedSprite;
 import com.macbury.unamed.npc.MessagesQueue;
 
 public class MessageBoxInterface extends Interface implements TimerInterface {
@@ -30,10 +36,11 @@ public class MessageBoxInterface extends Interface implements TimerInterface {
   private int currentMessageIndex;
   private char[] currentMessage;
   private String currentTextToDisplay = "";
+  private Animation arrowAnimation;
   
   public MessageBoxInterface() {
-    this.messageTimer = new Timer(TEXT_SPEED, this);
-    this.messageBox   = new MessageBox(0,0,640,180);
+    this.messageTimer  = new Timer(TEXT_SPEED, this);
+    this.messageBox    = new MessageBox(0,0,640,210);
   }
   
   public void setDialogue(MessagesQueue messages, MessageInterface delegate) throws SlickException {
@@ -59,18 +66,32 @@ public class MessageBoxInterface extends Interface implements TimerInterface {
     gr.pushTransform();
     gr.translate(messageBox.getX() + INNER_TEXT_PADDING, messageBox.getY() + INNER_TEXT_PADDING);
     InterfaceManager.shared().drawTextWithShadow(0, 0, currentTextToDisplay);
+    if (this.currentState == STATE_WAITING_FOR_INPUT_TO_GO_TO_THE_NEXT_MESSAGE) {
+      getAnimatedArrow().draw(messageBox.getWidth() - INNER_TEXT_PADDING * 3, messageBox.getHeight() - INNER_TEXT_PADDING * 3);
+    }
     gr.popTransform();
+  }
+
+  private Animation getAnimatedArrow() throws SlickException {
+    if(arrowAnimation == null) {
+      SpriteSheet window       = ImagesManager.shared().windowSpriteSheet;
+      SpriteSheet arrow        = new SpriteSheet(window.getSubImage(96, 64, 94, 94), 16, 16);
+      arrowAnimation           = new Animation(new Image[] {arrow.getSprite(0, 0), arrow.getSprite(1, 0), arrow.getSprite(0, 1), arrow.getSprite(1, 1)}, 100);
+      arrowAnimation.setAutoUpdate(false);
+    }
+    return arrowAnimation;
   }
 
   @Override
   public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
     messageTimer.update(delta);
     messageTimer.setEnabled(this.currentState == STATE_PRINTING);
-    
+    getAnimatedArrow().update(delta);
     Input input = gc.getInput();
     
     if (this.currentState == STATE_WAITING_FOR_INPUT_TO_GO_TO_THE_NEXT_MESSAGE) {
       if(input.isKeyPressed(Core.ACTION_KEY)) {
+        SoundManager.shared().decision.playAsSoundEffect(1.0f, 1.0f, false);
         nextMessage();
       }
     } else if (this.currentState == STATE_PRINTING) {
