@@ -31,6 +31,7 @@ public class LoadingResourceScreen extends BasicGameState {
 
   @Override
   public void enter(GameContainer container, StateBasedGame game) throws SlickException {
+    LoadingList.setDeferredLoading(true);
     ImagesManager.shared();
     BlockResources.shared();
     SoundManager.shared();
@@ -48,10 +49,12 @@ public class LoadingResourceScreen extends BasicGameState {
 
     
     float total  = 1.0f;
-    float loaded = 0.5f;//LoadingList.get().getRemainingResources() / LoadingList.get().getTotalResources();
+    float loaded = 1.0f - (float)LoadingList.get().getRemainingResources() / (float)LoadingList.get().getTotalResources();
     
-    g.fillRect(100,150,loaded*480,20);
-    g.drawRect(100,150,total*480,20);
+    Log.info("Remaining: " + LoadingList.get().getRemainingResources());
+    Log.info("Total: " + LoadingList.get().getTotalResources());
+    g.fillRect(100,150,480.0f * loaded,20);
+    g.drawRect(100,150,480,20);
   }
 
   @Override
@@ -65,7 +68,6 @@ public class LoadingResourceScreen extends BasicGameState {
         }
         
         nextResource = null;
-        
       }
       
       if (LoadingList.get().getRemainingResources() > 0) {
@@ -88,10 +90,8 @@ public class LoadingResourceScreen extends BasicGameState {
   }
 
   @Override
-  public void init(GameContainer arg0, StateBasedGame arg1)
-      throws SlickException {
-    // TODO Auto-generated method stub
-    
+  public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
+    LoadingList.setDeferredLoading(true);
   }
 
 }

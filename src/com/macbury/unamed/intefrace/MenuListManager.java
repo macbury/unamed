@@ -15,6 +15,7 @@ import com.macbury.unamed.SoundManager;
 public class MenuListManager extends ArrayList<MenuList> {
   
   private static final int MENU_MOVE_BUTTON_THROTTLE = 200;
+  private static final int TEXT_PADDING = 15;
   private UnicodeFont font;
   private int x             = 0;
   private int y             = 0;
@@ -24,15 +25,20 @@ public class MenuListManager extends ArrayList<MenuList> {
   int currentItemIndex      = 0;
   private boolean startMoving;
   private MenuListManagerInterface menuListener;
+  private MessageBox messageBox;
   
   public MenuListManager() throws SlickException {
-    this.font = Core.instance().getFont();
+    this.font          = Core.instance().getFont();
+    this.messageBox    = new MessageBox(-TEXT_PADDING,-TEXT_PADDING,320,210);
   }
   
   public void render(GameContainer gc, StateBasedGame sg, Graphics gr) throws SlickException {
     if (currentMenuList != null) {
       gr.pushTransform();
       gr.translate(this.getX(), this.getY());
+      
+      messageBox.setHeight(getBoxHeight());
+      messageBox.draw(gr);
       
       int sy = 0;
       int x  = 20;
@@ -53,6 +59,14 @@ public class MenuListManager extends ArrayList<MenuList> {
       
       gr.popTransform(); 
     }
+  }
+
+  private float getBoxHeight() {
+    float height = currentMenuList.size() * this.menuPadding + 2*TEXT_PADDING;
+    if (currentMenuList.haveTitle()) {
+      height += 40;
+    }
+    return height;
   }
 
   public void pushList(MenuList list) {

@@ -34,7 +34,7 @@ public class MenuScene extends BasicGameState implements MenuListManagerInterfac
   
   public MenuScene() throws SlickException {
     menuManager = new MenuListManager();
-    menuManager.setX(60);
+    menuManager.setX(30);
     menuManager.setY(30);
     menuManager.setMenuListener(this);
     
@@ -106,7 +106,7 @@ public class MenuScene extends BasicGameState implements MenuListManagerInterfac
         menuManager.pushList(selectGeneratedWorldSizeMenu);
       }
       if (item.getId() == ITEM_INDEX_LOAD_GAME) {
-        Core.instance().enterState(GameplayScene.STATE_GAMEPLAY);
+        Core.instance().enterState(GameplayScene.STATE_GAMEPLAY, new FadeOutTransition(), new FadeInTransition());
       }
       if (item.getId() == ITEM_INDEX_EXIT) {
         System.exit(0);
