@@ -31,15 +31,13 @@ public class InGameInterface extends Interface{
   public final static int HOTBAR_CELL_SIZE = 34;
   public final static int HOTBAR_CELL_TEXT_PADDING = -2;
   private static final int HEALTH_BAR_BOTTOM = 66;
-  Level level;
   private UnicodeFont font;
   private Image cellImage;
   private Image selectedCellImage;
   private SpriteSheet hotBarSpriteSheet;
   private HashMap<String, Image> hotBarIconsCache;
   
-  public InGameInterface(Level level) throws SlickException {
-    this.level = level;
+  public InGameInterface() throws SlickException {
     this.font  = Core.instance().getFont();
     
     SpriteSheet spriteSheet = ImagesManager.shared().getHotBarCellSpriteSheet();
@@ -52,7 +50,7 @@ public class InGameInterface extends Interface{
   }
   
   public void render(GameContainer gc, StateBasedGame sb, Graphics gr) throws SlickException {
-    Player player          = level.getPlayer();
+    Player player          = Level.shared().getPlayer();
     HealthComponent health = player.getHealth();
     gr.setColor(Color.white);
     
@@ -124,13 +122,13 @@ public class InGameInterface extends Interface{
 
   @Override
   public void onEnter() {
-    Player player = level.getPlayer();
+    Player player = Level.shared().getPlayer();
     player.setKeyboardEnabled(true);
   }
 
   @Override
   public void onExit() {
-    Player player = level.getPlayer();
+    Player player = Level.shared().getPlayer();
     player.setKeyboardEnabled(false);
   }
 

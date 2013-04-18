@@ -22,14 +22,11 @@ public class GameplayScene extends BasicGameState {
   public final static int STATE_GAMEPLAY = 0;
   
   private Level level;
-  private InGameInterface gameInterface;
 
   private int startTime = 0;
 
-  private InterfaceManager interfaceManager;
   @Override
   public void init(GameContainer gc, StateBasedGame sb) throws SlickException {
-    this.interfaceManager = InterfaceManager.shared();
   }
 
   @Override
@@ -38,8 +35,7 @@ public class GameplayScene extends BasicGameState {
     SoundManager.shared();
     if (this.level == null) {
       this.level         = LevelLoader.load();
-      this.gameInterface = new InGameInterface(this.level);
-      this.interfaceManager.push(this.gameInterface);
+      InterfaceManager.shared().push(new InGameInterface());
       this.level.setupViewport(container);
       //this.level.generateWorld(100);
       this.startTime  = 100;
@@ -50,7 +46,7 @@ public class GameplayScene extends BasicGameState {
   public void render(GameContainer gc, StateBasedGame sb, Graphics gr) throws SlickException {
     gr.setAntiAlias(false);
     level.render(gc, sb, gr);
-    interfaceManager.render(gc, sb, gr);
+    InterfaceManager.shared().render(gc, sb, gr);
   }
 
   @Override
@@ -59,17 +55,7 @@ public class GameplayScene extends BasicGameState {
       startTime -= delta;
     } else {
       level.update(gc, sb, delta);
-      interfaceManager.update(gc, sb, delta);
-      
-      Input input = gc.getInput();
-      
-      if (input.isKeyPressed(Input.KEY_ESCAPE)) {
-        Core.instance().enterState(MenuScene.STATE_MENU);
-      }
-      
-      if (input.isKeyPressed(Input.KEY_GRAVE)) {
-        Log.info("Tilde clicked!");
-      }
+      InterfaceManager.shared().update(gc, sb, delta);
     }
   }
 

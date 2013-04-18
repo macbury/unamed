@@ -20,7 +20,7 @@ public class Main {
     AppGameContainer app;
     try {
       app = new AppGameContainer(core);
-      app.setDisplayMode(1280, 720, false);
+      app.setDisplayMode(Core.WINDOW_WIDTH, Core.WINDOW_HEIGHT, false);
       app.setMinimumLogicUpdateInterval(Core.MIN_UPDATES);
       app.setMaximumLogicUpdateInterval(Core.MAX_UPDATES);
       app.setTargetFrameRate(Core.MAX_FPS);

@@ -2,6 +2,7 @@ package com.macbury.unamed.scenes;
 
 import java.io.File;
 
+import org.newdawn.slick.BigImage;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
@@ -31,11 +32,10 @@ public class MenuScene extends BasicGameState implements MenuListManagerInterfac
   private MenuList selectGeneratedWorldSizeMenu;
   MenuListManager menuManager = null;
   private StateBasedGame sg;
+  private BigImage backgroundImage;
   
   public MenuScene() throws SlickException {
     menuManager = new MenuListManager();
-    menuManager.setX(30);
-    menuManager.setY(30);
     menuManager.setMenuListener(this);
     
     mainMenuList = new MenuList();
@@ -56,6 +56,7 @@ public class MenuScene extends BasicGameState implements MenuListManagerInterfac
     selectGeneratedWorldSizeMenu.add("Big", MENU_ITEM_SIZE_BIG);
     selectGeneratedWorldSizeMenu.add("Crash my computer", MENU_ITEM_SIZE_CRASH_MY_COMPUTER);
     menuManager.pushList(mainMenuList);
+    backgroundImage = new BigImage("res/images/hud/main_screen.jpg");
   }
 
   @Override
@@ -66,6 +67,11 @@ public class MenuScene extends BasicGameState implements MenuListManagerInterfac
 
   @Override
   public void render(GameContainer gc, StateBasedGame sg, Graphics gr) throws SlickException {
+    backgroundImage.draw();
+    
+    menuManager.setY((int) (Core.WINDOW_HEIGHT - menuManager.getBoxHeight() - 20));
+    menuManager.setX(Core.WINDOW_WIDTH - 340);
+    
     menuManager.render(gc, sg, gr);
   }
 

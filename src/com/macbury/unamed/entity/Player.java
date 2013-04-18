@@ -7,6 +7,7 @@ import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.macbury.unamed.Core;
+import com.macbury.unamed.InputManager;
 import com.macbury.unamed.SoundManager;
 import com.macbury.unamed.component.CharacterAnimation;
 import com.macbury.unamed.component.HealthComponent;
@@ -96,14 +97,14 @@ public class Player extends Character {
       }
       
       if (!tileMovement.isMoving()) {
-        if (input.isKeyDown(Input.KEY_X) && !pressedTakeKey) {
+        if (input.isKeyDown(Core.CANCEL_KEY) && !pressedTakeKey) {
           pressedTakeKey       = true;
           buttonTakingThrottle = 0;
           
           useElementInFrontOfMe();
         }
         
-        if(input.isKeyDown(Input.KEY_Z) && !pressedPlaceKey) {
+        if(input.isKeyPressed(Core.ACTION_KEY)) {
           pressedPlaceKey         = true;
           buttonPlacingThrottle   = 0;
           placeOrUseElementInFrontOfMe();

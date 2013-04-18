@@ -29,7 +29,7 @@ public class MenuListManager extends ArrayList<MenuList> {
   
   public MenuListManager() throws SlickException {
     this.font          = Core.instance().getFont();
-    this.messageBox    = new MessageBox(-TEXT_PADDING,-TEXT_PADDING,320,210);
+    this.messageBox    = new MessageBox(0,0,320,210);
   }
   
   public void render(GameContainer gc, StateBasedGame sg, Graphics gr) throws SlickException {
@@ -38,30 +38,38 @@ public class MenuListManager extends ArrayList<MenuList> {
       gr.translate(this.getX(), this.getY());
       
       messageBox.setHeight(getBoxHeight());
+      messageBox.setWidth(getWidth());
       messageBox.draw(gr);
       
       int sy = 0;
       int x  = 20;
       
+      gr.pushTransform();
+      gr.translate(TEXT_PADDING, TEXT_PADDING);
+      
       if (currentMenuList.haveTitle()) {
-        font.drawString(x, sy, currentMenuList.getTitle());
+        InterfaceManager.shared().drawTextWithShadow(x, sy, currentMenuList.getTitle());
         sy = 40;
       }
       
       for (int i = 0; i < currentMenuList.size(); i++) {
         int y = i * this.menuPadding + sy;
         if (currentItemIndex == i) {
-          font.drawString(0, y, ">");
+          InterfaceManager.shared().drawTextWithShadow(0, y, ">");
         }
         
-        font.drawString(x, y, currentMenuList.get(i).getName());
+        InterfaceManager.shared().drawTextWithShadow(x, y, currentMenuList.get(i).getName());
       }
-      
+      gr.popTransform();
       gr.popTransform(); 
     }
   }
 
-  private float getBoxHeight() {
+  public float getWidth() {
+    return 320;
+  }
+
+  public float getBoxHeight() {
     float height = currentMenuList.size() * this.menuPadding + 2*TEXT_PADDING;
     if (currentMenuList.haveTitle()) {
       height += 40;

@@ -30,6 +30,7 @@ public class InterfaceManager extends Stack<Interface> {
   Graphics interfaceGraphics;
   Image    interfaceImage;
   private MessageBoxInterface messageBox;
+  private GameMenuInterface gameMenuInterface;
   
   public static InterfaceManager shared() throws SlickException {
     if (shared == null) {
@@ -42,6 +43,16 @@ public class InterfaceManager extends Stack<Interface> {
   public InterfaceManager() throws SlickException {
     this.developerConsole  = new DeveloperConsole();
     this.messageBox        = new MessageBoxInterface();
+    this.gameMenuInterface = new GameMenuInterface();
+  }
+  
+  public boolean isOpened(Interface inte) {
+    for (Interface in : this) {
+      if (in == inte) {
+        return true;
+      }
+    }
+    return false;
   }
   
   public void render(GameContainer gc, StateBasedGame sb, Graphics gr) throws SlickException {
@@ -78,13 +89,18 @@ public class InterfaceManager extends Stack<Interface> {
     }
     
     if (input.isKeyPressed(Input.KEY_ESCAPE)) {
-      Core.instance().enterState(MenuScene.STATE_MENU);
+      if (isOpened(this.gameMenuInterface)) {
+        this.close(this.gameMenuInterface);
+      } else {
+        this.push(gameMenuInterface);
+      }
+      //Core.instance().enterState(MenuScene.STATE_MENU);
     }
     
     if (Core.DEBUG) {
       if (input.isKeyPressed(Input.KEY_GRAVE)) {
-        if (DeveloperConsole.class.isInstance(this.peek())) {
-          this.pop();
+        if (isOpened(this.developerConsole)) {
+          this.close(this.developerConsole);
         } else {
           this.push(developerConsole);
         }
@@ -94,6 +110,13 @@ public class InterfaceManager extends Stack<Interface> {
       if (inte != null) {
         inte.update(gc, sb, delta);
       }
+    }
+  }
+
+  private void close(Interface face) {
+    Interface currentlyOpenedInterface = null;
+    while(currentlyOpenedInterface != face) {
+      currentlyOpenedInterface = this.pop();
     }
   }
 

@@ -7,6 +7,7 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
+import org.newdawn.slick.state.GameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.esotericsoftware.kryo.Kryo;
@@ -36,8 +37,11 @@ public class Core extends StateBasedGame {
   private static Core coreInstance;
   public static String title = "Unamed";
   public static final String DUNGON_FILE_NAME = "my.dungeon";
+  public static final int WINDOW_WIDTH  = 1280;
+  public static final int WINDOW_HEIGHT = 720;
   private UnicodeFont font;
   private GeneratingWorldState generatingWorldState;
+  private GameplayScene gameplayScene;
   
   static public Core instance() {
     return Core.coreInstance;
@@ -65,9 +69,20 @@ public class Core extends StateBasedGame {
     this.addState(new LoadingResourceScreen());
     this.addState(new MenuScene());
     this.addState(getGeneratingWorldState());
-    this.addState(new GameplayScene());
+    this.addState(getGameplayScene());
   }
   
+  public void resetGame() {
+    gameplayScene = null;
+  }
+  
+  private GameState getGameplayScene() {
+    if (gameplayScene == null) {
+      gameplayScene = new GameplayScene();
+    }
+    return gameplayScene;
+  }
+
   public GeneratingWorldState getGeneratingWorldState() {
     if (generatingWorldState == null) {
       generatingWorldState = new GeneratingWorldState();
@@ -88,5 +103,11 @@ public class Core extends StateBasedGame {
     
     homeDirectory += "my.dungeon";
     return new File(homeDirectory);
+  }
+
+  @Override
+  public void update(GameContainer gc, int delta) throws SlickException {
+    InputManager.shared().update(delta);
+    super.update(gc, delta);
   }
 }
