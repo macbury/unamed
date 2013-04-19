@@ -12,6 +12,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.macbury.unamed.entity.Entity;
+import com.macbury.unamed.intefrace.InterfaceManager;
 import com.macbury.unamed.level.Block;
 import com.macbury.unamed.level.CoalOre;
 import com.macbury.unamed.level.Dirt;
@@ -72,8 +73,13 @@ public class Core extends StateBasedGame {
     this.addState(getGameplayScene());
   }
   
-  public void resetGame() {
-    gameplayScene = null;
+  public void resetGame() throws SlickException {
+    if (gameplayScene != null) {
+      InterfaceManager.shared().clear();
+      if (Level.shared() != null) {
+        Level.shared().clear();
+      }
+    }
   }
   
   private GameState getGameplayScene() {

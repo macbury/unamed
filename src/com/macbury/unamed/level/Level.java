@@ -1,20 +1,11 @@
 package com.macbury.unamed.level;
 
-import java.awt.List;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EmptyStackException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Random;
 import java.util.Stack;
-import java.util.zip.DeflaterInputStream;
-import java.util.zip.DeflaterOutputStream;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -24,27 +15,16 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
-import org.newdawn.slick.imageout.ImageOut;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.Log;
-
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.InputChunked;
-import com.esotericsoftware.kryo.io.Output;
-import com.esotericsoftware.kryo.io.OutputChunked;
 import com.macbury.procedular.Room;
 import com.macbury.unamed.Core;
 import com.macbury.unamed.ImagesManager;
 import com.macbury.unamed.ParticleManager;
-import com.macbury.unamed.component.Light;
 import com.macbury.unamed.entity.CollectableItem;
 import com.macbury.unamed.entity.Entity;
 import com.macbury.unamed.entity.Player;
-import com.macbury.unamed.intefrace.InterfaceManager;
 import com.macbury.unamed.inventory.InventoryItem;
-import com.macbury.unamed.serializers.BlockSerializer;
-import com.macbury.unamed.serializers.LevelSerializer;
 
 public class Level{
   private static Level shared;
@@ -82,6 +62,23 @@ public class Level{
   
   public static Level shared() {
     return shared;
+  }
+  
+  public void clear() {
+    this.collidableEntities.clear();
+    this.entities.clear();
+    this.visibleBlocks.clear();
+    this.lightColorMap.clear();
+    
+    this.world             = null;
+    this.rooms             = null;
+    this.player            = null;
+    this.cameraTarget      = null;
+    this.refreshEntityList = true;
+    this.viewPort          = null;
+    this.updateArea        = null;
+    
+    shared                 = null;
   }
   
   public Level() throws SlickException {
@@ -631,4 +628,6 @@ public class Level{
       spawnItem.setTileY(tileY);
     }
   }
+
+  
 }

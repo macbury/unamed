@@ -115,10 +115,17 @@ public class MenuScene extends BasicGameState implements MenuListManagerInterfac
         Core.instance().enterState(GameplayScene.STATE_GAMEPLAY, new FadeOutTransition(), new FadeInTransition());
       }
       if (item.getId() == ITEM_INDEX_EXIT) {
-        System.exit(0);
+        Core.instance().getContainer().exit();
       }
     }
     Log.info("Action on index: "+ item.getName());
+  }
+
+  @Override
+  public void enter(GameContainer container, StateBasedGame game) throws SlickException {
+    super.enter(container, game);
+    Core.instance().resetGame();
+    Log.info("Entered menu scene");
   }
 
 }

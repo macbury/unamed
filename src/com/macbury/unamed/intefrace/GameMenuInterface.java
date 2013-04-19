@@ -4,8 +4,11 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
+import org.newdawn.slick.state.transition.FadeInTransition;
+import org.newdawn.slick.state.transition.FadeOutTransition;
 
 import com.macbury.unamed.Core;
+import com.macbury.unamed.scenes.MenuScene;
 
 public class GameMenuInterface extends Interface implements MenuListManagerInterface {
   private static final int MENU_CONTINUE = 0;
@@ -65,8 +68,9 @@ public class GameMenuInterface extends Interface implements MenuListManagerInter
 
   @Override
   public void onSelectItem(MenuItem item, MenuList currentMenuList) {
-    // TODO Auto-generated method stub
-    
+    if (item.getId() == MENU_EXIT_TO_MAIN_MENU) {
+      Core.instance().enterState(MenuScene.STATE_MENU, new FadeOutTransition(), new FadeInTransition());
+    }
   }
 
 }
