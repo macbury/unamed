@@ -119,11 +119,14 @@ public class InterfaceManager extends Stack<Interface> {
     }
   }
 
-  private void close(Interface face) {
+  public void close(Interface face) {
+    Input input = Core.instance().getContainer().getInput();
+    input.pause();
     Interface currentlyOpenedInterface = null;
     while(currentlyOpenedInterface != face) {
       currentlyOpenedInterface = this.pop();
     }
+    input.resume();
   }
 
   public Interface currentInterface() {

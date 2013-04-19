@@ -8,6 +8,8 @@ import org.newdawn.slick.state.transition.FadeInTransition;
 import org.newdawn.slick.state.transition.FadeOutTransition;
 
 import com.macbury.unamed.Core;
+import com.macbury.unamed.level.Level;
+import com.macbury.unamed.level.LevelLoader;
 import com.macbury.unamed.scenes.MenuScene;
 
 public class GameMenuInterface extends Interface implements MenuListManagerInterface {
@@ -25,7 +27,7 @@ public class GameMenuInterface extends Interface implements MenuListManagerInter
     
     mainMenuList.add("Continue", MENU_CONTINUE);
     mainMenuList.add("Save", MENU_SAVE);
-    mainMenuList.add("Load", MENU_LOAD);
+    //mainMenuList.add("Load", MENU_LOAD);
     mainMenuList.add("Exit to main menu", MENU_EXIT_TO_MAIN_MENU);
     menuManager.pushList(mainMenuList);
     
@@ -67,9 +69,23 @@ public class GameMenuInterface extends Interface implements MenuListManagerInter
   }
 
   @Override
-  public void onSelectItem(MenuItem item, MenuList currentMenuList) {
-    if (item.getId() == MENU_EXIT_TO_MAIN_MENU) {
-      Core.instance().enterState(MenuScene.STATE_MENU, new FadeOutTransition(), new FadeInTransition());
+  public void onSelectItem(MenuItem item, MenuList currentMenuList) throws SlickException {
+    switch (item.getId()) {
+      case MENU_SAVE:
+        LevelLoader ll = new LevelLoader(Level.shared());
+        ll.save();
+        this.close();
+      break;
+      case MENU_CONTINUE:
+        this.close();
+      break;
+      case MENU_EXIT_TO_MAIN_MENU:
+        Core.instance().enterState(MenuScene.STATE_MENU, new FadeOutTransition(), new FadeInTransition());
+      break;
+
+      default:
+        
+      break;
     }
   }
 

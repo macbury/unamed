@@ -7,9 +7,17 @@ import java.util.List;
 
 import org.lwjgl.Sys;
 import org.newdawn.slick.AppGameContainer;
+import org.newdawn.slick.SlickException;
 import org.newdawn.slick.util.Log;
 
 public class Main {
+  
+  public static void showError(Exception e) {
+    Log.error(e.toString());
+    e.printStackTrace();
+    Sys.alert("Error", e.toString());
+  }
+  
   public static void main(String[] args) {
     Core core             = new Core(Core.title);
     List<String> argsList = Arrays.asList(args);
@@ -27,10 +35,8 @@ public class Main {
       app.setShowFPS(!windowMode);
       //app.setMouseGrabbed(true);
       app.start();
-    } catch (Exception e) {
-      Log.error(e.toString());
-      e.printStackTrace();
-      Sys.alert("Error", e.toString());
+    } catch (SlickException e) {
+      showError(e);
     }
   }
 }

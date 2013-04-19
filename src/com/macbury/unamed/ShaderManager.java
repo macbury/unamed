@@ -22,11 +22,11 @@ public class ShaderManager {
       Sys.alert("Error", "Your graphics card doesn't support OpenGL shaders.");
     }
     
-    this.blurShader = loadShader("blur");
+    this.blurShader = loadShader("playground");
   }
   
   public ShaderProgram loadShader(String name) throws SlickException {
     Log.info("Loading shader: " + name);
-    return ShaderProgram.loadProgram("res/shaders/"+name+".vert", "res/shaders/"+name+".frag");
+    return ShaderProgram.loadProgram("res/shaders/"+name+".vp", "res/shaders/"+name+".fp");
   }
 }

@@ -13,4 +13,8 @@ public abstract class Interface {
   public abstract void onExit();
   
   public abstract boolean shouldBlockGamePlay();
+  
+  public void close() throws SlickException {
+    InterfaceManager.shared().close(this);
+  }
 }

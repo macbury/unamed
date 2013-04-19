@@ -24,8 +24,13 @@ import com.macbury.unamed.serializers.EntitySerializer;
 import com.macbury.unamed.serializers.LevelSerializer;
 import com.macbury.unamed.serializers.PlayerSerializer;
 
-public class LevelLoader {
+public class LevelLoader implements Runnable{
   Level level;
+  LevelLoaderInterface delegate;
+  public LevelLoader(LevelLoaderInterface delegate) throws SlickException {
+    this.delegate = delegate;
+    this.level = new Level();
+  }
   
   public LevelLoader(Level level) {
     this.level = level;
@@ -100,10 +105,17 @@ public class LevelLoader {
     ImageOut.write(localImg, filePath, false);
   }
   
-  public static Level load() throws SlickException {
+  public static void defferedLoad(LevelLoaderInterface delegate) throws SlickException {
+    //Thread thread = new Thread(new LevelLoader(delegate));
+    //thread.start();
+    LevelLoader ll = new LevelLoader(delegate);
+    ll.load();
+    delegate.onLevelLoad(ll.level);
+  }
+  
+  public void load() throws SlickException {
     Kryo kryo = setupKryo();
     Input input;
-    Level level = null;
     try {
       InputStream inputStream = new FileInputStream(Core.instance().getSaveDirectory(Core.DUNGON_FILE_NAME).getAbsolutePath());
       input = new Input(inputStream);
@@ -145,7 +157,6 @@ public class LevelLoader {
     }
     
     level.setupWorld();
-    return level;
   }
   
   public void save() {
@@ -175,5 +186,15 @@ public class LevelLoader {
     } catch (FileNotFoundException e1) {
       e1.printStackTrace();
     }  
+  }
+
+  @Override
+  public void run() {
+    try {
+      load();
+      delegate.onLevelLoad(this.level);
+    } catch (SlickException e) {  
+      e.printStackTrace();
+    }
   }
 }
