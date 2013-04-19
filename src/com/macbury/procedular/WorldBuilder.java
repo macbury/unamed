@@ -50,7 +50,7 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
   private static final int MAX_DIGGER_COUNT   = MIN_DIGGER_COUNT * 10;
   private static final float CAVE_COUNT_FACTOR  = 0.60f;
   
-  private static final int MAX_LOOPS_WITHOUT_SPAWN = 1000;
+  private static final int MAX_LOOPS_WITHOUT_SPAWN = 100;
 
 
   
@@ -236,7 +236,7 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
       
       if (loopWithoutSpawning > MAX_LOOPS_WITHOUT_SPAWN) {
         loopWithoutSpawning = 0;
-        int diggersToSpawn = 5;
+        int diggersToSpawn = 20;
         while(diggersToSpawn > 0) {
           spawnRandomDigger();
           diggersToSpawn--;
@@ -257,7 +257,7 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
         for (int y = 1; y < this.size-1; y++) {
           boolean setSidewalk = false;
           
-          if (level.getBlockForPosition(x, y).isDirt()) {
+          if (CaveDigger.canDigBlock(level.getBlockForPosition(x, y))) {
             if (level.getBlockForPosition(x-1, y).isAir() && level.getBlockForPosition(x+1, y).isAir()) {
               setSidewalk = true;
             } else if (level.getBlockForPosition(x, y-1).isAir() && level.getBlockForPosition(x, y+1).isAir()) {
@@ -272,9 +272,9 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
           }
           
           if (setSidewalk) {
-            Sidewalk sidewalk = new Sidewalk(x, y);
-            sidewalk.setHarvestedBlockType(Dirt.class);
-            level.setBlockForPosition(sidewalk, x, y);
+            //Sidewalk sidewalk = new Sidewalk(x, y);
+            //sidewalk.setHarvestedBlockType(Dirt.class);
+            level.digSidewalk(x, y, false);
           }
         }
       }

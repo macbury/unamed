@@ -98,18 +98,19 @@ public class MenuScene extends BasicGameState implements MenuListManagerInterfac
   public void onSelectItem(MenuItem item, MenuList currentMenuList) {
     if (selectGeneratedWorldSizeMenu == currentMenuList) {
       switch (item.getId()) {
-      case MENU_ITEM_SIZE_NORMAL:
-        Core.instance().getGeneratingWorldState().setWorldSize(WorldBuilder.NORMAL);
-      break;
-      case MENU_ITEM_SIZE_BIG:
-        Core.instance().getGeneratingWorldState().setWorldSize(WorldBuilder.BIG);
-      break;
-      case MENU_ITEM_SIZE_CRASH_MY_COMPUTER:
-        Core.instance().getGeneratingWorldState().setWorldSize(WorldBuilder.CRASH_MY_COMPUTER);
-      break;
-      default:
+        case MENU_ITEM_SIZE_NORMAL:
+          Core.instance().getGeneratingWorldState().setWorldSize(WorldBuilder.NORMAL);
+        break;
+        case MENU_ITEM_SIZE_BIG:
+          Core.instance().getGeneratingWorldState().setWorldSize(WorldBuilder.BIG);
+        break;
+        case MENU_ITEM_SIZE_CRASH_MY_COMPUTER:
+          Core.instance().getGeneratingWorldState().setWorldSize(WorldBuilder.CRASH_MY_COMPUTER);
+        break;
+        default:
         break;
       }
+      menuManager.popList();
       Core.instance().enterState(GeneratingWorldState.STATE_GENERATIING, new FadeOutTransition(), new FadeInTransition());
     } else if (currentMenuList == mainMenuList) {
       if (item.getId() == ITEM_INDEX_START_GAME) {
@@ -129,7 +130,7 @@ public class MenuScene extends BasicGameState implements MenuListManagerInterfac
   public void enter(GameContainer container, StateBasedGame game) throws SlickException {
     super.enter(container, game);
     Core.instance().resetGame();
-    Log.info("Entered menu scene");
+    menuManager.reset();
   }
 
 }

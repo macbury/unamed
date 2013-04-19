@@ -11,7 +11,7 @@ import com.macbury.unamed.level.Sidewalk;
 
 public class CaveDigger {
   private static final float CHANCE_TO_SPAWN_NEW_MINER = 0.92f;
-  private static final int MAX_MOVE_DISTANCE = 10;
+  private static final int MAX_MOVE_DISTANCE = 20;
   private int x = 0;
   private int y = 0;
   
@@ -66,7 +66,7 @@ public class CaveDigger {
   
   public void digAt(int x, int y) throws SlickException {
     Block block = level.getBlockForPosition(x, y);
-    if (block != null && (block.isDirt() || block.isCobbleStone())) {
+    if (canDigBlock(block)) {
       digAmount++;
       this.level.digSidewalk(x, y, false);
     }
@@ -89,7 +89,7 @@ public class CaveDigger {
     
     Block block = level.getBlockForPosition(nx, ny);
     
-    if (block != null && (block.isDirt() || block.isCobbleStone())) {
+    if (canDigBlock(block)) {
       this.x = nx;
       this.y = ny;
       digAt(this.x, this.y);
@@ -102,6 +102,10 @@ public class CaveDigger {
       randomDirection();
       return false;
     }
+  }
+
+  public static boolean canDigBlock(Block block) {
+    return block != null && (block.isDirt() || block.isCobbleStone());
   }
 
   private void randomDirection() {

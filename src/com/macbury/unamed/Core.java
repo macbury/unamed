@@ -119,4 +119,8 @@ public class Core extends StateBasedGame {
     InputManager.shared().update(delta);
     super.update(gc, delta);
   }
+
+  public void exit() {
+    this.getContainer().exit();
+  }
 }

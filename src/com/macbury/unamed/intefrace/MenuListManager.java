@@ -130,7 +130,7 @@ public class MenuListManager extends ArrayList<MenuList> {
     }
   }
 
-  private void popList() {
+  public void popList() {
     if (this.size() > 1) {
       this.remove(this.size()-1); 
     }
@@ -159,5 +159,9 @@ public class MenuListManager extends ArrayList<MenuList> {
 
   public void setMenuListener(MenuListManagerInterface menuListener) {
     this.menuListener = menuListener;
+  }
+
+  public void reset() {
+    currentItemIndex = 0;
   }
 }

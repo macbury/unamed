@@ -53,8 +53,7 @@ public class GameMenuInterface extends Interface implements MenuListManagerInter
 
   @Override
   public void onExit() {
-    // TODO Auto-generated method stub
-
+    menuManager.reset();
   }
 
   @Override

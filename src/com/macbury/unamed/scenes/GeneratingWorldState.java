@@ -1,6 +1,9 @@
 package com.macbury.unamed.scenes;
 
+import java.util.Random;
+
 import org.newdawn.slick.BigImage;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
@@ -33,7 +36,8 @@ public class GeneratingWorldState extends BasicGameState implements WorldBuilder
   @Override
   public void enter(GameContainer container, StateBasedGame game) throws SlickException {
     super.enter(container, game);
-    this.seed          = 97384594;
+    Random r = new Random();
+    this.seed          = r.nextInt();
   }
   
   @Override
@@ -41,6 +45,7 @@ public class GeneratingWorldState extends BasicGameState implements WorldBuilder
     if (preview != null) {
       preview.draw();
     } else if (world != null && world.progress > 0) {
+      gr.setColor(Color.white);
       font.drawString(100, 80, "Seed: " + this.seed);
       font.drawString(100, 110, "Creating world: " + world.currentStatus);
       
@@ -69,6 +74,7 @@ public class GeneratingWorldState extends BasicGameState implements WorldBuilder
       world.save();
       world = null;
       
+      Core.instance().resetGame();
       Core.instance().enterState(GameplayScene.STATE_GAMEPLAY);
     }
   }

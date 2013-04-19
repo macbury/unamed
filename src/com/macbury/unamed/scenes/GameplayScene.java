@@ -1,5 +1,6 @@
 package com.macbury.unamed.scenes;
 
+import org.lwjgl.Sys;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
@@ -67,6 +68,13 @@ public class GameplayScene extends BasicGameState implements LevelLoaderInterfac
     Level.shared().setupViewport(Core.instance().getContainer());
     this.startTime  = 100;
     loading         = false;
+  }
+
+  @Override
+  public void onError(Exception e) {
+    Sys.alert("Load error", "Save file is corrupted!");
+    
+    Core.instance().exit();
   }
   
 }

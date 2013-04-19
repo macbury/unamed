@@ -154,6 +154,14 @@ public class LevelLoader implements Runnable{
       //level.dumpTo("loadTest.png");
     } catch (FileNotFoundException e) {
       e.printStackTrace();
+      if (delegate != null) {
+        delegate.onError(e);
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      if (delegate != null) {
+        delegate.onError(e);
+      }
     }
     
     level.setupWorld();
