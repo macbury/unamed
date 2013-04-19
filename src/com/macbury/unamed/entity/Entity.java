@@ -197,11 +197,11 @@ public class Entity implements Comparable<Entity> {
   }
   
   public void setCenterTileX(float centerX) {
-    this.rectangle.setCenterX(Core.TILE_SIZE * centerX + Core.TILE_SIZE / 4);
+    this.rectangle.setX(Core.TILE_SIZE * centerX + Core.TILE_SIZE / 4);
   }
 
   public void setCenterTileY(float centerY) {
-    this.rectangle.setCenterY(Core.TILE_SIZE * centerY + Core.TILE_SIZE / 4);
+    this.rectangle.setY(Core.TILE_SIZE * centerY + Core.TILE_SIZE / 4);
   }
   
   public Level getLevel() {
