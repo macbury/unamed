@@ -594,7 +594,7 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
     this.progress = 0;
   }
 
-  public void save() {
+  public void save() throws SlickException {
     LevelLoader ll = new LevelLoader(level);
     try {
       level.spawnPlayer();

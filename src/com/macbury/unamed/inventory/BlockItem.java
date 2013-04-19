@@ -3,6 +3,7 @@ package com.macbury.unamed.inventory;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
 
+import com.esotericsoftware.kryo.Registration;
 import com.macbury.unamed.SoundManager;
 import com.macbury.unamed.entity.Player;
 import com.macbury.unamed.level.Cobblestone;
@@ -14,6 +15,14 @@ import com.macbury.unamed.level.Sand;
 
 public class BlockItem extends InventoryItem {
   public Class<HarvestableBlock> blockType;
+  
+  public Class<HarvestableBlock> getBlockType() {
+    return blockType;
+  }
+  
+  public BlockItem() {
+   
+  }
   
   public BlockItem(Class blockType) {
     this.blockType = blockType;
@@ -64,6 +73,10 @@ public class BlockItem extends InventoryItem {
   @Override
   public int harvestPower() {
     return STANDARD_HARVEST_POWER;
+  }
+
+  public void setBlockType(Class<HarvestableBlock> readClass) {
+    this.blockType = readClass;
   }
 
 }

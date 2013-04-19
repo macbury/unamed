@@ -75,8 +75,8 @@ public class InGameInterface extends Interface{
     
     int x = 0;
     for(int i = 0; i <= cellCount; i++) {
-      InventoryItem item = player.inventory.getItem(i);
-      if (player.inventory.getCurrentHotBarIndex() == i) {
+      InventoryItem item = InventoryManager.shared().getItem(i);
+      if (InventoryManager.shared().getCurrentHotBarIndex() == i) {
         this.selectedCellImage.draw(x, 0);
       } else {
         this.cellImage.draw(x, 0);

@@ -10,6 +10,7 @@ import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.Log;
 
+import com.macbury.unamed.Core;
 import com.macbury.unamed.component.Component;
 import com.macbury.unamed.component.HealthComponent;
 import com.macbury.unamed.component.Light;
@@ -45,7 +46,7 @@ public class Entity implements Comparable<Entity> {
   public Entity() {
     this.id = Entity.gid++;
     this.components = new ArrayList<Component>();
-    setRect(new Rectangle(0, 0, 1, 1));
+    setRect(new Rectangle(0, 0, Core.TILE_SIZE, Core.TILE_SIZE));
   }
   
   public void addComponent(Component component) throws SlickException {

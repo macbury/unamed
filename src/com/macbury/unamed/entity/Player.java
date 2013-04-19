@@ -45,8 +45,6 @@ public class Player extends Character {
   
   private int buttonPlacingThrottle = 0;
   private int buttonTakingThrottle  = 0;
-  public InventoryManager inventory;
-
   KeyboardMovement   keyboardMovement;
   
   public void setKeyboardEnabled(boolean enabled) {
@@ -55,7 +53,6 @@ public class Player extends Character {
   
   public Player() throws SlickException {
     super();
-    this.inventory  = InventoryManager.shared();
     this.getHealth().setRegenerateFactor(PLAYER_REGENERATE_FACTOR);
     this.getHealth().setMaxHelath(START_HEALTH);
 
@@ -110,6 +107,8 @@ public class Player extends Character {
           placeOrUseElementInFrontOfMe();
         }
       }
+      
+      InventoryManager inventory = InventoryManager.shared();
       
       if (input.isKeyPressed(Input.KEY_0)) {
         inventory.setInventoryIndex(10);
@@ -172,12 +171,12 @@ public class Player extends Character {
   }
   
   private void placeCurrentInventoryItemInFront(Vector2f frontTilePosition) throws SlickException {
-    InventoryItem currentItem = inventory.getCurrentHotBarItem();
+    InventoryItem currentItem = InventoryManager.shared().getCurrentHotBarItem();
     
     if (currentItem != null) {
       if (currentItem.place(frontTilePosition)) {
         if (!currentItem.haveItems()) {
-          inventory.remove(currentItem);
+          InventoryManager.shared().remove(currentItem);
         }
       } else {
         SoundManager.shared().cancelSound.playAsSoundEffect(1.0f, 1.0f, false);
@@ -185,8 +184,8 @@ public class Player extends Character {
     }
   }
   
-  private int currentHarvestPower() {
-    InventoryItem currentItem = inventory.getCurrentHotBarItem();
+  private int currentHarvestPower() throws SlickException {
+    InventoryItem currentItem = InventoryManager.shared().getCurrentHotBarItem();
     
     if (currentItem == null) {
       return InventoryItem.STANDARD_HARVEST_POWER;

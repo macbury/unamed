@@ -54,6 +54,7 @@ public class CollectableItem extends Entity implements TimerInterface {
 
   @Override
   public void onCollideWith(Entity entity) throws SlickException {
+    Log.info("Collided with: " + entity.toString());
     if (Player.class.isInstance(entity)) {
       loot();
     }

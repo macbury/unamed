@@ -19,8 +19,10 @@ import com.esotericsoftware.kryo.io.Output;
 import com.macbury.unamed.Core;
 import com.macbury.unamed.entity.Entity;
 import com.macbury.unamed.entity.Player;
+import com.macbury.unamed.inventory.InventoryManager;
 import com.macbury.unamed.serializers.BlockSerializer;
 import com.macbury.unamed.serializers.EntitySerializer;
+import com.macbury.unamed.serializers.InventorySerializer;
 import com.macbury.unamed.serializers.LevelSerializer;
 import com.macbury.unamed.serializers.PlayerSerializer;
 
@@ -38,6 +40,7 @@ public class LevelLoader implements Runnable{
   
   public static Kryo setupKryo() {
     Kryo kryo = new Kryo();
+    kryo.register(InventoryManager.class, new InventorySerializer());
     kryo.register(Level.class,  new LevelSerializer());
     kryo.register(Entity.class, new EntitySerializer());
     kryo.register(Player.class, new PlayerSerializer());
@@ -150,6 +153,8 @@ public class LevelLoader implements Runnable{
         entityCount--;
       }
       
+      kryo.readObject(input, InventoryManager.class);
+      
       input.close();
       //level.dumpTo("loadTest.png");
     } catch (FileNotFoundException e) {
@@ -167,7 +172,7 @@ public class LevelLoader implements Runnable{
     level.setupWorld();
   }
   
-  public void save() {
+  public void save() throws SlickException {
     Log.info("Saving map...");
     Kryo kryo = setupKryo();
     BlockSerializer blockSerializer = new BlockSerializer();
@@ -189,7 +194,9 @@ public class LevelLoader implements Runnable{
         kryo.writeObject(output, entity);
       }
  //     output.endChunks();
-      //kryo.writeObject(this.world, this);
+      
+      kryo.writeObject(output, InventoryManager.shared());
+      
       output.close();
     } catch (FileNotFoundException e1) {
       e1.printStackTrace();

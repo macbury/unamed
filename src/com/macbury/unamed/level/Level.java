@@ -623,9 +623,12 @@ public class Level{
       throw new SlickException("Cannot spawn item on not passable block on position: " + tileX + "x" + tileY);
     } else {
       CollectableItem spawnItem = new CollectableItem(item);
+      
       this.addEntity(spawnItem);
       spawnItem.setTileX(tileX);
       spawnItem.setTileY(tileY);
+      
+      Log.info("Spawning item " + spawnItem.toString());
     }
   }
 
