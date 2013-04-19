@@ -15,6 +15,7 @@ import org.newdawn.slick.util.Log;
 
 import com.macbury.procedular.WorldBuilder;
 import com.macbury.unamed.Core;
+import com.macbury.unamed.ShaderManager;
 import com.macbury.unamed.intefrace.MenuItem;
 import com.macbury.unamed.intefrace.MenuList;
 import com.macbury.unamed.intefrace.MenuListManager;
@@ -67,12 +68,15 @@ public class MenuScene extends BasicGameState implements MenuListManagerInterfac
 
   @Override
   public void render(GameContainer gc, StateBasedGame sg, Graphics gr) throws SlickException {
+    //ShaderManager.shared().blurShader.bind();
     backgroundImage.draw();
+    //ShaderManager.shared().blurShader.unbind();
     
     menuManager.setY((int) (Core.WINDOW_HEIGHT - menuManager.getBoxHeight() - 20));
     menuManager.setX(Core.WINDOW_WIDTH - 340);
     
     menuManager.render(gc, sg, gr);
+    
   }
 
   @Override

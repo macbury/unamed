@@ -154,4 +154,11 @@ public class MessageBoxInterface extends Interface implements TimerInterface {
     }
   }
 
+  public void reset() {
+    currentMessage          = null;
+    currentTextToDisplay    = "";
+    currentMessageCharIndex = 0; 
+    this.currentState       = STATE_IDLE;
+  }
+
 }

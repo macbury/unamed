@@ -4,13 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.swing.JOptionPane;
 
+import org.lwjgl.Sys;
 import org.newdawn.slick.AppGameContainer;
-import org.newdawn.slick.SlickException;
 import org.newdawn.slick.util.Log;
-
-import com.macbury.procedular.WorldBuilder;
 
 public class Main {
   public static void main(String[] args) {
@@ -33,10 +30,7 @@ public class Main {
     } catch (Exception e) {
       Log.error(e.toString());
       e.printStackTrace();
-      JOptionPane.showMessageDialog(null,
-          e.toString(),
-          "Error",
-          JOptionPane.ERROR_MESSAGE);
+      Sys.alert("Error", e.toString());
     }
   }
 }

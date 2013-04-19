@@ -40,6 +40,12 @@ public class InterfaceManager extends Stack<Interface> {
     return shared;
   }
   
+  @Override
+  public void clear() {
+    super.clear();
+    this.messageBox.reset();
+  }
+
   public InterfaceManager() throws SlickException {
     this.developerConsole  = new DeveloperConsole();
     this.messageBox        = new MessageBoxInterface();

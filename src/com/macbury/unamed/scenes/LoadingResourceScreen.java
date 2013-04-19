@@ -17,6 +17,7 @@ import org.newdawn.slick.util.Log;
 import com.macbury.unamed.Core;
 import com.macbury.unamed.ImagesManager;
 import com.macbury.unamed.ParticleManager;
+import com.macbury.unamed.ShaderManager;
 import com.macbury.unamed.SoundManager;
 import com.macbury.unamed.level.BlockResources;
 
@@ -32,6 +33,7 @@ public class LoadingResourceScreen extends BasicGameState {
   @Override
   public void enter(GameContainer container, StateBasedGame game) throws SlickException {
     LoadingList.setDeferredLoading(true);
+    ShaderManager.shared();
     ImagesManager.shared();
     BlockResources.shared();
     SoundManager.shared();
