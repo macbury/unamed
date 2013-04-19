@@ -28,6 +28,7 @@ import com.macbury.unamed.serializers.EntitySerializer;
 import com.macbury.unamed.serializers.LevelSerializer;
 
 public class Core extends StateBasedGame {
+  public static boolean SHOW_COLLIDERS = true;
   public static boolean DEBUG         = true;
   public static final int MIN_UPDATES = 20;
   public static final int MAX_UPDATES = 10;
@@ -37,7 +38,7 @@ public class Core extends StateBasedGame {
   public static final int ACTION_KEY  = Input.KEY_Z;
   public static final int CANCEL_KEY  = Input.KEY_X;
   private static Core coreInstance;
-  public static String title = "Unamed";
+  public static String title            = "Unamed";
   public static final String DUNGON_FILE_NAME = "my.dungeon";
   public static final int WINDOW_WIDTH  = 1280;
   public static final int WINDOW_HEIGHT = 720;

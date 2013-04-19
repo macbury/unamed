@@ -2,6 +2,7 @@ package com.macbury.unamed.entity;
 
 import java.util.ArrayList;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
@@ -115,6 +116,11 @@ public class Entity implements Comparable<Entity> {
       }
     }
     
+    if (Core.SHOW_COLLIDERS) {
+      gr.setColor(Color.white);
+      gr.drawRect(0, 0, this.rectangle.getWidth(), this.rectangle.getHeight());
+    }
+    
     gr.popTransform();
   }
   
@@ -136,14 +142,14 @@ public class Entity implements Comparable<Entity> {
   
   public int getTileX() {
     if(tileX == null) {
-      this.tileX = Math.round(getX() / this.level.tileWidth);
+      this.tileX = Math.round(getX() / Core.TILE_SIZE);
     }
     return tileX.intValue();
   }
   
   public int getTileY() {
     if(tileY == null) {
-      this.tileY = Math.round(getY() / this.level.tileHeight);
+      this.tileY = Math.round(getY() / Core.TILE_SIZE);
     }
     return tileY.intValue();
   }
@@ -181,7 +187,23 @@ public class Entity implements Comparable<Entity> {
     this.tileY = null;
     this.rectangle.setY(y);
   }
+  
+  public void setCenterX(float centerX) {
+    this.rectangle.setCenterX(centerX);
+  }
+  
+  public void setCenterY(float centerY) {
+    this.rectangle.setCenterY(centerY);
+  }
+  
+  public void setCenterTileX(float centerX) {
+    this.rectangle.setCenterX(Core.TILE_SIZE * centerX + Core.TILE_SIZE / 4);
+  }
 
+  public void setCenterTileY(float centerY) {
+    this.rectangle.setCenterY(Core.TILE_SIZE * centerY + Core.TILE_SIZE / 4);
+  }
+  
   public Level getLevel() {
     return level;
   }

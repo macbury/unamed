@@ -625,8 +625,8 @@ public class Level{
       CollectableItem spawnItem = new CollectableItem(item);
       
       this.addEntity(spawnItem);
-      spawnItem.setTileX(tileX);
-      spawnItem.setTileY(tileY);
+      spawnItem.setCenterTileX(tileX);
+      spawnItem.setCenterTileY(tileY);
       
       Log.info("Spawning item " + spawnItem.toString());
     }

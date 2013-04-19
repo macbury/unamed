@@ -25,10 +25,10 @@ public class CollectableItemSprite extends RenderComponent {
     if (image != null) {
       float scale = 0.5f;
       float oldRotation = image.getRotation();
-      int width  = (int) (scale * image.getWidth());
-      int height = (int) (scale * image.getHeight());
+      int width  = (int) (scale * this.owner.getWidth());
+      int height = (int) (scale * this.owner.getHeight());
       image.setRotation(angle);
-      image.draw(width/2, height/2, scale);
+      image.draw(width/4, height/4, scale);
       image.setRotation(oldRotation);
     }
   }

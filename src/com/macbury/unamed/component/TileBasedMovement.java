@@ -112,6 +112,8 @@ public class TileBasedMovement extends Component implements TimerInterface {
       if (this.totalMoveTime > 1.0) {
         moveInProgress = false;
         totalMoveTime  = 0.0f;
+        this.owner.setTileX(Math.round(this.owner.getFuturePosition().x/Core.TILE_SIZE));
+        this.owner.setTileY(Math.round(this.owner.getFuturePosition().y/Core.TILE_SIZE));
         this.owner.setFuturePosition(null);
         basePosition   = null;
         if (this.owner.haveLight()) {

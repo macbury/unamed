@@ -6,6 +6,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.Log;
 
+import com.macbury.unamed.Core;
 import com.macbury.unamed.SoundManager;
 import com.macbury.unamed.Timer;
 import com.macbury.unamed.TimerInterface;
@@ -24,6 +25,8 @@ public class CollectableItem extends Entity implements TimerInterface {
   public CollectableItem( InventoryItem item ) throws SlickException {
     super();
     
+    this.setWidth(Core.TILE_SIZE / 2);
+    this.setHeight(Core.TILE_SIZE / 2);
     this.collidable    = true;
     this.itemToCollect = item;
     
