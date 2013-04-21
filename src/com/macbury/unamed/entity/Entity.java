@@ -251,10 +251,14 @@ public class Entity implements Comparable<Entity> {
 
   @Override
   public int compareTo(Entity otherEntity) {
-    if (otherEntity.z > this.z) {
+    if (otherEntity.z == this.z) {
+      if (otherEntity.getY() > this.getY()){
+        return 1;
+      } else {
+        return -1;
+      }
+    } else if (otherEntity.z > this.z) {
       return -1;
-    } else if (otherEntity.z == this.z) {
-      return 0;
     } else {
       return 1;
     }

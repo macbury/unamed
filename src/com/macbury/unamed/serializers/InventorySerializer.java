@@ -25,6 +25,7 @@ public class InventorySerializer extends Serializer<InventoryManager> {
     }
     
     int itemCount = input.readInt();
+    int currentHotBarIndex = input.readInt();
     
     while(itemCount > 0) {
       Class<? extends InventoryItem> itemKlass = kryo.readClass(input).getType();
@@ -46,6 +47,8 @@ public class InventorySerializer extends Serializer<InventoryManager> {
       itemCount--;
     }
     
+    manager.setInventoryIndex(currentHotBarIndex);
+    
     return manager;
   }
 
@@ -53,7 +56,7 @@ public class InventorySerializer extends Serializer<InventoryManager> {
   public void write(Kryo kryo, Output out, InventoryManager inventory) {
     Log.info("Saving inventory");
     out.writeInt(inventory.size());
-    
+    out.writeInt(inventory.getCurrentHotBarIndex());
     for (InventoryItem inventoryItem : inventory) {
       kryo.writeClass(out, inventoryItem.getClass());
       out.writeInt(inventoryItem.getQuantity());

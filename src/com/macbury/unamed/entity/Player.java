@@ -215,7 +215,7 @@ public class Player extends Character {
         InventoryItem item = usableEntity.harvest(currentHarvestPower());
         if (item == null) {
           SoundManager.shared().playDigForBlock(entityInFront.getBlock());
-          DigEffectEntity punchEntity = new DigEffectEntity();
+          DigEffectEntity punchEntity = new DigEffectEntity(InventoryManager.shared().getCurrentHotBarItem());
           this.getLevel().addEntity(punchEntity);
           punchEntity.setTilePosition(entityInFront.getTileX(), entityInFront.getTileY());
         } else {
