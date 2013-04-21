@@ -10,7 +10,7 @@ import com.macbury.unamed.component.Light;
 import com.macbury.unamed.component.TileBasedMovement;
 
 public class Character extends Entity {
-  private static final int ENTITY_ZINDEX    = Entity.ENTITY_BASE_LAYER+1;
+  public static final int ENTITY_ZINDEX    = Entity.ENTITY_BASE_LAYER+1;
   private static final short START_HEALTH   = 20;
   TileBasedMovement  tileMovement;
   CharacterAnimation charactedAnimation;

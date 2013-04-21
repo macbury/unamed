@@ -3,14 +3,13 @@ package com.macbury.unamed.entity;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
-
 import com.macbury.unamed.inventory.InventoryItem;
 
 public abstract class BlockEntity extends Entity {
   final static int HARVEST_TIMEOUT = 1000;
   protected int hardness           = 1;
   private   int harvestTimeout     = HARVEST_TIMEOUT;
-  protected boolean isHarvesting     = false;
+  protected boolean isHarvesting   = false;
   public abstract boolean use();
   public abstract int getHardness();
   public abstract InventoryItem harvestedByPlayer() throws SlickException;
@@ -34,7 +33,7 @@ public abstract class BlockEntity extends Entity {
       return null;
     }
   }
-  
+
   @Override
   public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
     if (isHarvesting) {

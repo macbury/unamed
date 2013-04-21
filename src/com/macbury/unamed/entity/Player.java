@@ -36,7 +36,7 @@ public class Player extends Character {
   private static final int LIGHT_POWER                = 10;
   
   final static int MAX_PLACING_TIME                   = 250;
-  private static final int MAX_TAKING_TIME            = 300;
+  public static final int MAX_TAKING_TIME            = 300;
   private static final short START_HEALTH             = 100;
   private static final float PLAYER_REGENERATE_FACTOR = 0.1F;
   
@@ -215,6 +215,9 @@ public class Player extends Character {
         InventoryItem item = usableEntity.harvest(currentHarvestPower());
         if (item == null) {
           SoundManager.shared().playDigForBlock(entityInFront.getBlock());
+          DigEffectEntity punchEntity = new DigEffectEntity();
+          this.getLevel().addEntity(punchEntity);
+          punchEntity.setTilePosition(entityInFront.getTileX(), entityInFront.getTileY());
         } else {
           SoundManager.shared().pop.playAsSoundEffect(1.0f, 1.0f, false);
         }

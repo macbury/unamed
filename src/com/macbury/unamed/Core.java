@@ -28,7 +28,7 @@ import com.macbury.unamed.serializers.EntitySerializer;
 import com.macbury.unamed.serializers.LevelSerializer;
 
 public class Core extends StateBasedGame {
-  public static boolean SHOW_COLLIDERS = true;
+  public static boolean SHOW_COLLIDERS = false;
   public static boolean DEBUG          = true;
   public static final int MIN_UPDATES = 20;
   public static final int MAX_UPDATES = 10;

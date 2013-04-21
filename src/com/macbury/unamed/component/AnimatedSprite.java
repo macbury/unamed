@@ -14,6 +14,10 @@ public class AnimatedSprite extends RenderComponent {
   private Animation currentAnimation = null;
   
   
+  public AnimatedSprite(Animation anim) throws SlickException {
+    currentAnimation = anim;
+  }
+  
   public AnimatedSprite(Image[] images) throws SlickException {
     currentAnimation = new Animation(images, ANIMATION_SPEED);
     currentAnimation.setAutoUpdate(false);

@@ -5,8 +5,10 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.Log;
 
+import com.macbury.unamed.AnimationManager;
 import com.macbury.unamed.Core;
 import com.macbury.unamed.ImagesManager;
+import com.macbury.unamed.component.AnimatedSprite;
 import com.macbury.unamed.component.Sprite;
 import com.macbury.unamed.inventory.InventoryItem;
 import com.macbury.unamed.level.HarvestableBlock;
@@ -48,7 +50,6 @@ public class HarvestingBlock extends BlockEntity {
   @Override
   public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
     super.update(gc, sb, delta);
-    
     if (!isHarvesting) {
       Log.info("Did not finished in time to harvest block: "+ currentBlock.getId());
       this.destroy();

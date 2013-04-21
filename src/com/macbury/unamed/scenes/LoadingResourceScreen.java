@@ -14,6 +14,7 @@ import org.newdawn.slick.state.transition.FadeInTransition;
 import org.newdawn.slick.state.transition.FadeOutTransition;
 import org.newdawn.slick.util.Log;
 
+import com.macbury.unamed.AnimationManager;
 import com.macbury.unamed.Core;
 import com.macbury.unamed.ImagesManager;
 import com.macbury.unamed.ParticleManager;
@@ -38,6 +39,7 @@ public class LoadingResourceScreen extends BasicGameState {
     BlockResources.shared();
     SoundManager.shared();
     ParticleManager.shared();
+    AnimationManager.shared();
     Log.info("Init LoadingResourceScreen");
     initFinished = true;
   }
