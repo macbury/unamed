@@ -6,6 +6,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.state.transition.FadeInTransition;
 import org.newdawn.slick.state.transition.FadeOutTransition;
+import org.newdawn.slick.util.Log;
 
 import com.macbury.unamed.Core;
 import com.macbury.unamed.level.Level;
@@ -47,13 +48,12 @@ public class GameMenuInterface extends Interface implements MenuListManagerInter
 
   @Override
   public void onEnter() {
-    // TODO Auto-generated method stub
-
+    menuManager.reset();
   }
 
   @Override
   public void onExit() {
-    menuManager.reset();
+    
   }
 
   @Override
@@ -69,6 +69,9 @@ public class GameMenuInterface extends Interface implements MenuListManagerInter
 
   @Override
   public void onSelectItem(MenuItem item, MenuList currentMenuList) throws SlickException {
+    if (currentMenuList != mainMenuList) {
+      return;
+    }
     switch (item.getId()) {
       case MENU_SAVE:
         LevelLoader ll = new LevelLoader(Level.shared());
@@ -86,6 +89,11 @@ public class GameMenuInterface extends Interface implements MenuListManagerInter
         
       break;
     }
+  }
+
+  @Override
+  public void onMenuExit() throws SlickException {
+    this.close();
   }
 
 }

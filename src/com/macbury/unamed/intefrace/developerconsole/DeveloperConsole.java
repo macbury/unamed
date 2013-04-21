@@ -36,6 +36,7 @@ public class DeveloperConsole extends Interface implements KeyListener {
     registerCommand(SpawnNpcCommand.class);
     registerCommand(MessageCommand.class);
     registerCommand(DumpLevelCommand.class);
+    registerCommand(SetCommand.class);
   }
   
   public void registerCommand(Class<? extends ConsoleCommand> klass) {

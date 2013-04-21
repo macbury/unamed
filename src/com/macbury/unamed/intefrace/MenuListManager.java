@@ -83,10 +83,12 @@ public class MenuListManager extends ArrayList<MenuList> {
   }
 
   private void setCurrentMenuList(MenuList list) {
-    currentMenuList  = list;
-    currentItemIndex = 0;
-    menuItemMoveTime = 0;
-    startMoving      = false;
+    if (currentMenuList != list) {
+      currentMenuList  = list;
+      currentItemIndex = 0;
+      menuItemMoveTime = 0;
+      startMoving      = false;
+    }
   }
 
   public void update(GameContainer gc, StateBasedGame sg, int delta) throws SlickException {
@@ -113,14 +115,14 @@ public class MenuListManager extends ArrayList<MenuList> {
           currentItemIndex--;
           startMoving = true;
         }
-      } else if (input.isKeyDown(Core.ACTION_KEY)) {
+      } else if (input.isKeyPressed(Core.ACTION_KEY)) {
         SoundManager.shared().decision.playAsSoundEffect(1.0f, 1.0f, false);
         menuListener.onSelectItem(this.currentMenuList.get(currentItemIndex), currentMenuList);
-        startMoving = true;
-      } else if (input.isKeyDown(Core.CANCEL_KEY)) {
-        popList();
+        startMoving = false;
+      } else if (input.isKeyPressed(Core.CANCEL_KEY)) {
         SoundManager.shared().cancelSound.playAsSoundEffect(1.0f, 1.0f, false);
-        startMoving = true;
+        startMoving = false;
+        popList();
       }
       
       if (startMoving) {
@@ -130,14 +132,19 @@ public class MenuListManager extends ArrayList<MenuList> {
     }
   }
 
-  public void popList() {
+  public void popList() throws SlickException {
     if (this.size() > 1) {
       this.remove(this.size()-1); 
     }
     
     int last = this.size() - 1;
-    if (last >= 0) {
+    if (last > 0) {
       setCurrentMenuList(this.get(last));
+    } else {
+      setCurrentMenuList(this.get(0));
+      if (menuListener != null) {
+        menuListener.onMenuExit();
+      }
     }
   }
 

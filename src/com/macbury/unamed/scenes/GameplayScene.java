@@ -3,6 +3,7 @@ package com.macbury.unamed.scenes;
 import org.lwjgl.Sys;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
@@ -29,6 +30,9 @@ public class GameplayScene extends BasicGameState implements LevelLoaderInterfac
   public void enter(GameContainer container, StateBasedGame game) throws SlickException {
     super.enter(container, game);
     SoundManager.shared();
+    Input input = container.getInput();
+    input.pause();
+    input.clearKeyPressedRecord();
     if (Level.shared() == null) {
       InterfaceManager.shared().clear();
       LevelLoader.defferedLoad(this);
@@ -68,6 +72,9 @@ public class GameplayScene extends BasicGameState implements LevelLoaderInterfac
     Level.shared().setupViewport(Core.instance().getContainer());
     this.startTime  = 100;
     loading         = false;
+    Input input     = Core.instance().getContainer().getInput();
+    input.clearKeyPressedRecord();
+    input.resume();
   }
 
   @Override

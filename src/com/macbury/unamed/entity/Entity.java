@@ -323,4 +323,8 @@ public class Entity implements Comparable<Entity> {
   public Vector2f getPosition() {
     return new Vector2f(this.getX(), this.getY());
   }
+  
+  public Vector2f getCenteredPosition() {
+    return new Vector2f(this.rectangle.getCenterX(), this.rectangle.getCenterY());
+  }
 }

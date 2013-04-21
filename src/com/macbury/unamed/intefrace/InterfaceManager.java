@@ -120,13 +120,14 @@ public class InterfaceManager extends Stack<Interface> {
   }
 
   public void close(Interface face) {
-    Input input = Core.instance().getContainer().getInput();
-    input.pause();
+    Log.info("Closing interface: " + face.getClass().getSimpleName());
     Interface currentlyOpenedInterface = null;
-    while(currentlyOpenedInterface != face) {
+    while(true) {
       currentlyOpenedInterface = this.pop();
+      if (currentlyOpenedInterface.equals(face)) {
+        break;
+      }
     }
-    input.resume();
   }
 
   public Interface currentInterface() {
@@ -158,8 +159,9 @@ public class InterfaceManager extends Stack<Interface> {
     if (currentInterface() != null) {
       currentInterface().onExit();
     }
-    
+    Core.instance().getInput().clearKeyPressedRecord();
     inte.onEnter();
+    Log.info("Opening inteface:" + inte.getClass().getSimpleName() + " of opened: " + this.size());
     return super.push(inte);
   }
   

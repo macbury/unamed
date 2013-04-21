@@ -154,7 +154,7 @@ public class Player extends Character {
         ((PlayerTriggers) entityInFront).onActionButton(this);
       } else if (CollectableItem.class.isInstance(entityInFront)) {
         CollectableItem item = (CollectableItem) entityInFront;
-        item.loot();
+        item.lootBy(this);
       } else if (BlockEntity.class.isInstance(entityInFront)) {
         BlockEntity usableEntity = (BlockEntity) entityInFront;
         if (!usableEntity.use()) {

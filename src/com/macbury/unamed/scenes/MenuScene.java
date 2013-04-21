@@ -95,7 +95,7 @@ public class MenuScene extends BasicGameState implements MenuListManagerInterfac
   }
 
   @Override
-  public void onSelectItem(MenuItem item, MenuList currentMenuList) {
+  public void onSelectItem(MenuItem item, MenuList currentMenuList) throws SlickException {
     if (selectGeneratedWorldSizeMenu == currentMenuList) {
       switch (item.getId()) {
         case MENU_ITEM_SIZE_NORMAL:
@@ -131,6 +131,11 @@ public class MenuScene extends BasicGameState implements MenuListManagerInterfac
     super.enter(container, game);
     Core.instance().resetGame();
     menuManager.reset();
+  }
+
+  @Override
+  public void onMenuExit() throws SlickException {
+    
   }
 
 }
