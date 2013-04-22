@@ -21,17 +21,20 @@ import com.macbury.procedular.Room;
 import com.macbury.unamed.Core;
 import com.macbury.unamed.ImagesManager;
 import com.macbury.unamed.ParticleManager;
+import com.macbury.unamed.Timer;
+import com.macbury.unamed.TimerInterface;
 import com.macbury.unamed.entity.CollectableItem;
 import com.macbury.unamed.entity.Entity;
 import com.macbury.unamed.entity.Player;
 import com.macbury.unamed.inventory.InventoryItem;
 
-public class Level{
+public class Level implements TimerInterface{
   private static Level shared;
   public static final int SMALL  = 100;
 
-  private static final Color VISITED_BLOCK_COLOR = new Color(0,0,0, Block.VISITED_ALPHA);
-  private static final Color WALL_SHADE_COLOR    = new Color(0,0,0,180);
+  private static final Color VISITED_BLOCK_COLOR  = new Color(0,0,0, Block.VISITED_ALPHA);
+  private static final Color WALL_SHADE_COLOR     = new Color(0,0,0,180);
+  private static final short REFRESH_ENTITY_TIMER = 150;
 
   private ArrayList<Room> rooms;
   private Block[][] world;
@@ -43,20 +46,18 @@ public class Level{
   private Rectangle updateArea   = null;
   private BlockResources blockResources;
   
-  public int tileWidth           = Core.TILE_SIZE;
-  public int tileHeight          = Core.TILE_SIZE;
   public int mapTileWidth        = 100;
   public int mapTileHeight       = 100;
   
   int tileCountHorizontal        = 5;
   int tileCountVertical          = 5;
   
+  Timer         refreshEntityTimer;
   Entity        cameraTarget;
   Player        player;
   private ArrayList<Entity> entities;
   private Stack<Block> visibleBlocks;
   private Stack<Entity> collidableEntities;
-  private boolean refreshEntityList = true;
 
   private HashMap<Integer, Color> lightColorMap;
   
@@ -74,7 +75,7 @@ public class Level{
     this.rooms             = null;
     this.player            = null;
     this.cameraTarget      = null;
-    this.refreshEntityList = true;
+    this.refreshEntityTimer.stop();
     this.viewPort          = null;
     this.updateArea        = null;
     
@@ -89,6 +90,7 @@ public class Level{
     this.shadowMap          = ImagesManager.shared().getShadowMapSpriteSheet();
     this.visibleBlocks      = new Stack<Block>();
     this.lightColorMap      = new HashMap<Integer, Color>();
+    this.refreshEntityTimer = new Timer(REFRESH_ENTITY_TIMER, this);
   }
   
   public Entity getEntityForTilePosition(int x, int y) {
@@ -108,7 +110,7 @@ public class Level{
     } else if (this.entities.indexOf(e) == -1) {
       e.setLevel(this);
       this.entities.add(e);
-      refreshEntityList  = true;
+      refreshEntityTimer.start();
     } else {
       Log.info("Entity already added to entity stack!");
     }
@@ -124,11 +126,11 @@ public class Level{
     int shiftXRound      = Math.round(this.getShiftX());
     int shiftYRound      = Math.round(this.getShiftY());
     
-    int viewportTileOffsetX = (( shiftTileX * this.tileWidth ) - shiftXRound) - this.tileWidth;
-    int viewportTileOffsetY = (( shiftTileY * this.tileHeight ) - shiftYRound) - this.tileHeight;
+    int viewportTileOffsetX = (( shiftTileX * Core.TILE_SIZE ) - shiftXRound) - Core.TILE_SIZE;
+    int viewportTileOffsetY = (( shiftTileY * Core.TILE_SIZE ) - shiftYRound) - Core.TILE_SIZE;
     
-    int shiftX = -shiftXRound - this.tileWidth;
-    int shiftY = -shiftYRound - this.tileHeight;
+    int shiftX = -shiftXRound - Core.TILE_SIZE;
+    int shiftY = -shiftYRound - Core.TILE_SIZE;
 
     
     gr.pushTransform();
@@ -136,8 +138,8 @@ public class Level{
 
     for(int x = 0; x < tileCountHorizontal; x++) {
       for(int y = 0; y < tileCountVertical; y++) {
-        int tx = x * this.tileWidth;
-        int ty = y * this.tileHeight;
+        int tx = x * Core.TILE_SIZE;
+        int ty = y * Core.TILE_SIZE;
         Block block = this.getBlockForPosition(shiftTileX + x, shiftTileY + y);
         
         if (block != null && block.isVisibleOrVisited()) {
@@ -202,7 +204,7 @@ public class Level{
         gr.setColor(VISITED_BLOCK_COLOR);
       }
       
-      gr.fillRect(block.x*this.tileWidth, block.y*this.tileHeight, this.tileWidth, this.tileHeight);
+      gr.fillRect(block.x*Core.TILE_SIZE, block.y*Core.TILE_SIZE, Core.TILE_SIZE, Core.TILE_SIZE);
     }
     
     gr.popTransform();
@@ -225,12 +227,7 @@ public class Level{
   public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
     BlockResources.shared().update(delta);
     ParticleManager.shared().update(delta);
-    
-    if (refreshEntityList) {
-      Collections.sort(this.entities);
-      refreshEntityList = false;
-      Log.debug("Refreshing order of entities");
-    }
+    refreshEntityTimer.update(delta);
     
     for (int i = 0; i < this.entities.size(); i++) {
       Entity e    = this.entities.get(i);
@@ -287,13 +284,13 @@ public class Level{
 
   public void setupViewport(GameContainer gc) {
     if (getViewPort() == null) {
-      this.viewPort   = new Rectangle(0, 0, gc.getWidth()+this.tileWidth, gc.getHeight()+this.tileHeight);
+      this.viewPort   = new Rectangle(0, 0, gc.getWidth()+Core.TILE_SIZE, gc.getHeight()+Core.TILE_SIZE);
       this.updateArea = new Rectangle(0, 0, Math.round(this.viewPort.getWidth()*2.5), Math.round(this.viewPort.getHeight()*2.5));
       Log.info("Viewport size is: " + this.viewPort.getWidth() + "x" + this.viewPort.getHeight() );
       Log.info("Update area size is: " + this.updateArea.getWidth() + "x" + this.updateArea.getHeight() );
       
-      this.tileCountHorizontal =  Math.round((this.viewPort.getWidth() / this.tileWidth) + 2);
-      this.tileCountVertical   =  Math.round((this.viewPort.getHeight() / this.tileHeight) + 2);
+      this.tileCountHorizontal =  Math.round((this.viewPort.getWidth() / Core.TILE_SIZE) + 2);
+      this.tileCountVertical   =  Math.round((this.viewPort.getHeight() / Core.TILE_SIZE) + 2);
       
       Log.info("Tile count is: "+ this.tileCountHorizontal + "x" + this.tileCountVertical);
     }
@@ -316,11 +313,11 @@ public class Level{
   }
   
   public int getShiftTileX() {
-    return Math.round(getShiftX() / this.tileWidth);
+    return Math.round(getShiftX() / Core.TILE_SIZE);
   }
   
   public int getShiftTileY() {
-    return Math.round(getShiftY() / this.tileHeight);
+    return Math.round(getShiftY() / Core.TILE_SIZE);
   }
   
   public float getShiftX() {
@@ -344,15 +341,15 @@ public class Level{
   }
   
   public int transformXToTile(float x) {
-    return Math.round(x / this.tileWidth);
+    return Math.round(x / Core.TILE_SIZE);
   }
   
   public int transformYToTile(float y) {
-    return Math.round(y / this.tileHeight);
+    return Math.round(y / Core.TILE_SIZE);
   }
 
   public boolean canMoveTo(Vector2f targetPosition, Entity mover) {
-    return canMoveTo(new Rectangle(targetPosition.x, targetPosition.y, this.tileWidth, this.tileHeight), mover);
+    return canMoveTo(new Rectangle(targetPosition.x, targetPosition.y, Core.TILE_SIZE, Core.TILE_SIZE), mover);
   }
   
   public boolean canMoveTo(Rectangle targetRect, Entity mover) {
@@ -576,11 +573,9 @@ public class Level{
   }
 
   public void setSize(int w, int h) {
-    Log.info("Tile size is: "+ this.tileWidth + "x" + this.tileHeight);
+    Log.info("Tile size is: "+ Core.TILE_SIZE + "x" + Core.TILE_SIZE);
     this.mapTileWidth  = w;
     this.mapTileHeight = h;
-    this.tileWidth     = Core.TILE_SIZE;
-    this.tileHeight    = Core.TILE_SIZE;
 
     this.world         = new Block[mapTileWidth][mapTileHeight];
   }
@@ -626,6 +621,13 @@ public class Level{
       
       Log.info("Spawning item " + spawnItem.toString());
     }
+  }
+
+  @Override
+  public void onTimerFire(Timer timer) {
+    Collections.sort(this.entities);
+    timer.stop();
+    Log.debug("Refreshing order of entities");
   }
 
   

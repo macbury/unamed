@@ -218,7 +218,7 @@ public abstract class Entity implements Comparable<Entity> {
   
   public void setPositionUsing(GroupObject spawnPosition) {
     this.setX(spawnPosition.x);
-    this.setY(spawnPosition.y-this.getLevel().tileHeight); // fix position for object y is allways 1 tile height bigger than on map!
+    this.setY(spawnPosition.y-Core.TILE_SIZE); // fix position for object y is allways 1 tile height bigger than on map!
   }
 
   public Position getFuturePosition() {
@@ -248,8 +248,8 @@ public abstract class Entity implements Comparable<Entity> {
   }
 
   public void placeOnEntity(Entity entity) {
-    this.setX(entity.getTileX() * this.getLevel().tileWidth);
-    this.setY(entity.getTileY() * this.getLevel().tileHeight);
+    this.setX(entity.getTileX() * Core.TILE_SIZE);
+    this.setY(entity.getTileY() * Core.TILE_SIZE);
     Log.debug("Placed entity at position: " + this.getX()  + "x" + this.getY());
   }
 
@@ -269,11 +269,11 @@ public abstract class Entity implements Comparable<Entity> {
   }
 
   public float getSnappedToTileX() {
-    return this.getTileX() * this.getLevel().tileWidth;
+    return this.getTileX() * Core.TILE_SIZE;
   }
 
   public float getSnappedToTileY() {
-    return this.getTileY() * this.getLevel().tileHeight;
+    return this.getTileY() * Core.TILE_SIZE;
   }
 
   public void setPosition(int x, int y) {
@@ -282,11 +282,11 @@ public abstract class Entity implements Comparable<Entity> {
   }
   
   public void setTileX(int x) {
-    setX(x * this.getLevel().tileWidth);
+    setX(x * Core.TILE_SIZE);
   }
   
   public void setTileY(int y) {
-    setY(y * this.getLevel().tileHeight);
+    setY(y * Core.TILE_SIZE);
   }
 
   public void setTilePosition(int x, int y) {
