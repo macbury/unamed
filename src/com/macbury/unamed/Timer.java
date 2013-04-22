@@ -56,7 +56,12 @@ public class Timer {
   public void stop() {
     setEnabled(false);
   }
-
+  
+  public void restart() {
+    setEnabled(false);
+    setEnabled(true);
+  }
+  
   public void start() {
     setEnabled(true);
   }

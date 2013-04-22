@@ -55,7 +55,6 @@ public class LoadingResourceScreen extends BasicGameState {
       font.drawString(100, 100, "Loading");
     }
 
-    
     float total  = 1.0f;
     float loaded = 1.0f - (float)LoadingList.get().getRemainingResources() / (float)LoadingList.get().getTotalResources();
     
