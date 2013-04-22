@@ -11,6 +11,9 @@ import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.Log;
 
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
 import com.macbury.unamed.Core;
 import com.macbury.unamed.component.Component;
 import com.macbury.unamed.component.HealthComponent;
@@ -21,7 +24,7 @@ import com.macbury.unamed.level.Level;
 import com.macbury.unamed.monkey.GroupObject;
 
 
-public class Entity implements Comparable<Entity> {
+public abstract class Entity implements Comparable<Entity> {
   protected static final int ENTITY_BASE_LAYER = 0;
 
   private static int gid = 0;
@@ -330,5 +333,20 @@ public class Entity implements Comparable<Entity> {
   
   public Vector2f getCenteredPosition() {
     return new Vector2f(this.rectangle.getCenterX(), this.rectangle.getCenterY());
+  }
+
+  public void writeTo(Kryo kryo, Output output) {
+    kryo.writeClass(output, this.getClass());
+    output.writeInt(this.getId());
+    output.writeFloat(this.getX());
+    output.writeFloat(this.getY());
+    Log.debug("Writing entity: " + this.getClass().getSimpleName());
+  }
+  
+  public void loadFrom(Kryo kryo, Input input) {
+    Log.debug("Loading entity: " + this.getClass().getSimpleName());
+    this.setId(input.readInt());
+    this.setX(input.readFloat());
+    this.setY(input.readFloat());
   }
 }

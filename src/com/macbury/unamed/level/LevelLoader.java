@@ -145,11 +145,10 @@ public class LevelLoader implements Runnable{
       
       while(entityCount > 0) {
         Class<? extends Entity> klass = null;
-        klass = kryo.readClass(input).getType();
-        Entity entity = (Entity) kryo.readObject(input, klass);
-        Log.info("Loading entity: " + entity.toString());
+        klass         = kryo.readClass(input).getType();
+        Entity entity = klass.newInstance();
+        entity.loadFrom(kryo, input);
         level.addEntity(entity);
-        
         entityCount--;
       }
       
@@ -190,8 +189,7 @@ public class LevelLoader implements Runnable{
       
       output.writeInt(this.level.getEntities().size());
       for (Entity entity : this.level.getEntities()) {
-        kryo.writeClass(output, entity.getClass());
-        kryo.writeObject(output, entity);
+        entity.writeTo(kryo, output);
       }
  //     output.endChunks();
       

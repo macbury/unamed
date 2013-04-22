@@ -19,13 +19,7 @@ public class PlayerSerializer extends EntitySerializer {
     } catch (SlickException e) {
       e.printStackTrace();
     }
-    player = (Player) setInfoFromInputFor(input, player);
-    
-    player.getHealth().setMaxHelath(input.readShort());
-    player.getHealth().setHealth(input.readShort());
-    
-    TileBasedMovement mov = (TileBasedMovement) player.getComponent(TileBasedMovement.class);
-    mov.direction = input.readByte();
+
     
     return player;
   }
@@ -36,11 +30,7 @@ public class PlayerSerializer extends EntitySerializer {
     
     Player player = (Player)entity;
     
-    output.writeShort(player.getHealth().getMaxHelath());
-    output.writeShort(player.getHealth().getHealth());
     
-    TileBasedMovement mov = (TileBasedMovement) player.getComponent(TileBasedMovement.class);
-    output.writeByte(mov.getDirection());
   }
   
 }

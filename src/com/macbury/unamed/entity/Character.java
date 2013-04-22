@@ -3,6 +3,9 @@ package com.macbury.unamed.entity;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
 
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
 import com.macbury.unamed.component.CharacterAnimation;
 import com.macbury.unamed.component.HealthComponent;
 import com.macbury.unamed.component.KeyboardMovement;
@@ -66,4 +69,25 @@ public class Character extends Entity {
       return null;
     }
   }
+
+  @Override
+  public void writeTo(Kryo kryo, Output output) {
+    super.writeTo(kryo, output);
+    
+    output.writeShort(this.getHealth().getMaxHelath());
+    output.writeShort(this.getHealth().getHealth());
+
+    output.writeByte(tileMovement.getDirection());
+  }
+
+  @Override
+  public void loadFrom(Kryo kryo, Input input) {
+    super.loadFrom(kryo, input);
+    
+    this.getHealth().setMaxHelath(input.readShort());
+    this.getHealth().setHealth(input.readShort());
+    tileMovement.direction = input.readByte();
+  }
+  
+  
 }
