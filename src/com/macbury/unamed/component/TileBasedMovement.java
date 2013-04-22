@@ -9,6 +9,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.Log;
 
 import com.macbury.unamed.Core;
+import com.macbury.unamed.Position;
 import com.macbury.unamed.SoundManager;
 import com.macbury.unamed.Timer;
 import com.macbury.unamed.TimerInterface;
@@ -32,7 +33,7 @@ public class TileBasedMovement extends Component implements TimerInterface {
   private float totalMoveTime              = 0.0f;
   private Timer lavaDamageTimer            = null;
   private boolean moveInProgress = false;
-  private Vector2f basePosition;
+  private Position basePosition;
   private float blockMoveSpeed;
   
   public TileBasedMovement() {
@@ -44,25 +45,25 @@ public class TileBasedMovement extends Component implements TimerInterface {
     return moveInProgress;
   }
   
-  public Vector2f computeTargetPositionForDirection(byte inDirection) {
+  public Position computeTargetPositionForDirection(byte inDirection) {
     float x             = this.owner.getX();
     float y             = this.owner.getY();
     
     switch (inDirection) {
       case DIRECTION_DOWN:
-        y += this.owner.getLevel().tileHeight;
+        y += Core.TILE_SIZE;
       break;
   
       case DIRECTION_TOP:
-        y -= this.owner.getLevel().tileHeight;
+        y -= Core.TILE_SIZE;
       break;
       
       case DIRECTION_LEFT:
-        x -= this.owner.getLevel().tileWidth;
+        x -= Core.TILE_SIZE;
       break;
       
       case DIRECTION_RIGHT:
-        x += this.owner.getLevel().tileWidth;
+        x += Core.TILE_SIZE;
       break;
       
       default:
@@ -70,12 +71,12 @@ public class TileBasedMovement extends Component implements TimerInterface {
       break;
     }
   
-    return new Vector2f(x,y);
+    return new Position(x,y);
   }
   
   public Rectangle computeTargetRectForDirection(byte inDirection) {
-    Vector2f pos = computeTargetPositionForDirection(inDirection);
-    return new Rectangle(pos.x, pos.y, this.owner.getWidth() - 1, this.owner.getHeight() -1);
+    Position pos = computeTargetPositionForDirection(inDirection);
+    return new Rectangle(pos.getX(), pos.getY(), this.owner.getWidth() - 1, this.owner.getHeight() -1);
   }
   
   public boolean move(byte inDirection) {
@@ -83,7 +84,7 @@ public class TileBasedMovement extends Component implements TimerInterface {
       return false;
     } else {
       this.lookIn(inDirection);
-      this.basePosition   = new Vector2f(this.owner.getX(), this.owner.getY());
+      this.basePosition   = new Position(this.owner.getX(), this.owner.getY());
       this.moveInProgress = true;
       this.totalMoveTime  = 0.0f;
       this.owner.setFuturePosition(computeTargetPositionForDirection(inDirection));
@@ -104,16 +105,16 @@ public class TileBasedMovement extends Component implements TimerInterface {
   public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
     if (this.isMoving() && !InterfaceManager.shared().shouldBlockGamePlay()) {
       totalMoveTime += speed * (float)delta * blockMoveSpeed;
-      float x = Math.round(Util.lerp(basePosition.x, this.owner.getFuturePosition().x, totalMoveTime));
-      float y = Math.round(Util.lerp(basePosition.y, this.owner.getFuturePosition().y, totalMoveTime));
+      float x = Math.round(Util.lerp(basePosition.getX(), this.owner.getFuturePosition().getX(), totalMoveTime));
+      float y = Math.round(Util.lerp(basePosition.getY(), this.owner.getFuturePosition().getY(), totalMoveTime));
       this.owner.setX(x);
       this.owner.setY(y);
       
       if (this.totalMoveTime > 1.0) {
         moveInProgress = false;
         totalMoveTime  = 0.0f;
-        this.owner.setTileX(Math.round(this.owner.getFuturePosition().x/Core.TILE_SIZE));
-        this.owner.setTileY(Math.round(this.owner.getFuturePosition().y/Core.TILE_SIZE));
+        this.owner.setTileX(Math.round(this.owner.getFuturePosition().getX()/Core.TILE_SIZE));
+        this.owner.setTileY(Math.round(this.owner.getFuturePosition().getY()/Core.TILE_SIZE));
         this.owner.setFuturePosition(null);
         basePosition   = null;
         if (this.owner.haveLight()) {

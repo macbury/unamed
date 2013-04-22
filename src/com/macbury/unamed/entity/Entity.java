@@ -15,6 +15,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.macbury.unamed.Core;
+import com.macbury.unamed.Position;
 import com.macbury.unamed.component.Component;
 import com.macbury.unamed.component.HealthComponent;
 import com.macbury.unamed.component.Light;
@@ -32,7 +33,7 @@ public abstract class Entity implements Comparable<Entity> {
   protected int id;
   
   private Rectangle rectangle;
-  private Vector2f  futurePosition     = null; // this is future position of entity
+  private Position  futurePosition     = null; // this is future position of entity
   public  boolean   solid              = false;
   public  boolean   collidable         = false;
   public  boolean   visibleUnderTheFog = false;
@@ -220,21 +221,21 @@ public abstract class Entity implements Comparable<Entity> {
     this.setY(spawnPosition.y-this.getLevel().tileHeight); // fix position for object y is allways 1 tile height bigger than on map!
   }
 
-  public Vector2f getFuturePosition() {
+  public Position getFuturePosition() {
     return futurePosition;
   }
   
   public Rectangle getFutureRect() {
-    Vector2f pos = getFuturePosition();
+    Position pos = getFuturePosition();
     
     if (pos == null) {
       return null;
     } else {
-      return new Rectangle(pos.x, pos.y, this.getWidth(), this.getHeight());
+      return new Rectangle(pos.getX(), pos.getY(), this.getWidth(), this.getHeight());
     }
   }
 
-  public void setFuturePosition(Vector2f futurePosition) {
+  public void setFuturePosition(Position futurePosition) {
     this.futurePosition = futurePosition;
   }
   
