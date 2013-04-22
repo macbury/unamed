@@ -12,7 +12,7 @@ import com.macbury.unamed.component.KeyboardMovement;
 import com.macbury.unamed.component.Light;
 import com.macbury.unamed.component.TileBasedMovement;
 
-public class Character extends Entity {
+public abstract class Character extends Entity {
   public static final int ENTITY_ZINDEX    = Entity.ENTITY_BASE_LAYER+1;
   private static final short START_HEALTH   = 20;
   TileBasedMovement  tileMovement;
@@ -88,6 +88,4 @@ public class Character extends Entity {
     this.getHealth().setHealth(input.readShort());
     tileMovement.direction = input.readByte();
   }
-  
-  
 }

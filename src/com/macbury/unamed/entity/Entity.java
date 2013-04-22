@@ -349,4 +349,26 @@ public abstract class Entity implements Comparable<Entity> {
     this.setX(input.readFloat());
     this.setY(input.readFloat());
   }
+
+  public boolean isOnVisibleBlock() {
+    Block block       = getBlock();
+    Block futureBlock = getFutureBlock();
+    if (futureBlock == null) {
+      return checkVisiblityForBlock(block); 
+    } else {
+      return checkVisiblityForBlock(block) && checkVisiblityForBlock(futureBlock);
+    }
+  }
+  
+  private Block getFutureBlock() {
+    if (this.futurePosition != null) {
+      return this.level.getBlockForPosition(Math.round(this.futurePosition.getX() / Core.TILE_SIZE), Math.round(this.futurePosition.getY() / Core.TILE_SIZE));
+    } else {
+      return null;
+    }
+  }
+
+  private boolean checkVisiblityForBlock(Block block) {
+    return (block != null && (block.isVisible() || (block.isVisited() && this.visibleUnderTheFog)));
+  }
 }

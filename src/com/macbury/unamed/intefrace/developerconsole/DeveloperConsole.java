@@ -24,10 +24,12 @@ public class DeveloperConsole extends Interface implements KeyListener {
   private static final float CONSOLE_PADDING = 10;
   private String currentCommand = "";
   ArrayList<String> commandsLog;
+  ArrayList<String> executedCommands;
   public ArrayList<ConsoleCommand> commands;
   public DeveloperConsole() {
-    commandsLog = new ArrayList<String>();
-    commands    = new ArrayList<ConsoleCommand>();
+    commandsLog      = new ArrayList<String>();
+    executedCommands = new ArrayList<String>(); 
+    commands         = new ArrayList<ConsoleCommand>();
     registerCommand(HelpCommand.class);
     registerCommand(ClearCommand.class);
     registerCommand(GiveCommand.class);
@@ -119,7 +121,7 @@ public class DeveloperConsole extends Interface implements KeyListener {
       
       case Input.KEY_UP:
         if (commandsLog.size() > 0) {
-          currentCommand = commandsLog.get(commandsLog.size() - 1);
+          currentCommand = executedCommands.get(executedCommands.size() - 1);
         }
       break;
       
@@ -151,6 +153,7 @@ public class DeveloperConsole extends Interface implements KeyListener {
 
   private void parseCommand() {
     currentCommand = currentCommand.trim();
+    
     boolean foundCommand = false;
     for (ConsoleCommand command : this.commands) {
       if (command.parseCommand(currentCommand)) {
@@ -161,6 +164,7 @@ public class DeveloperConsole extends Interface implements KeyListener {
     if (!foundCommand) {
       print("Undefined command: " + currentCommand + " type 'help' for more commands");
     }
+    executedCommands.add(currentCommand);
     currentCommand = "";
   }
 

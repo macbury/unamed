@@ -3,6 +3,7 @@ package com.macbury.unamed.intefrace.developerconsole;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
 
+import com.macbury.unamed.entity.Monster;
 import com.macbury.unamed.entity.Npc;
 import com.macbury.unamed.entity.Player;
 import com.macbury.unamed.level.Level;
@@ -14,9 +15,9 @@ public class SpawnNpcCommand extends ConsoleCommand {
     if (command.equals("spawn npc")) {
       Player player = Level.shared().getPlayer();
       Vector2f inFront = player.getTilePositionInFront();
-      Npc npc = null;
+      Monster npc = null;
       try {
-        npc = new Npc();
+        npc = new Monster();
         Level.shared().addEntity(npc);
         npc.setTilePosition((int)inFront.getX(), (int)inFront.getY());
         

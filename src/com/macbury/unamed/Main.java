@@ -1,9 +1,7 @@
 package com.macbury.unamed;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 
 import org.lwjgl.Sys;
 import org.newdawn.slick.AppGameContainer;
@@ -13,9 +11,9 @@ import org.newdawn.slick.util.Log;
 public class Main {
   
   public static void showError(Exception e) {
+    Sys.alert("Error", e.toString());
     Log.error(e.toString());
     e.printStackTrace();
-    Sys.alert("Error", e.toString());
   }
   
   public static void main(String[] args) {
@@ -32,8 +30,8 @@ public class Main {
       
       boolean windowMode = argsList.contains("--windowed");
       app.setFullscreen(!windowMode);
-      app.setShowFPS(!windowMode);
-      //app.setMouseGrabbed(true);
+      app.setShowFPS(false);
+      app.setMouseGrabbed(!windowMode);
       app.start();
     } catch (SlickException e) {
       showError(e);

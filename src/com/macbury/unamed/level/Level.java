@@ -183,12 +183,8 @@ public class Level{
     
     for (int i = 0; i < this.entities.size(); i++) {
       Entity e    = this.entities.get(i);
-      Block block = e.getBlock();
-      
-      if (block != null && (block.isVisible() || (block.isVisited() && e.visibleUnderTheFog))) {
-        if (this.viewPort.intersects(e.getRect())) {
-          e.render(gc, sb, gr);
-        }
+      if (this.viewPort.intersects(e.getRect()) && e.isOnVisibleBlock()) {
+        e.render(gc, sb, gr);
       }
     }
     
