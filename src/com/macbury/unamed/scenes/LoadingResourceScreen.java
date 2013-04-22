@@ -2,6 +2,7 @@ package com.macbury.unamed.scenes;
 
 import java.io.IOException;
 
+import org.newdawn.slick.BigImage;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
@@ -26,9 +27,11 @@ public class LoadingResourceScreen extends BasicGameState {
   private DeferredResource nextResource;
   private boolean started;
   private boolean initFinished = false;
+  private BigImage backgroundImage;
 
-  public LoadingResourceScreen() {
+  public LoadingResourceScreen() throws SlickException {
     LoadingList.setDeferredLoading(true);
+    backgroundImage = new BigImage("res/images/hud/main_screen.jpg");
   }
 
   @Override
@@ -46,6 +49,7 @@ public class LoadingResourceScreen extends BasicGameState {
 
   @Override
   public void render(GameContainer arg0, StateBasedGame arg1, Graphics g) throws SlickException {
+    backgroundImage.draw();
     UnicodeFont font = Core.instance().getFont();
     if (nextResource != null) {
       font.drawString(100, 100, "Loading");

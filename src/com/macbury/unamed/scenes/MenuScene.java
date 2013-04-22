@@ -76,7 +76,6 @@ public class MenuScene extends BasicGameState implements MenuListManagerInterfac
     menuManager.setX(Core.WINDOW_WIDTH - 340);
     
     menuManager.render(gc, sg, gr);
-    
   }
 
   @Override

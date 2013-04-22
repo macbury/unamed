@@ -34,7 +34,7 @@ public class Level implements TimerInterface{
 
   private static final Color VISITED_BLOCK_COLOR  = new Color(0,0,0, Block.VISITED_ALPHA);
   private static final Color WALL_SHADE_COLOR     = new Color(0,0,0,180);
-  private static final short REFRESH_ENTITY_TIMER = 150;
+  private static final short REFRESH_ENTITY_TIMER = 100;
 
   private ArrayList<Room> rooms;
   private Block[][] world;
@@ -101,8 +101,6 @@ public class Level implements TimerInterface{
     }
     return null;
   }
-  
-
   
   public void addEntity(Entity e) throws SlickException {
     if (e == null) {
@@ -176,8 +174,6 @@ public class Level implements TimerInterface{
         }
       }
     }
-    
-
     gr.popTransform();
     
     gr.pushTransform();
