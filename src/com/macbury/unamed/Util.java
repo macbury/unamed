@@ -9,6 +9,4 @@ public class Util {
     
     return a + t * (b - a);
   }
-  
-  
 }

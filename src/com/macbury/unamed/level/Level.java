@@ -13,6 +13,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
+import org.newdawn.slick.geom.Point;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
@@ -23,6 +24,8 @@ import com.macbury.unamed.Core;
 import com.macbury.unamed.ImagesManager;
 import com.macbury.unamed.ParticleManager;
 import com.macbury.unamed.PathFindingQueue;
+import com.macbury.unamed.Position;
+import com.macbury.unamed.RaycastHitResult;
 import com.macbury.unamed.Timer;
 import com.macbury.unamed.TimerInterface;
 import com.macbury.unamed.entity.CollectableItem;
@@ -61,6 +64,8 @@ public class Level implements TimerInterface {
   private Stack<Block> visibleBlocks;
   private Stack<Entity> collidableEntities;
 
+  public Stack<RaycastHitResult> raycastDebugList;
+  
   private HashMap<Integer, Color> lightColorMap;
   
   public static Level shared() {
@@ -93,12 +98,22 @@ public class Level implements TimerInterface {
     this.visibleBlocks      = new Stack<Block>();
     this.lightColorMap      = new HashMap<Integer, Color>();
     this.refreshEntityTimer = new Timer(REFRESH_ENTITY_TIMER, this);
+    this.raycastDebugList   = new Stack<RaycastHitResult>();
   }
 
   
   public Entity getEntityForTilePosition(int x, int y) {
     for (Entity e : this.entities) {
       if (e.getTileX() == x && e.getTileY() == y) {
+        return e;
+      }
+    }
+    return null;
+  }
+  
+  public Entity getSolidEntityForTilePosition(int x, int y) {
+    for (Entity e : this.entities) {
+      if (e.solid && e.getTileX() == x && e.getTileY() == y) {
         return e;
       }
     }
@@ -113,7 +128,7 @@ public class Level implements TimerInterface {
       this.entities.add(e);
       refreshEntityTimer.restart();
     } else {
-      Log.info("Entity already added to entity stack!");
+      Log.info("Entity already addedz to entity stack!");
     }
   }
   
@@ -186,6 +201,14 @@ public class Level implements TimerInterface {
       Entity e    = this.entities.get(i);
       if (this.viewPort.intersects(e.getRect()) && e.isOnVisibleBlock()) {
         e.render(gc, sb, gr);
+      }
+    }
+    
+    if (Core.DEBUG_RAYCAST) {
+      gr.setColor(Color.white);
+      while(this.raycastDebugList.size() > 0) {
+        RaycastHitResult hit = this.raycastDebugList.pop();
+        gr.drawLine(hit.startPosition.getTileX() * Core.TILE_SIZE + 16, hit.startPosition.getTileY() * Core.TILE_SIZE + 16 , hit.getX() * Core.TILE_SIZE + 16, hit.getY() * Core.TILE_SIZE + 16 );
       }
     }
     
@@ -629,5 +652,31 @@ public class Level implements TimerInterface {
     Log.debug("Refreshing order of entities");
   }
 
-  
+  public RaycastHitResult raycast(Position start, Position end) {
+    ArrayList<Point> points = start.tiledLineTo(end);
+    RaycastHitResult resultHit = null;
+    for (int i = 1; i < points.size(); i++) { // without starting point to avoid hitting caster
+      Point p = points.get(i);
+      
+      if (isSolid((int)p.getX(), (int)p.getY())) {
+        resultHit = new RaycastHitResult(p);
+      } else {
+        Entity e = getSolidEntityForTilePosition((int)p.getX(), (int)p.getY());
+        if (e != null) {
+          resultHit = new RaycastHitResult(p,e);
+        }
+      }
+      
+      if (resultHit != null) {
+        resultHit.setStartPosition(start);
+        break;
+      }
+    }
+    
+    if (Core.DEBUG_RAYCAST) {
+      raycastDebugList.push(resultHit);
+    }
+    
+    return resultHit;
+  }
 }

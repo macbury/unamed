@@ -6,10 +6,10 @@ import com.macbury.unamed.component.RandomMovement;
 
 public class WanderAI extends AI {
 
-  private RandomMovement randomMovement;
+  protected RandomMovement randomMovement;
 
   @Override
-  public void update(int delta) {
+  public void update(int delta) throws SlickException {
     
   }
 

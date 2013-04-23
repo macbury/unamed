@@ -14,6 +14,7 @@ import com.macbury.unamed.component.HealthComponent;
 import com.macbury.unamed.component.KeyboardMovement;
 import com.macbury.unamed.component.Light;
 import com.macbury.unamed.component.TileBasedMovement;
+import com.macbury.unamed.intefrace.InterfaceManager;
 
 public abstract class Character extends Entity {
   public static final int ENTITY_ZINDEX    = Entity.ENTITY_BASE_LAYER+1;
@@ -112,7 +113,7 @@ public abstract class Character extends Entity {
   
   @Override
   public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
-    if (getAi() != null) {
+    if (getAi() != null && !InterfaceManager.shared().shouldBlockGamePlay()) {
       getAi().update(delta);
     }
     super.update(gc, sb, delta);

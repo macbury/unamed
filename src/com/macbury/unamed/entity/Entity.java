@@ -328,8 +328,8 @@ public abstract class Entity implements Comparable<Entity> {
     return this.health != null;
   }
 
-  public Vector2f getPosition() {
-    return new Vector2f(this.getX(), this.getY());
+  public Position getPosition() {
+    return new Position(this.getX(), this.getY());
   }
   
   public Vector2f getCenteredPosition() {

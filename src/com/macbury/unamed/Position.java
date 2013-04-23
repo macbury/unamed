@@ -1,5 +1,9 @@
 package com.macbury.unamed;
 
+import java.util.ArrayList;
+
+import org.newdawn.slick.geom.Point;
+
 public class Position {
   private float x;
   private float y;
@@ -31,7 +35,6 @@ public class Position {
   public float getY() {
     return y;
   }
-  
   public void setY(float y) {
     if (this.y != y) {
       tileY = null;
@@ -67,4 +70,7 @@ public class Position {
     this.tileY = tileY;
   }
   
+  public ArrayList<Point> tiledLineTo(Position end) {
+    return BresenhamLine.line(this.getTileX(), this.getTileY(), end.getTileX(), end.getTileY());
+  }
 }
