@@ -29,6 +29,7 @@ import com.macbury.unamed.serializers.EntitySerializer;
 import com.macbury.unamed.serializers.LevelSerializer;
 
 public class Core extends StateBasedGame {
+  public static final boolean DEBUG_RAYCAST = false;
   public static boolean SHOW_COLLIDERS = false;
   public static boolean DEBUG          = true;
   public static final int MIN_UPDATES = 20;
@@ -43,7 +44,7 @@ public class Core extends StateBasedGame {
   public static final String DUNGON_FILE_NAME = "my.dungeon";
   public static final int WINDOW_WIDTH  = 1280;
   public static final int WINDOW_HEIGHT = 720;
-  public static final boolean DEBUG_RAYCAST = true;
+  
   private UnicodeFont font;
   private GeneratingWorldState generatingWorldState;
   private GameplayScene gameplayScene;

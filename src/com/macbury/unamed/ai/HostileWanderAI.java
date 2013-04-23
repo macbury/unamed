@@ -35,11 +35,6 @@ public class HostileWanderAI extends WanderAI implements TimerInterface {
 
   @Override
   public void onTimerFire(Timer timer) {
-    if (canISeePlayer()) {
-      Log.info("I see you :P");
-      this.randomMovement.enabled = false;
-    } else {
-      randomMovement.enabled = true;
-    }
+    this.randomMovement.enabled = !canISeePlayer();
   }
 }

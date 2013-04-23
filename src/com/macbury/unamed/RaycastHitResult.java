@@ -1,5 +1,7 @@
 package com.macbury.unamed;
 
+import java.util.ArrayList;
+
 import org.newdawn.slick.geom.Point;
 
 import com.macbury.unamed.entity.Entity;
@@ -7,6 +9,7 @@ import com.macbury.unamed.entity.Entity;
 public class RaycastHitResult extends Position {
   private Entity entity;
   public Position startPosition;
+  public ArrayList<Position> points;
   public RaycastHitResult(int x, int y) {
     super(x, y);
   }
@@ -24,6 +27,11 @@ public class RaycastHitResult extends Position {
     setEntity(e);
   }
 
+  public RaycastHitResult(int x, int y, Entity e) {
+    super(x, y);
+    setEntity(e);
+  }
+
   public Entity getEntity() {
     return entity;
   }
@@ -34,6 +42,10 @@ public class RaycastHitResult extends Position {
 
   public void setStartPosition(Position start) {
     this.startPosition = start;
+  }
+
+  public void setPath(ArrayList<Position> points) {
+    this.points = points;
   }
 
 }
