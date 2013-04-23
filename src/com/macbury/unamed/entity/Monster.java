@@ -11,6 +11,7 @@ import com.macbury.unamed.PathFindingCallback;
 import com.macbury.unamed.PathFindingQueue;
 import com.macbury.unamed.Timer;
 import com.macbury.unamed.TimerInterface;
+import com.macbury.unamed.ai.WanderAI;
 import com.macbury.unamed.component.RandomMovement;
 
 public class Monster extends Character implements TimerInterface, PathFindingCallback {
@@ -20,7 +21,7 @@ public class Monster extends Character implements TimerInterface, PathFindingCal
   private static final float MONSTER_DEFAULT_SPEED = 0.0020f;
   private static final short FIND_PATH_EVERY       = 250;
   private byte state = STATE_FOLLOW_PLAYER;
-  private RandomMovement randomMovement;
+  public RandomMovement randomMovement;
   
   private Timer findPathTimer;
   private Path currentPath;
@@ -35,30 +36,15 @@ public class Monster extends Character implements TimerInterface, PathFindingCal
     tileMovement.playSoundForStep = false;
     
     findPathTimer = new Timer(FIND_PATH_EVERY, this);
+    findPathTimer.stop();
+    
+    this.setAi(new WanderAI());
   }
 
   @Override
   public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
     super.update(gc, sb, delta);
     findPathTimer.update(delta);
-    randomMovement.enabled = false;
-    switch (this.state) {
-      case STATE_SEEK_PLAYER:
-        
-      break;
-      
-      case STATE_FOLLOW_PLAYER:
-        
-      break;
-      
-      case STATE_WANDER:
-        randomMovement.enabled = true;
-        this.setState(STATE_SEEK_PLAYER);
-      break;
-
-      default:
-        throw new SlickException("Undefined state: "+ this.state);
-    }
   }
   
   @Override

@@ -98,8 +98,15 @@ public abstract class Character extends Entity {
     return ai;
   }
 
-  public void setAi(AI ai) {
+  public void setAi(AI ai) throws SlickException {
     ai.setOwner(this);
+    if (this.ai != null && this.ai != ai) {
+      this.ai.onStop();
+      ai.onStart();
+    } else {
+      ai.onStart();
+    }
+    
     this.ai = ai;
   }
   
