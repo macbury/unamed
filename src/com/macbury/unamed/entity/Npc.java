@@ -3,7 +3,6 @@ package com.macbury.unamed.entity;
 import org.newdawn.slick.SlickException;
 
 import com.macbury.unamed.component.Light;
-import com.macbury.unamed.component.Monster;
 import com.macbury.unamed.component.TalkingSystem;
 import com.macbury.unamed.component.TileBasedMovement;
 import com.macbury.unamed.intefrace.InterfaceManager;

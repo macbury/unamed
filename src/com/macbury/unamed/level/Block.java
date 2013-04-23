@@ -369,4 +369,8 @@ public abstract class Block {
   public HarvestableBlock asHarvestableBlock() {
     return (HarvestableBlock) this;
   }
+
+  public float getCost() {
+    return 1;
+  }
 }

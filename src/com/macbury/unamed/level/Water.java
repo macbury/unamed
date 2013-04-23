@@ -25,4 +25,8 @@ public class Water extends LiquidBlock {
     return Block.RESOURCE_WATER;
   }
 
+  @Override
+  public float getCost() {
+    return 2;
+  }
 }

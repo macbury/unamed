@@ -35,6 +35,7 @@ public class TileBasedMovement extends Component implements TimerInterface {
   private boolean moveInProgress = false;
   private Position basePosition;
   private float blockMoveSpeed;
+  public boolean playSoundForStep          = true;
   
   public TileBasedMovement() {
     lavaDamageTimer = new Timer(Lava.APPLY_DAMAGE_EVERY_MILISECONDS, this);
@@ -94,7 +95,9 @@ public class TileBasedMovement extends Component implements TimerInterface {
       if (block.isPassable()) {
         PassableBlock passableBlock = (PassableBlock) block;
         this.blockMoveSpeed = passableBlock.getSpeed();
-        SoundManager.shared().playStepForBlock(block, this.owner.getTileX(), this.owner.getTileY());
+        if (playSoundForStep) {
+          SoundManager.shared().playStepForBlock(block, this.owner.getTileX(), this.owner.getTileY());
+        }
       }
       
       return true;

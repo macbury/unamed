@@ -42,6 +42,7 @@ public class GeneratingWorldState extends BasicGameState implements WorldBuilder
   
   @Override
   public void render(GameContainer arg0, StateBasedGame arg1, Graphics gr) throws SlickException {
+    Core.instance().getMainScreenImage().draw();
     if (preview != null) {
       preview.draw();
     } else if (world != null && world.progress > 0) {

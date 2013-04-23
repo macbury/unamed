@@ -33,7 +33,6 @@ public class MenuScene extends BasicGameState implements MenuListManagerInterfac
   private MenuList selectGeneratedWorldSizeMenu;
   MenuListManager menuManager = null;
   private StateBasedGame sg;
-  private BigImage backgroundImage;
   
   public MenuScene() throws SlickException {
     menuManager = new MenuListManager();
@@ -48,7 +47,7 @@ public class MenuScene extends BasicGameState implements MenuListManagerInterfac
     }
     
     mainMenuList.add("New game", ITEM_INDEX_START_GAME);
-    mainMenuList.add("Options", 3);
+    //mainMenuList.add("Options", 3);
     mainMenuList.add("Exit", ITEM_INDEX_EXIT);
     
     selectGeneratedWorldSizeMenu = new MenuList();
@@ -57,7 +56,6 @@ public class MenuScene extends BasicGameState implements MenuListManagerInterfac
     selectGeneratedWorldSizeMenu.add("Big", MENU_ITEM_SIZE_BIG);
     selectGeneratedWorldSizeMenu.add("Crash my computer", MENU_ITEM_SIZE_CRASH_MY_COMPUTER);
     menuManager.pushList(mainMenuList);
-    backgroundImage = new BigImage("res/images/hud/main_screen.jpg");
   }
 
   @Override
@@ -69,7 +67,7 @@ public class MenuScene extends BasicGameState implements MenuListManagerInterfac
   @Override
   public void render(GameContainer gc, StateBasedGame sg, Graphics gr) throws SlickException {
     //ShaderManager.shared().blurShader.bind();
-    backgroundImage.draw();
+    Core.instance().getMainScreenImage().draw();
     //ShaderManager.shared().blurShader.unbind();
     
     menuManager.setY((int) (Core.WINDOW_HEIGHT - menuManager.getBoxHeight() - 20));

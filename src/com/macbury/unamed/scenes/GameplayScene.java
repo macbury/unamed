@@ -9,6 +9,7 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.macbury.unamed.Core;
+import com.macbury.unamed.ShaderManager;
 import com.macbury.unamed.SoundManager;
 import com.macbury.unamed.intefrace.InGameInterface;
 import com.macbury.unamed.intefrace.InterfaceManager;
@@ -42,7 +43,9 @@ public class GameplayScene extends BasicGameState implements LevelLoaderInterfac
   @Override
   public void render(GameContainer gc, StateBasedGame sb, Graphics gr) throws SlickException {
     gr.setAntiAlias(false);
-    if (!loading) {
+    if (loading) {
+      Core.instance().getMainScreenImage().draw();
+    } else {
       Level.shared().render(gc, sb, gr);
       InterfaceManager.shared().render(gc, sb, gr);
     }

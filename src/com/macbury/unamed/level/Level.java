@@ -17,10 +17,12 @@ import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.Log;
+
 import com.macbury.procedular.Room;
 import com.macbury.unamed.Core;
 import com.macbury.unamed.ImagesManager;
 import com.macbury.unamed.ParticleManager;
+import com.macbury.unamed.PathFindingQueue;
 import com.macbury.unamed.Timer;
 import com.macbury.unamed.TimerInterface;
 import com.macbury.unamed.entity.CollectableItem;
@@ -28,7 +30,7 @@ import com.macbury.unamed.entity.Entity;
 import com.macbury.unamed.entity.Player;
 import com.macbury.unamed.inventory.InventoryItem;
 
-public class Level implements TimerInterface{
+public class Level implements TimerInterface {
   private static Level shared;
   public static final int SMALL  = 100;
 
@@ -78,8 +80,8 @@ public class Level implements TimerInterface{
     this.refreshEntityTimer.stop();
     this.viewPort          = null;
     this.updateArea        = null;
-    
     shared                 = null;
+    PathFindingQueue.exit();
   }
   
   public Level() throws SlickException {
@@ -92,6 +94,7 @@ public class Level implements TimerInterface{
     this.lightColorMap      = new HashMap<Integer, Color>();
     this.refreshEntityTimer = new Timer(REFRESH_ENTITY_TIMER, this);
   }
+
   
   public Entity getEntityForTilePosition(int x, int y) {
     for (Entity e : this.entities) {

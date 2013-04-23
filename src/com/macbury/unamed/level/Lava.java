@@ -41,4 +41,9 @@ public class Lava extends LiquidBlock {
   public Damage getDamage() {
     return new Damage(LAVA_DAMAGE);
   }
+  
+  @Override
+  public float getCost() {
+    return 4;
+  }
 }

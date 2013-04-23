@@ -2,6 +2,7 @@ package com.macbury.unamed;
 
 import java.io.File;
 
+import org.newdawn.slick.BigImage;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
@@ -45,11 +46,20 @@ public class Core extends StateBasedGame {
   private UnicodeFont font;
   private GeneratingWorldState generatingWorldState;
   private GameplayScene gameplayScene;
+  private BigImage mainScreenImage;
   
   static public Core instance() {
     return Core.coreInstance;
   }
-
+  
+  public BigImage getMainScreenImage() throws SlickException {
+    if (this.mainScreenImage == null) {
+      this.mainScreenImage = new BigImage("res/images/hud/main_screen.jpg");;
+    }
+    
+    return this.mainScreenImage;
+  }
+  
   public UnicodeFont getFont() throws SlickException {
     if (font == null) {
       font = new UnicodeFont("/res/fonts/advocut-webfont.ttf", 20, false, false);

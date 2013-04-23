@@ -3,6 +3,7 @@ package com.macbury.unamed.scenes;
 import java.io.IOException;
 
 import org.newdawn.slick.BigImage;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
@@ -24,14 +25,14 @@ import com.macbury.unamed.SoundManager;
 import com.macbury.unamed.level.BlockResources;
 
 public class LoadingResourceScreen extends BasicGameState {
+  private static final Color HUD_COLOR = new Color(0,0,0,100);
   private DeferredResource nextResource;
   private boolean started;
   private boolean initFinished = false;
-  private BigImage backgroundImage;
 
   public LoadingResourceScreen() throws SlickException {
+    Core.instance().getMainScreenImage();
     LoadingList.setDeferredLoading(true);
-    backgroundImage = new BigImage("res/images/hud/main_screen.jpg");
   }
 
   @Override
@@ -49,19 +50,17 @@ public class LoadingResourceScreen extends BasicGameState {
 
   @Override
   public void render(GameContainer arg0, StateBasedGame arg1, Graphics g) throws SlickException {
-    backgroundImage.draw();
+    Core.instance().getMainScreenImage().draw();
     UnicodeFont font = Core.instance().getFont();
-    if (nextResource != null) {
-      font.drawString(100, 100, "Loading");
-    }
-
-    float total  = 1.0f;
-    float loaded = 1.0f - (float)LoadingList.get().getRemainingResources() / (float)LoadingList.get().getTotalResources();
+    g.pushTransform();
+    g.translate(Core.WINDOW_WIDTH - 120, Core.WINDOW_HEIGHT - 60);
     
-    Log.info("Remaining: " + LoadingList.get().getRemainingResources());
-    Log.info("Total: " + LoadingList.get().getTotalResources());
-    g.fillRect(100,150,480.0f * loaded,20);
-    g.drawRect(100,150,480,20);
+    //g.setColor(HUD_COLOR);
+   // g.fillRoundRect(0, 0, 120, 120, 4);
+    
+    g.setColor(Color.white);
+    font.drawString(0,0, "Loading...");
+    g.popTransform();
   }
 
   @Override
