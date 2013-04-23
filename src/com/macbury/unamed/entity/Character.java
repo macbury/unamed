@@ -1,11 +1,14 @@
 package com.macbury.unamed.entity;
 
+import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
+import org.newdawn.slick.state.StateBasedGame;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import com.macbury.unamed.ai.AI;
 import com.macbury.unamed.component.CharacterAnimation;
 import com.macbury.unamed.component.HealthComponent;
 import com.macbury.unamed.component.KeyboardMovement;
@@ -17,6 +20,8 @@ public abstract class Character extends Entity {
   private static final short START_HEALTH   = 20;
   TileBasedMovement  tileMovement;
   CharacterAnimation charactedAnimation;
+  private AI ai;
+  
   public Character() throws SlickException {
     super();
     this.collidable = true;
@@ -87,5 +92,22 @@ public abstract class Character extends Entity {
     this.getHealth().setMaxHelath(input.readShort());
     this.getHealth().setHealth(input.readShort());
     tileMovement.direction = input.readByte();
+  }
+
+  public AI getAi() {
+    return ai;
+  }
+
+  public void setAi(AI ai) {
+    ai.setOwner(this);
+    this.ai = ai;
+  }
+  
+  @Override
+  public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
+    if (getAi() != null) {
+      getAi().update(delta);
+    }
+    super.update(gc, sb, delta);
   }
 }

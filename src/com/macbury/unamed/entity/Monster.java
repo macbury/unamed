@@ -16,12 +16,14 @@ import com.macbury.unamed.component.RandomMovement;
 public class Monster extends Character implements TimerInterface, PathFindingCallback {
   private static final byte STATE_WANDER           = 0;
   private static final byte STATE_FOLLOW_PLAYER    = 1;
+  private static final byte STATE_SEEK_PLAYER      = 2;
   private static final float MONSTER_DEFAULT_SPEED = 0.0020f;
   private static final short FIND_PATH_EVERY       = 250;
   private byte state = STATE_FOLLOW_PLAYER;
   private RandomMovement randomMovement;
   
   private Timer findPathTimer;
+  private Path currentPath;
   
   public Monster() throws SlickException {
     super();
@@ -33,7 +35,6 @@ public class Monster extends Character implements TimerInterface, PathFindingCal
     tileMovement.playSoundForStep = false;
     
     findPathTimer = new Timer(FIND_PATH_EVERY, this);
-    findPathTimer.setEnabled(true);
   }
 
   @Override
@@ -42,19 +43,24 @@ public class Monster extends Character implements TimerInterface, PathFindingCal
     findPathTimer.update(delta);
     randomMovement.enabled = false;
     switch (this.state) {
+      case STATE_SEEK_PLAYER:
+        
+      break;
+      
       case STATE_FOLLOW_PLAYER:
         
       break;
       
       case STATE_WANDER:
         randomMovement.enabled = true;
+        this.setState(STATE_SEEK_PLAYER);
       break;
 
       default:
         throw new SlickException("Undefined state: "+ this.state);
     }
   }
-
+  
   @Override
   public void onTimerFire(Timer timer) {
     timer.stop();
@@ -63,9 +69,25 @@ public class Monster extends Character implements TimerInterface, PathFindingCal
 
   @Override
   public void onPathFound(Path path) {
-    findPathTimer.start();
-    if (path != null) {
-      Log.info("Find: "+path.getLength());
+    if (path == null) {
+      this.setState(STATE_WANDER);
+    } else {
+      Log.info("Path lenght: " + path.getLength());
+      this.setState(STATE_FOLLOW_PLAYER);
+    }
+    
+    currentPath = path;
+  }
+  
+  public void setState(byte state) {
+    this.state = state;
+    
+    if (this.state != STATE_FOLLOW_PLAYER) {
+      currentPath = null;
+    }
+    
+    if (this.state == STATE_SEEK_PLAYER) {
+      findPathTimer.setEnabled(true);
     }
   }
 }
