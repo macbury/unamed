@@ -32,6 +32,7 @@ import com.macbury.unamed.entity.CollectableItem;
 import com.macbury.unamed.entity.Entity;
 import com.macbury.unamed.entity.Player;
 import com.macbury.unamed.entity.ReusableEntity;
+import com.macbury.unamed.intefrace.InterfaceManager;
 import com.macbury.unamed.inventory.InventoryItem;
 
 public class Level implements TimerInterface {
@@ -273,7 +274,7 @@ public class Level implements TimerInterface {
       Entity e    = this.entities.get(i);
       if (this.updateArea.intersects(e.getRect())) {
         e.update(gc, sb, delta);
-        if (e.collidable) {
+        if (e.collidable && !InterfaceManager.shared().shouldBlockGamePlay()) {
           collidableEntities.add(e);
         }
       }
