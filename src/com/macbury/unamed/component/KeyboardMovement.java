@@ -41,20 +41,20 @@ public class KeyboardMovement extends Component {
     }
     
     if (tileMovement != null && !tileMovement.isMoving()) {
-      byte direction = tileMovement.getDirection();
+      Direction direction = tileMovement.getDirection();
 
       if(input.isKeyDown(Input.KEY_DOWN)) {
         moveKeyPressed      = true;
-        direction = TileBasedMovement.DIRECTION_DOWN;
+        direction = Direction.Down;
       } else if(input.isKeyDown(Input.KEY_UP)) {
         moveKeyPressed      = true;
-        direction = TileBasedMovement.DIRECTION_TOP;
+        direction = Direction.Top;
       } else if(input.isKeyDown(Input.KEY_LEFT)) {
         moveKeyPressed      = true;
-        direction = TileBasedMovement.DIRECTION_LEFT;
+        direction = Direction.Left;
       } else if(input.isKeyDown(Input.KEY_RIGHT)) {
         moveKeyPressed      = true;
-        direction = TileBasedMovement.DIRECTION_RIGHT;
+        direction = Direction.Right;
       } else {
         moveKeyPressed      = false;
         startMoving         = false;

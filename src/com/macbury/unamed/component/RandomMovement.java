@@ -14,7 +14,7 @@ public class RandomMovement extends Component implements TimerInterface {
   private static final short CHANGE_DIRECTION_TIMEOUT = 50;
   Timer             moveTimer;
   TileBasedMovement tileMovement; 
-  byte currentDirection = TileBasedMovement.DIRECTION_NONE;
+  Direction currentDirection = Direction.None;
   
   public RandomMovement() {
     super();
@@ -32,7 +32,7 @@ public class RandomMovement extends Component implements TimerInterface {
   @Override
   public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
     moveTimer.update(delta);
-    if (currentDirection == TileBasedMovement.DIRECTION_NONE) {
+    if (currentDirection == Direction.None) {
       currentDirection = tileMovement.randomDirection();
       tileMovement.lookIn(currentDirection);
     }

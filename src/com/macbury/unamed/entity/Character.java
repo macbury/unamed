@@ -10,6 +10,7 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.macbury.unamed.ai.AI;
 import com.macbury.unamed.component.CharacterAnimation;
+import com.macbury.unamed.component.Direction;
 import com.macbury.unamed.component.HealthComponent;
 import com.macbury.unamed.component.KeyboardMovement;
 import com.macbury.unamed.component.Light;
@@ -43,19 +44,19 @@ public abstract class Character extends Entity {
     int dy = this.getTileY();
     
     switch (tileMovement.direction) {
-      case TileBasedMovement.DIRECTION_DOWN:
+      case Down:
         dy += 1;
       break;
 
-      case TileBasedMovement.DIRECTION_TOP:
+      case Top:
         dy -= 1;
       break;
       
-      case TileBasedMovement.DIRECTION_LEFT:
+      case Left:
         dx -= 1;
       break;
       
-      case TileBasedMovement.DIRECTION_RIGHT:
+      case Right:
         dx += 1;
       break;
     }
@@ -82,8 +83,7 @@ public abstract class Character extends Entity {
     
     output.writeShort(this.getHealth().getMaxHelath());
     output.writeShort(this.getHealth().getHealth());
-
-    output.writeByte(tileMovement.getDirection());
+    kryo.writeObject(output, tileMovement.getDirection());
   }
 
   @Override
@@ -92,7 +92,7 @@ public abstract class Character extends Entity {
     
     this.getHealth().setMaxHelath(input.readShort());
     this.getHealth().setHealth(input.readShort());
-    tileMovement.direction = input.readByte();
+    tileMovement.direction = kryo.readObject(input, Direction.class);
   }
 
   public AI getAi() {

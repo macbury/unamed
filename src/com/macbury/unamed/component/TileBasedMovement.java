@@ -23,12 +23,7 @@ import com.macbury.unamed.level.PassableBlock;
 
 public class TileBasedMovement extends Component implements TimerInterface {
   public final static String NAME = "TileBasedMovement"; 
-  public final static byte DIRECTION_LEFT  = 0;
-  public final static byte DIRECTION_RIGHT = 1;
-  public final static byte DIRECTION_TOP   = 2;
-  public final static byte DIRECTION_DOWN  = 3;
-  public final static byte DIRECTION_NONE  = 4;
-  public  byte  direction                  = DIRECTION_DOWN;
+  public  Direction  direction             = Direction.Down;
   public  float speed                      = 0.0035f;
   private float totalMoveTime              = 0.0f;
   private Timer lavaDamageTimer            = null;
@@ -46,24 +41,25 @@ public class TileBasedMovement extends Component implements TimerInterface {
     return moveInProgress;
   }
   
-  public Position computeTargetPositionForDirection(byte inDirection) {
+  public Position computeTargetPositionForDirection(Direction inDirection) {
     float x             = this.owner.getX();
     float y             = this.owner.getY();
+
     
     switch (inDirection) {
-      case DIRECTION_DOWN:
+      case Down:
         y += Core.TILE_SIZE;
       break;
   
-      case DIRECTION_TOP:
+      case Top:
         y -= Core.TILE_SIZE;
       break;
       
-      case DIRECTION_LEFT:
+      case Left:
         x -= Core.TILE_SIZE;
       break;
       
-      case DIRECTION_RIGHT:
+      case Right:
         x += Core.TILE_SIZE;
       break;
       
@@ -75,12 +71,12 @@ public class TileBasedMovement extends Component implements TimerInterface {
     return new Position(x,y);
   }
   
-  public Rectangle computeTargetRectForDirection(byte inDirection) {
+  public Rectangle computeTargetRectForDirection(Direction inDirection) {
     Position pos = computeTargetPositionForDirection(inDirection);
     return new Rectangle(pos.getX(), pos.getY(), this.owner.getWidth() - 1, this.owner.getHeight() -1);
   }
   
-  public boolean move(byte inDirection) {
+  public boolean move(Direction inDirection) {
     if(this.isMoving()) {
       return false;
     } else {
@@ -135,19 +131,19 @@ public class TileBasedMovement extends Component implements TimerInterface {
     
   }
 
-  public void lookIn(byte inDirection) {
+  public void lookIn(Direction inDirection) {
     this.direction      = inDirection;
   }
   
-  public byte randomDirection() {
-    return (byte) Math.round(Math.random() * DIRECTION_DOWN);
+  public Direction randomDirection() {
+    return Direction.Down; //(byte) Math.round(Math.random() * DIRECTION_DOWN);
   }
   
   public void moveInRandomDirection() {
     move(randomDirection());
   }
 
-  public byte getDirection() {
+  public Direction getDirection() {
     return this.direction;
   }
 
@@ -170,13 +166,13 @@ public class TileBasedMovement extends Component implements TimerInterface {
     Vector2f direction  = (new Vector2f(entity.getTileX() - this.owner.getTileX(), entity.getTileY() - this.owner.getTileY())).normalise();
     //Log.info(direction.toString());
     if (direction.getX() > 0.0f) {
-      this.direction = DIRECTION_RIGHT;
+      this.direction = Direction.Right;
     } else if (direction.getX() < 0.0f) {
-      this.direction = DIRECTION_LEFT;
+      this.direction = Direction.Left;
     } else if (direction.getY() < 0.0f) {
-      this.direction = DIRECTION_TOP;
+      this.direction = Direction.Top;
     } else {
-      this.direction = DIRECTION_DOWN;
+      this.direction = Direction.Down;
     }
   }
 }

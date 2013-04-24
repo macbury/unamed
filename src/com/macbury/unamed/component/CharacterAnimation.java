@@ -83,15 +83,15 @@ public class CharacterAnimation extends RenderComponent implements TimerInterfac
     Animation targetAnimation = null;
     
     switch (tileBasedMovement.direction) {
-      case TileBasedMovement.DIRECTION_LEFT:
+      case Left:
         targetAnimation = walkingLeft;
       break;
       
-      case TileBasedMovement.DIRECTION_TOP:
+      case Top:
         targetAnimation = walkingTop;
       break;
       
-      case TileBasedMovement.DIRECTION_RIGHT:
+      case Right:
         targetAnimation = walkingRight;
       break;
 
