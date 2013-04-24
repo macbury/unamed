@@ -7,7 +7,7 @@ import com.macbury.unamed.entity.Entity;
 import com.macbury.unamed.level.Level;
 
 public abstract class AI {
-  private static final int MAX_RAYCAST = 20;
+  private static final byte LINE_OF_SIGHT_LENGTH = 12;
   private Entity owner;
   
   public AI() {}
@@ -26,7 +26,7 @@ public abstract class AI {
   
   
   public boolean canISee(Entity e) {
-    RaycastHitResult hit = Level.shared().raytrace(this.owner, e.getTileX(), e.getTileY());
+    RaycastHitResult hit = Level.shared().raytrace(this.owner, e.getTileX(), e.getTileY(), LINE_OF_SIGHT_LENGTH);
 
     return (hit != null && e.equals(hit.getEntity()));
   }

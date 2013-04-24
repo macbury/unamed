@@ -671,7 +671,7 @@ public class Level implements TimerInterface {
     Log.debug("Refreshing order of entities");
   }
 
-  public RaycastHitResult raytrace(Entity emitter, int x1, int y1) {
+  public RaycastHitResult raytrace(Entity emitter, int x1, int y1, byte length) {
     int x0 = emitter.getTileX();
     int y0 = emitter.getTileY();
     int dx = Math.abs(x1 - x0);
@@ -722,6 +722,12 @@ public class Level implements TimerInterface {
       } else {
         y += y_inc;
         error += dx;
+      }
+      
+      if (length > 0) {
+        length--;
+      } else {
+        break;
       }
     }
     

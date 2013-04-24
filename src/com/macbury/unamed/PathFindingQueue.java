@@ -9,6 +9,7 @@ import org.newdawn.slick.util.pathfinding.Path;
 import org.newdawn.slick.util.pathfinding.PathFinder;
 import org.newdawn.slick.util.pathfinding.PathFindingContext;
 import org.newdawn.slick.util.pathfinding.TileBasedMap;
+import org.newdawn.slick.util.pathfinding.heuristics.ManhattanHeuristic;
 
 import com.macbury.unamed.entity.Entity;
 import com.macbury.unamed.level.Level;
@@ -38,7 +39,7 @@ public class PathFindingQueue implements TileBasedMap, Runnable {
   
   public PathFinder getPathFinder() {
     if (this.pathFinder == null) {
-      this.pathFinder = new AStarPathFinder(this, MAX_PATH_LENGTH, false);
+      this.pathFinder = new AStarPathFinder(this, MAX_PATH_LENGTH, false, new ManhattanHeuristic(1));
     }
     return this.pathFinder;
   }
