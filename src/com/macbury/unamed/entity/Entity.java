@@ -47,6 +47,8 @@ public abstract class Entity implements Comparable<Entity> {
 
   Integer tileX = null;
   Integer tileY = null;
+
+  private Position position;
   
   public Entity() {
     this.id = Entity.gid++;
@@ -184,11 +186,13 @@ public abstract class Entity implements Comparable<Entity> {
   
   public void setX(float x) {
     this.tileX = null;
+    this.getPosition().setX(x);
     this.rectangle.setX(x);
   }
   
   public void setY(float y) {
     this.tileY = null;
+    this.getPosition().setX(y);
     this.rectangle.setY(y);
   }
   
@@ -198,6 +202,7 @@ public abstract class Entity implements Comparable<Entity> {
   
   public void setCenterY(float centerY) {
     this.rectangle.setCenterY(centerY);
+    setY(this.rectangle.getY());
   }
   
   public void setCenterTileX(float centerX) {
@@ -336,7 +341,10 @@ public abstract class Entity implements Comparable<Entity> {
   }
 
   public Position getPosition() {
-    return new Position(this.getX(), this.getY());
+    if (this.position == null) {
+      this.position = new Position(this.getX(), this.getY());
+    }
+    return this.position;
   }
   
   public Vector2f getCenteredPosition() {
