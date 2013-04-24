@@ -25,6 +25,7 @@ import com.macbury.unamed.level.Block;
 import com.macbury.unamed.level.Cobblestone;
 import com.macbury.unamed.level.Dirt;
 import com.macbury.unamed.level.HarvestableBlock;
+import com.macbury.unamed.level.Level;
 import com.macbury.unamed.level.LiquidBlock;
 import com.macbury.unamed.level.PassableBlock;
 import com.macbury.unamed.level.Rock;
@@ -215,7 +216,8 @@ public class Player extends Character {
         InventoryItem item = usableEntity.harvest(currentHarvestPower());
         if (item == null) {
           SoundManager.shared().playDigForBlock(entityInFront.getBlock());
-          DigEffectEntity punchEntity = new DigEffectEntity(InventoryManager.shared().getCurrentHotBarItem());
+          DigEffectEntity punchEntity = (DigEffectEntity) Level.shared().getUsedEntity(DigEffectEntity.class);
+          punchEntity.setAnimationByItem(InventoryManager.shared().getCurrentHotBarItem());
           this.getLevel().addEntity(punchEntity);
           punchEntity.setTilePosition(entityInFront.getTileX(), entityInFront.getTileY());
         } else {

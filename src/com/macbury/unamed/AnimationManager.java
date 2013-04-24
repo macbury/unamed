@@ -31,6 +31,6 @@ public class AnimationManager {
         swordSpriteSheet.getSprite(3, 0), 
         swordSpriteSheet.getSprite(4, 0), 
         swordSpriteSheet.getSprite(0, 1)
-    }, 100);
+    }, 50);
   }
 }

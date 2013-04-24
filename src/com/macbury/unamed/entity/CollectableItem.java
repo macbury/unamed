@@ -18,9 +18,10 @@ import com.macbury.unamed.inventory.InventoryItem;
 import com.macbury.unamed.inventory.InventoryManager;
 import com.macbury.unamed.level.BlockResources;
 
-public class CollectableItem extends Entity implements TimerInterface {
+public class CollectableItem extends ReusableEntity implements TimerInterface {
   public final static short LIFE_TIME = 15000;
   InventoryItem itemToCollect;
+
   int lifeTime = 0;
   private CollectableItemSprite imageSprite;
   private Timer hideTimer;
@@ -34,32 +35,16 @@ public class CollectableItem extends Entity implements TimerInterface {
   private static final float COLLECTING_SPEED = 0.01f;
   private static final byte STATE_LOOT = 2;
   
-  public CollectableItem( InventoryItem item ) throws SlickException {
+  public CollectableItem() throws SlickException {
     super();
     
     this.setWidth(Core.TILE_SIZE / 2);
     this.setHeight(Core.TILE_SIZE / 2);
     this.collidable    = true;
-    this.itemToCollect = item;
-    
-    this.state = STATE_IDLE;
     
     this.visibleUnderTheFog = true;
     
-    Image image = null;
-    if (BlockItem.class.isInstance(item)) {
-      BlockItem blockItem = (BlockItem) item;
-      image = BlockResources.shared().imageForBlockClass(blockItem.blockType);
-    } else {
-      image = InventoryManager.shared().getImageForInventoryItem(item);
-    }
-    
-    this.imageSprite    = new CollectableItemSprite(image);
-    addComponent(imageSprite);
-    
-    this.hideTimer = new Timer(LIFE_TIME, this);
-    this.hideTimer.setIsPausableEvent(true);
-    this.hideTimer.start();
+    this.state = STATE_IDLE;
   }
 
   @Override
@@ -94,9 +79,8 @@ public class CollectableItem extends Entity implements TimerInterface {
 
   @Override
   public void onCollideWith(Entity entity) throws SlickException {
+    Log.info("Collided with: " + entity.toString() + " state: "+STATE_IDLE);
     if (this.state == STATE_IDLE) {
-      Log.info("Collided with: " + entity.toString());
- 
       if (Player.class.isInstance(entity)) {
         this.targetPlayer = entity;
         loot();
@@ -120,5 +104,44 @@ public class CollectableItem extends Entity implements TimerInterface {
   public void lootBy(Player player) throws SlickException {
     this.targetPlayer = player;
     loot();
+  }
+
+  @Override
+  public void onReuse() {
+    this.totalMoveTime = 0;
+    this.targetPlayer = null;
+    if (this.hideTimer != null) {
+      this.hideTimer.restart();
+    }
+    this.state = STATE_IDLE;
+    this.collidable = true;
+  }
+  
+  public InventoryItem getItemToCollect() {
+    return itemToCollect;
+  }
+
+  public void setItemToCollect(InventoryItem item) throws SlickException {
+    this.itemToCollect = item;
+    
+    Image image = null;
+    if (BlockItem.class.isInstance(item)) {
+      BlockItem blockItem = (BlockItem) item;
+      image = BlockResources.shared().imageForBlockClass(blockItem.blockType);
+    } else {
+      image = InventoryManager.shared().getImageForInventoryItem(item);
+    }
+    
+    if (this.imageSprite == null) {
+      this.imageSprite    = new CollectableItemSprite(image);
+      addComponent(imageSprite);
+    } else {
+      this.imageSprite.setImage(image);
+    }
+    
+    
+    this.hideTimer = new Timer(LIFE_TIME, this);
+    this.hideTimer.setIsPausableEvent(true);
+    this.hideTimer.start();
   }
 }

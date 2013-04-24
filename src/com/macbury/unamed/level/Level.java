@@ -31,6 +31,7 @@ import com.macbury.unamed.TimerInterface;
 import com.macbury.unamed.entity.CollectableItem;
 import com.macbury.unamed.entity.Entity;
 import com.macbury.unamed.entity.Player;
+import com.macbury.unamed.entity.ReusableEntity;
 import com.macbury.unamed.inventory.InventoryItem;
 
 public class Level implements TimerInterface {
@@ -40,6 +41,7 @@ public class Level implements TimerInterface {
   private static final Color VISITED_BLOCK_COLOR  = new Color(0,0,0, Block.VISITED_ALPHA);
   private static final Color WALL_SHADE_COLOR     = new Color(0,0,0,180);
   private static final short REFRESH_ENTITY_TIMER = 400;
+  private static final int MAX_REUSABLE_ENTITY_CACHE_SIZE = 100;
 
   private ArrayList<Room> rooms;
   private Block[][] world;
@@ -63,6 +65,7 @@ public class Level implements TimerInterface {
   private ArrayList<Entity> entities;
   private Stack<Block> visibleBlocks;
   private Stack<Entity> collidableEntities;
+  private ArrayList<Entity> reusableEntities;
 
   public Stack<RaycastHitResult> raycastDebugList;
   
@@ -85,8 +88,10 @@ public class Level implements TimerInterface {
     this.refreshEntityTimer.stop();
     this.viewPort          = null;
     this.updateArea        = null;
+    this.reusableEntities  = null;
     shared                 = null;
     PathFindingQueue.exit();
+    System.gc();
   }
   
   public Level() throws SlickException {
@@ -99,6 +104,7 @@ public class Level implements TimerInterface {
     this.lightColorMap      = new HashMap<Integer, Color>();
     this.refreshEntityTimer = new Timer(REFRESH_ENTITY_TIMER, this);
     this.raycastDebugList   = new Stack<RaycastHitResult>();
+    this.reusableEntities   = new ArrayList<Entity>();
   }
 
   
@@ -647,7 +653,8 @@ public class Level implements TimerInterface {
     if (block == null || !block.isPassable()) {
       throw new SlickException("Cannot spawn item on not passable block on position: " + tileX + "x" + tileY);
     } else {
-      CollectableItem spawnItem = new CollectableItem(item);
+      CollectableItem spawnItem = (CollectableItem) getUsedEntity(CollectableItem.class);
+      spawnItem.setItemToCollect(item);
       
       this.addEntity(spawnItem);
       spawnItem.setCenterTileX(tileX);
@@ -719,5 +726,35 @@ public class Level implements TimerInterface {
     }
     
     return null;
+  }
+
+  public void pushEntityForReuse(ReusableEntity reusableEntity) {
+    if (this.reusableEntities.size() > MAX_REUSABLE_ENTITY_CACHE_SIZE) {
+      this.reusableEntities.remove(0);
+    }
+    this.reusableEntities.add(reusableEntity);
+  }
+  
+  public ReusableEntity getUsedEntity(Class<? extends ReusableEntity> klass) {
+    for (int i = 0; i < this.reusableEntities.size(); i++) {
+      Entity entity = this.reusableEntities.get(i);
+      
+      if (klass.isInstance(entity)) {
+        ReusableEntity re = (ReusableEntity) entity;
+        re.onReuse();
+        this.reusableEntities.remove(i);
+        Log.debug("Reused: " + re.getClass().getSimpleName());
+        return re;
+      }
+    }
+    
+    try {
+      Log.debug("Initialized new: " + klass.getSimpleName());
+      return klass.newInstance();
+    } catch (InstantiationException | IllegalAccessException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+      return null;
+    }
   }
 }

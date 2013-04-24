@@ -11,6 +11,7 @@ public class CollectableItemSprite extends RenderComponent {
   
   float angle = 0.0f;
   final static float SPEED_ROTATION = 0.1f;
+  
   public CollectableItemSprite(Image image) throws SlickException {
     this.image = image;
   }
@@ -32,4 +33,13 @@ public class CollectableItemSprite extends RenderComponent {
       image.setRotation(oldRotation);
     }
   }
+  
+  public Image getImage() {
+    return image;
+  }
+
+  public void setImage(Image image) {
+    this.image = image;
+  }
+
 }

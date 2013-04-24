@@ -201,11 +201,11 @@ public abstract class Entity implements Comparable<Entity> {
   }
   
   public void setCenterTileX(float centerX) {
-    this.rectangle.setX(Core.TILE_SIZE * centerX + Core.TILE_SIZE / 4);
+    this.setX(Core.TILE_SIZE * centerX + Core.TILE_SIZE / 4);
   }
 
   public void setCenterTileY(float centerY) {
-    this.rectangle.setY(Core.TILE_SIZE * centerY + Core.TILE_SIZE / 4);
+    this.setY(Core.TILE_SIZE * centerY + Core.TILE_SIZE / 4);
   }
   
   public Level getLevel() {
@@ -299,8 +299,15 @@ public abstract class Entity implements Comparable<Entity> {
       this.getLight().cleanLightedBlocks();
     }
   }
-
+  
+  public void resetValues() {
+    tileX = null;
+    tileY = null;
+    futurePosition = null;
+  }
+  
   public void destroy() {
+    resetValues();
     this.getLevel().removeEntity(this);
   }
   

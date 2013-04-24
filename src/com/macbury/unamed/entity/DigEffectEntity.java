@@ -11,22 +11,27 @@ import com.macbury.unamed.component.AnimatedSprite;
 import com.macbury.unamed.inventory.InventoryItem;
 import com.macbury.unamed.inventory.PickItem;
 
-public class DigEffectEntity extends Entity implements TimerInterface {
+public class DigEffectEntity extends ReusableEntity implements TimerInterface {
   public final static int ENTITY_ZINDEX = Character.ENTITY_ZINDEX;
   private Timer timer;
   
-  public DigEffectEntity(InventoryItem item) throws SlickException {
+  public DigEffectEntity() throws SlickException {
     super();
     this.z = ENTITY_ZINDEX;
     this.timer = new Timer((short)Player.MAX_TAKING_TIME, this);
     
-    if (PickItem.class.isInstance(item)) {
-      addComponent(new AnimatedSprite(AnimationManager.shared().swordAnimation));
-    } else {
-      addComponent(new AnimatedSprite(AnimationManager.shared().punchAnimation));
-    }
+    addComponent(new AnimatedSprite(AnimationManager.shared().punchAnimation));
   }
 
+  public void setAnimationByItem(InventoryItem item) throws SlickException {
+    AnimatedSprite sprite = (AnimatedSprite) getComponent(AnimatedSprite.class);
+    if (PickItem.class.isInstance(item)) {
+      sprite.setCurrentAnimation(AnimationManager.shared().swordAnimation);
+    } else {
+      sprite.setCurrentAnimation(AnimationManager.shared().punchAnimation);
+    }
+  }
+  
   @Override
   public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
     super.update(gc, sb, delta);
@@ -36,5 +41,10 @@ public class DigEffectEntity extends Entity implements TimerInterface {
   @Override
   public void onTimerFire(Timer timer) {
     this.destroy();
+  }
+
+  @Override
+  public void onReuse() {
+    this.timer.restart();
   }
 }
