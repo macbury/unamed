@@ -1,5 +1,6 @@
 package com.macbury.unamed.intefrace;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.newdawn.slick.Color;
@@ -14,6 +15,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.Log;
 
 import com.macbury.unamed.Core;
+import com.macbury.unamed.FpsGraph;
 import com.macbury.unamed.ImagesManager;
 import com.macbury.unamed.component.HealthComponent;
 import com.macbury.unamed.entity.Player;
@@ -36,6 +38,7 @@ public class InGameInterface extends Interface{
   private Image selectedCellImage;
   private SpriteSheet hotBarSpriteSheet;
   private HashMap<String, Image> hotBarIconsCache;
+  private FpsGraph fpsMap;
   
   public InGameInterface() throws SlickException {
     this.font  = Core.instance().getFont();
@@ -46,18 +49,25 @@ public class InGameInterface extends Interface{
     this.selectedCellImage = spriteSheet.getSprite(1, 0);
     
     this.hotBarSpriteSheet = spriteSheet;
-    
+    if (Core.DEBUG) {
+      this.fpsMap            = new FpsGraph();
+    }
   }
   
   public void render(GameContainer gc, StateBasedGame sb, Graphics gr) throws SlickException {
     Player player          = Level.shared().getPlayer();
     HealthComponent health = player.getHealth();
-    gr.setColor(Color.white);
     
-    if (Core.DEBUG) {
-      font.drawString(10, gc.getHeight() - 30, "FPS: "+ gc.getFPS());
+    
+    //if (Core.DEBUG) {
+    //  font.drawString(10, gc.getHeight() - 30, "FPS: "+ gc.getFPS());
+    //}
+    
+    if (this.fpsMap != null) {
+      this.fpsMap.render(gr);
     }
     
+    gr.setColor(Color.white);
     int cellCount = InventoryManager.MAX_HOTBAR_INVENTORY_INDEX - InventoryManager.MIN_HOTBAR_INVENTORY_INDEX;
     
     gr.pushTransform();
@@ -117,7 +127,9 @@ public class InGameInterface extends Interface{
 
   @Override
   public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
-    
+    if (this.fpsMap != null) {
+      this.fpsMap.update(delta);
+    }
   }
 
   @Override
