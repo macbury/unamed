@@ -8,6 +8,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.Log;
 
 import com.macbury.unamed.Core;
+import com.macbury.unamed.Position;
 import com.macbury.unamed.SoundManager;
 import com.macbury.unamed.Timer;
 import com.macbury.unamed.TimerInterface;
@@ -29,7 +30,7 @@ public class CollectableItem extends ReusableEntity implements TimerInterface {
   
   private float totalMoveTime = 0.0f;
   private Entity targetPlayer;
-  private Vector2f basePosition;
+  private Position basePosition;
   private final static byte STATE_IDLE = 0;
   private static final byte STATE_COLLECTING  = 1;
   private static final float COLLECTING_SPEED = 0.01f;
@@ -59,8 +60,8 @@ public class CollectableItem extends ReusableEntity implements TimerInterface {
       
       case STATE_COLLECTING:
         totalMoveTime += COLLECTING_SPEED * (float)delta;
-        float x = Math.round(Util.lerp(basePosition.x, targetPlayer.getRect().getCenterX(), totalMoveTime));
-        float y = Math.round(Util.lerp(basePosition.y, targetPlayer.getRect().getCenterY(), totalMoveTime));
+        float x = Math.round(Util.lerp(basePosition.getX(), targetPlayer.getRect().getCenterX(), totalMoveTime));
+        float y = Math.round(Util.lerp(basePosition.getY(), targetPlayer.getRect().getCenterY(), totalMoveTime));
         this.setCenterX(x);
         this.setCenterY(y);
         

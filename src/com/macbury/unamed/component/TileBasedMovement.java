@@ -134,13 +134,9 @@ public class TileBasedMovement extends Component implements TimerInterface {
   public void lookIn(Direction inDirection) {
     this.direction      = inDirection;
   }
-  
-  public Direction randomDirection() {
-    return Direction.Down; //(byte) Math.round(Math.random() * DIRECTION_DOWN);
-  }
-  
+
   public void moveInRandomDirection() {
-    move(randomDirection());
+    move(Direction.random());
   }
 
   public Direction getDirection() {

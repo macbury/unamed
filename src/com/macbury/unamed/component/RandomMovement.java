@@ -33,7 +33,7 @@ public class RandomMovement extends Component implements TimerInterface {
   public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
     moveTimer.update(delta);
     if (currentDirection == Direction.None) {
-      currentDirection = tileMovement.randomDirection();
+      currentDirection = Direction.random();
       tileMovement.lookIn(currentDirection);
     }
     
@@ -41,7 +41,7 @@ public class RandomMovement extends Component implements TimerInterface {
       if (this.owner.getLevel().canMoveTo(tileMovement.computeTargetRectForDirection(currentDirection), this.owner)) {
         tileMovement.move(currentDirection);
       } else {
-        currentDirection = tileMovement.randomDirection();
+        currentDirection = Direction.random();
       }
     }
   }
@@ -55,7 +55,7 @@ public class RandomMovement extends Component implements TimerInterface {
   @Override
   public void onTimerFire(Timer timer) {
     if (!tileMovement.isMoving()) {
-      currentDirection = tileMovement.randomDirection();
+      currentDirection = Direction.random();
     }
   }
 }

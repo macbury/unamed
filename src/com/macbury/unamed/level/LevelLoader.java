@@ -169,6 +169,7 @@ public class LevelLoader implements Runnable{
     }
     
     level.setupWorld();
+    System.gc();
   }
   
   public void save() throws SlickException {

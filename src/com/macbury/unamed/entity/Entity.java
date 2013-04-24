@@ -49,6 +49,8 @@ public abstract class Entity implements Comparable<Entity> {
   Integer tileY = null;
 
   private Position position;
+
+  private Rectangle futureRect;
   
   public Entity() {
     this.id = Entity.gid++;
@@ -232,11 +234,17 @@ public abstract class Entity implements Comparable<Entity> {
   
   public Rectangle getFutureRect() {
     Position pos = getFuturePosition();
-    
+
     if (pos == null) {
       return null;
     } else {
-      return new Rectangle(pos.getX(), pos.getY(), this.getWidth(), this.getHeight());
+      if (this.futureRect == null) {
+        this.futureRect = new Rectangle(pos.getX(), pos.getY(), this.getWidth(), this.getHeight());
+      } else {
+        this.futureRect.setLocation(pos.getX(), pos.getY());
+      }
+      
+      return this.futureRect;
     }
   }
 
@@ -347,8 +355,8 @@ public abstract class Entity implements Comparable<Entity> {
     return this.position;
   }
   
-  public Vector2f getCenteredPosition() {
-    return new Vector2f(this.rectangle.getCenterX(), this.rectangle.getCenterY());
+  public Position getCenteredPosition() {
+    return new Position(this.rectangle.getCenterX(), this.rectangle.getCenterY());
   }
 
   public void writeTo(Kryo kryo, Output output) {
