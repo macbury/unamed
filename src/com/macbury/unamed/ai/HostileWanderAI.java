@@ -5,6 +5,7 @@ import org.newdawn.slick.util.Log;
 
 import com.macbury.unamed.Timer;
 import com.macbury.unamed.TimerInterface;
+import com.macbury.unamed.level.Level;
 
 public class HostileWanderAI extends WanderAI implements TimerInterface {
   private static final short LOOK_LOOP_TIME = 500;
@@ -35,6 +36,11 @@ public class HostileWanderAI extends WanderAI implements TimerInterface {
 
   @Override
   public void onTimerFire(Timer timer) {
-    this.randomMovement.enabled = !canISeePlayer();
+    if (canISeePlayer()) {
+      this.randomMovement.enabled = false;
+      this.tileMovement.lookAt(Level.shared().getPlayer());
+    } else {
+      this.randomMovement.enabled = true;
+    }
   }
 }
