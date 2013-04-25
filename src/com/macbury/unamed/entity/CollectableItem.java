@@ -121,7 +121,7 @@ public class CollectableItem extends ReusableEntity implements TimerInterface {
   public InventoryItem getItemToCollect() {
     return itemToCollect;
   }
-
+  // TODO: Fix saving collectable item
   public void setItemToCollect(InventoryItem item) throws SlickException {
     this.itemToCollect = item;
     

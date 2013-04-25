@@ -11,9 +11,12 @@ import com.macbury.unamed.component.Light;
 import com.macbury.unamed.component.Sprite;
 import com.macbury.unamed.intefrace.InterfaceManager;
 import com.macbury.unamed.inventory.InventoryItem;
+import com.macbury.unamed.level.Block;
 import com.macbury.unamed.level.HarvestableBlock;
+import com.macbury.unamed.util.RaytraceCallback;
+import com.macbury.unamed.util.RaytraceUtil;
 
-public class Dynamite extends BlockEntity {
+public class Dynamite extends BlockEntity implements RaytraceCallback {
   
   private static final int IGNITE_POWER = 3;
   private short timer = 0;
@@ -21,9 +24,12 @@ public class Dynamite extends BlockEntity {
   private static final byte STATE_COUNTDOWN = 0;
   private static final byte STATE_EXPLOSION = 1;
   private static final short TIME_AFTER_EXPLOSION = 500;
+  private static final int DYNAMITE_POWER = 30;
   
   private byte state = STATE_COUNTDOWN;
   private Sprite sprite;
+  private RaytraceUtil raytrace;
+  private int shockWavePower;
   
   public Dynamite() throws SlickException {
     super();
@@ -37,6 +43,7 @@ public class Dynamite extends BlockEntity {
     this.sprite = new Sprite(ImagesManager.shared().iconDynamite);
     addComponent(sprite);
     this.timer = TIME_TO_EXPLOSION;
+    this.raytrace = new RaytraceUtil(this);
   }
   
   @Override
@@ -82,18 +89,43 @@ public class Dynamite extends BlockEntity {
     }
   }
   
-  public void applyDamage(int x, int y, int power) throws SlickException {
-    this.getLevel().digSidewalk(x, y, true, true);
-    Entity attackedEntity = this.getLevel().getEntityForTilePosition(x, y);
-    if (attackedEntity != null) {
-      Damage damage = new Damage(power);
-      if (BlockEntity.class.isInstance(attackedEntity)) {
-        BlockEntity entity = (BlockEntity)attackedEntity;
-        InventoryItem item = entity.harvest(power);
-      } else if (attackedEntity.haveHealth()) {
-        attackedEntity.getHealth().applyDamage(damage);
+  public void applyDamage(int x, int y, int distance) throws SlickException {
+    Block block = this.getLevel().getBlockForPosition(x, y);
+    
+    if (block != null && block.isHarvestable()) {
+      int hardness = block.asHarvestableBlock().getHardness();
+      
+      if (hardness > this.shockWavePower) {
+        this.shockWavePower = 0;
+      } else {
+        this.shockWavePower -= hardness;
+        this.getLevel().digSidewalk(x, y, true, true);
+      }
+    } else {
+      Entity attackedEntity = this.getLevel().getEntityForTilePosition(x, y);
+      if (attackedEntity != null) {
+        Damage damage = new Damage(shockWavePower);
+        if (BlockEntity.class.isInstance(attackedEntity)) {
+          BlockEntity entity = (BlockEntity)attackedEntity;
+          shockWavePower -= entity.getHardness();
+          entity.harvest(shockWavePower);
+        } else if (attackedEntity.haveHealth()) {
+          attackedEntity.getHealth().applyDamage(damage);
+        }
       }
     }
+  }
+  
+  @Override
+  public void onRayVisits(int x, int y, int distance) throws SlickException {
+    if (this.shockWavePower > 0) {
+      applyDamage(x, y, distance);
+    }
+  }
+  
+  public void shockWave(int x0, int y0, int x1, int y1) throws SlickException {
+    this.shockWavePower = DYNAMITE_POWER;
+    raytrace.raytrace(x0, y0, x1, y1);
   }
   
   public void digCircle(int x0, int y0, int radius) throws SlickException {
@@ -101,17 +133,17 @@ public class Dynamite extends BlockEntity {
     int xChange = 1 - (radius << 1);
     int yChange = 0;
     int radiusError = 0;
-    int power = 80;
     while(x >= y)  {
-      applyDamage(x + x0, y + y0, power);
-      applyDamage(y + x0, x + y0, power);
-      applyDamage(-x + x0, y + y0, power);
-      applyDamage(-y + x0, x + y0, power);
-      applyDamage(-y + x0, x + y0, power);
-      applyDamage(-x + x0, -y + y0, power);
-      applyDamage(-y + x0, -x + y0, power);
-      applyDamage(x + x0, -y + y0, power);
-      applyDamage(y + x0, -x + y0, power);
+      
+      shockWave(x0, y0, x + x0, y + y0);
+      shockWave(x0, y0, y + x0, x + y0);
+      shockWave(x0, y0, -x + x0, y + y0);
+      shockWave(x0, y0, -y + x0, x + y0);
+      shockWave(x0, y0, -y + x0, x + y0);
+      shockWave(x0, y0, -x + x0, -y + y0);
+      shockWave(x0, y0, -y + x0, -x + y0);
+      shockWave(x0, y0, x + x0, -y + y0);
+      shockWave(x0, y0, y + x0, -x + y0);
    
       y++;
       radiusError += yChange;
@@ -143,4 +175,5 @@ public class Dynamite extends BlockEntity {
     return null;
   }
 
+  
 }

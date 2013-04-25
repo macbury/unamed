@@ -104,16 +104,24 @@ public class Light extends Component {
     dy *= 2;
     
     Block block            = null;
-
+    boolean hittedSolid    = false;
     for (; n > 0; --n) {
-      int distance  = Math.max(0, en - n);
-      float lightPower = Math.min(Math.round((float)(distance * distance) / (float)(en * en) * 255), Block.MIN_LIGHT_POWER);
       block = this.owner.getLevel().getBlockForPosition(x, y);
       
       if (block != null) {
-        lightBlock(block, (int) lightPower);
+        int distance  = Math.max(0, en - n);
+        float lightPower = Math.min(Math.round((float)(distance * distance) / (float)(en * en) * 255), Block.MIN_LIGHT_POWER);
+        
         if (block.solid) {
+          lightBlock(block, (int) lightPower);
+          if (hittedSolid) {
+            break;
+          }
+          hittedSolid = true;
+        } else if (hittedSolid) {
           break;
+        } else {
+          lightBlock(block, (int) lightPower);
         }
       }
         
