@@ -8,7 +8,7 @@ import com.macbury.unamed.TimerInterface;
 import com.macbury.unamed.level.Level;
 
 public class HostileWanderAI extends WanderAI implements TimerInterface {
-  private static final short LOOK_LOOP_TIME = 500;
+  private static final short LOOK_LOOP_TIME = 100;
   Timer lookIfICanSeePlayerTimer;
   
   public HostileWanderAI() {
@@ -20,6 +20,16 @@ public class HostileWanderAI extends WanderAI implements TimerInterface {
   public void update(int delta) throws SlickException {
     lookIfICanSeePlayerTimer.update(delta);
     super.update(delta);
+    
+    if (this.getTarget() != null) {
+      this.randomMovement.enabled = false;
+      if (!this.tileMovement.isMoving()) {
+        this.tileMovement.lookAt(Level.shared().getPlayer());
+        this.tileMovement.moveForward();
+      }
+    } else {
+      this.randomMovement.enabled = true;
+    }
   }
 
   @Override
@@ -37,10 +47,9 @@ public class HostileWanderAI extends WanderAI implements TimerInterface {
   @Override
   public void onTimerFire(Timer timer) {
     if (canISeePlayer()) {
-      this.randomMovement.enabled = false;
-      this.tileMovement.lookAt(Level.shared().getPlayer());
+      setTarget(Level.shared().getPlayer());
     } else {
-      this.randomMovement.enabled = true;
+      setTarget(null);
     }
   }
 }

@@ -9,7 +9,8 @@ import com.macbury.unamed.level.Level;
 public abstract class AI {
   private static final byte LINE_OF_SIGHT_LENGTH = 12;
   private Entity owner;
-  
+  private Entity target;
+
   public AI() {}
   
   public abstract void update(int delta) throws SlickException;
@@ -33,5 +34,13 @@ public abstract class AI {
   
   public boolean canISeePlayer() {
     return canISee(Level.shared().getPlayer());
+  }
+  
+  public Entity getTarget() {
+    return target;
+  }
+
+  public void setTarget(Entity target) {
+    this.target = target;
   }
 }

@@ -171,4 +171,13 @@ public class TileBasedMovement extends Component implements TimerInterface {
       this.direction = Direction.Down;
     }
   }
+
+  public boolean moveForward() {
+    if (this.owner.getLevel().canMoveTo(this.computeTargetRectForDirection(this.direction), this.owner)) {
+      this.move(this.direction);
+      return true;
+    } else {
+      return false;
+    }
+  }
 }
