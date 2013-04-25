@@ -7,6 +7,9 @@ import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.Log;
 
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
 import com.macbury.unamed.Core;
 import com.macbury.unamed.Position;
 import com.macbury.unamed.SoundManager;
@@ -145,4 +148,18 @@ public class CollectableItem extends ReusableEntity implements TimerInterface {
     this.hideTimer.setIsPausableEvent(true);
     this.hideTimer.start();
   }
+
+  @Override
+  public void writeTo(Kryo kryo, Output output) {
+    super.writeTo(kryo, output);
+    itemToCollect.writeTo(kryo, output);
+  }
+
+  @Override
+  public void loadFrom(Kryo kryo, Input input) throws SlickException {
+    super.loadFrom(kryo, input);
+    setItemToCollect(InventoryItem.loadFrom(kryo, input));
+  }
+  
+  
 }

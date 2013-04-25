@@ -28,20 +28,7 @@ public class InventorySerializer extends Serializer<InventoryManager> {
     int currentHotBarIndex = input.readInt();
     
     while(itemCount > 0) {
-      Class<? extends InventoryItem> itemKlass = kryo.readClass(input).getType();
-      InventoryItem item = null;
-      try {
-        item = itemKlass.newInstance();
-      } catch (InstantiationException | IllegalAccessException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-      item.setItemCount(input.readInt());
-      
-      if (BlockItem.class.isInstance(item)) {
-        BlockItem bi = (BlockItem) item;
-        bi.setBlockType(kryo.readClass(input).getType());
-      }
+      InventoryItem item = InventoryItem.loadFrom(kryo, input);
       
       manager.add(item);
       itemCount--;
@@ -58,12 +45,7 @@ public class InventorySerializer extends Serializer<InventoryManager> {
     out.writeInt(inventory.size());
     out.writeInt(inventory.getCurrentHotBarIndex());
     for (InventoryItem inventoryItem : inventory) {
-      kryo.writeClass(out, inventoryItem.getClass());
-      out.writeInt(inventoryItem.getQuantity());
-      if (BlockItem.class.isInstance(inventoryItem)) {
-        BlockItem bi = (BlockItem) inventoryItem;
-        kryo.writeClass(out, bi.getBlockType());
-      }
+      inventoryItem.writeTo(kryo, out);
     }
   }
 

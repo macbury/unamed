@@ -3,6 +3,9 @@ package com.macbury.unamed.inventory;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
 
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
 import com.macbury.unamed.entity.CollectableItem;
 import com.macbury.unamed.entity.Entity;
 import com.macbury.unamed.entity.Player;
@@ -60,5 +63,30 @@ public abstract class InventoryItem {
     return elementCount;
   }
 
+  public void writeTo(Kryo kryo, Output output) {
+    kryo.writeClass(output, this.getClass());
+    output.writeInt(this.elementCount);
+    if (BlockItem.class.isInstance(this)) {
+      BlockItem bi = (BlockItem) this;
+      kryo.writeClass(output, bi.getBlockType());
+    }
+  }
 
+  public static InventoryItem loadFrom(Kryo kryo, Input input) {
+    Class<? extends InventoryItem> itemKlass = kryo.readClass(input).getType();
+    InventoryItem item = null;
+    try {
+      item = itemKlass.newInstance();
+    } catch (InstantiationException | IllegalAccessException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    item.setItemCount(input.readInt());
+    
+    if (BlockItem.class.isInstance(item)) {
+      BlockItem bi = (BlockItem) item;
+      bi.setBlockType(kryo.readClass(input).getType());
+    }
+    return item;
+  }
 }

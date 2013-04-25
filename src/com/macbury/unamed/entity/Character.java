@@ -87,7 +87,7 @@ public abstract class Character extends Entity {
   }
 
   @Override
-  public void loadFrom(Kryo kryo, Input input) {
+  public void loadFrom(Kryo kryo, Input input) throws SlickException {
     super.loadFrom(kryo, input);
     
     this.getHealth().setMaxHelath(input.readShort());

@@ -367,7 +367,7 @@ public abstract class Entity implements Comparable<Entity> {
     Log.debug("Writing entity: " + this.getClass().getSimpleName());
   }
   
-  public void loadFrom(Kryo kryo, Input input) {
+  public void loadFrom(Kryo kryo, Input input) throws SlickException {
     Log.debug("Loading entity: " + this.getClass().getSimpleName());
     this.setId(input.readInt());
     this.setX(input.readFloat());
