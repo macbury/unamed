@@ -3,6 +3,7 @@ package com.macbury.unamed;
 import java.util.Iterator;
 import java.util.Stack;
 
+import org.newdawn.slick.SlickException;
 import org.newdawn.slick.util.Log;
 import org.newdawn.slick.util.pathfinding.AStarPathFinder;
 import org.newdawn.slick.util.pathfinding.Path;
@@ -116,7 +117,7 @@ public class PathFindingQueue implements TileBasedMap, Runnable {
     }
   }
   
-  private void computeStack() {
+  private void computeStack() throws SlickException {
     if (this.queue.size() > 0) {
       Log.debug("Paths to find: "+ this.queue.size());
     }

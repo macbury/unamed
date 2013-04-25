@@ -10,6 +10,9 @@ public abstract class AI {
   private static final byte LINE_OF_SIGHT_LENGTH = 12;
   private Entity owner;
   private Entity target;
+  
+  private State state = State.IDLE;
+
 
   public AI() {}
   
@@ -42,4 +45,18 @@ public abstract class AI {
   public void setTarget(Entity target) {
     this.target = target;
   }
+  
+  
+  public State getState() {
+    return state;
+  }
+
+  public void setState(State s) throws SlickException {
+    if (this.state != s) {
+      onStateTransition(this.state, s);
+      this.state = s;
+    }
+  }
+
+  abstract protected void onStateTransition(State old, State next) throws SlickException;
 }

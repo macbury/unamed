@@ -19,6 +19,7 @@ public class AnimatedSprite extends RenderComponent {
 
   public void setCurrentAnimation(Animation currentAnimation) {
     this.currentAnimation = currentAnimation;
+    this.currentAnimation.restart();
     currentAnimation.setAutoUpdate(false);
   }
 

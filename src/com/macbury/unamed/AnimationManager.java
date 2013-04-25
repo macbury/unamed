@@ -18,8 +18,12 @@ public class AnimationManager {
 
   public Animation punchAnimation;
   public Animation swordAnimation;
+  public Animation biteAnimation;
   
   public AnimationManager() throws SlickException {
+    this.biteAnimation = new Animation(ImagesManager.shared().getSpriteSheet("effects/Bite.png", 32, 32), 100);
+    this.biteAnimation.setAutoUpdate(false);
+    
     this.punchAnimation = new Animation(ImagesManager.shared().getSpriteSheet("effects/Attack1.png", 32, 32), 100);
     this.punchAnimation.setAutoUpdate(false);
     

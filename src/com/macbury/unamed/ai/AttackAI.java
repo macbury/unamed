@@ -26,4 +26,10 @@ public class AttackAI extends AI {
 
   }
 
+  @Override
+  protected void onStateTransition(State old, State next) {
+    // TODO Auto-generated method stub
+    
+  }
+
 }

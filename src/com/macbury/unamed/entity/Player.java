@@ -161,7 +161,7 @@ public class Player extends Character {
         if (!usableEntity.use()) {
           SoundManager.shared().cancelSound.playAsSoundEffect(1.0f, 1.0f, false);
         }
-      } else if (!LiquidBlock.class.isInstance(blockInFront)) {
+      } else if (!LiquidBlock.class.isInstance(blockInFront) && entityInFront == null) {
         placeCurrentInventoryItemInFront(frontTilePosition);
       } else {
         SoundManager.shared().cancelSound.playAsSoundEffect(1.0f, 1.0f, false);

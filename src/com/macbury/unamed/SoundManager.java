@@ -58,6 +58,7 @@ public class SoundManager {
   private ArrayList<Audio> explodes;
   public Audio decision;
   public Audio cursor;
+  public Audio bite;
   
   private Audio loadOgg(String filename) {
     try {
@@ -84,6 +85,7 @@ public class SoundManager {
     this.decision         = loadOgg("Decision3");
     this.cursor           = loadOgg("Cursor2");
     this.fuse             = loadOgg("dynamite/fuse");
+    this.bite             = loadOgg("effects/Bite");
     this.stepsStone       = new ArrayList<Audio>();
     
     this.explodes       = new ArrayList<Audio>();

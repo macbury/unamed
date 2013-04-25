@@ -12,7 +12,7 @@ public class Timer {
   private boolean isPausableEvent = false;
   
   public Timer(short fireEveryMiliseconds, TimerInterface delegate) {
-    this.maxTime  = fireEveryMiliseconds;
+    this.setTime(fireEveryMiliseconds);
     this.delegate = delegate;
   }
   
@@ -32,10 +32,14 @@ public class Timer {
     if (this.enabled && canUpdate()) {
       time += delta;
       if (time > maxTime) {
-        delegate.onTimerFire(this);
-        time = 0;
+        fire();
       }
     }
+  }
+
+  public void fire() throws SlickException {
+    delegate.onTimerFire(this);
+    time = 0;
   }
 
   public TimerInterface getDelegate() {
@@ -68,5 +72,15 @@ public class Timer {
 
   public short getTime() {
     return time;
+  }
+
+  public void startAndFire() throws SlickException {
+    this.start();
+    this.fire();
+  }
+
+  public void setTime(short speed) {
+    this.maxTime  = speed;
+    this.time = 0;
   }
 }

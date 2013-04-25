@@ -166,9 +166,9 @@ public class TileBasedMovement extends Component implements TimerInterface {
       }
     }
   }
-
-  public void lookAt(Entity entity) {
-    Vector2f direction  = (new Vector2f(entity.getTileX() - this.owner.getTileX(), entity.getTileY() - this.owner.getTileY())).normalise();
+  
+  public void lookAt(int x, int y) {
+    Vector2f direction  = (new Vector2f(x - this.owner.getTileX(), y - this.owner.getTileY())).normalise();
     //Log.info(direction.toString());
     if (direction.getX() > 0.0f) {
       this.direction = Direction.Right;
@@ -179,6 +179,10 @@ public class TileBasedMovement extends Component implements TimerInterface {
     } else {
       this.direction = Direction.Down;
     }
+  }
+  
+  public void lookAt(Entity entity) {
+    lookAt(entity.getTileX(), entity.getTileY());
   }
 
   public boolean moveForward() {

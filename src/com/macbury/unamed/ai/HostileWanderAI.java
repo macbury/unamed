@@ -4,49 +4,96 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.util.Log;
 import org.newdawn.slick.util.pathfinding.Path;
 
+import com.macbury.unamed.AnimationManager;
 import com.macbury.unamed.PathFindingCallback;
 import com.macbury.unamed.PathFindingQueue;
 import com.macbury.unamed.Position;
+import com.macbury.unamed.SoundManager;
 import com.macbury.unamed.Timer;
 import com.macbury.unamed.TimerInterface;
+import com.macbury.unamed.combat.Damage;
+import com.macbury.unamed.component.TileFollowCallback;
+import com.macbury.unamed.entity.AnimationEntity;
+import com.macbury.unamed.entity.DigEffectEntity;
+import com.macbury.unamed.inventory.InventoryManager;
 import com.macbury.unamed.level.Level;
 
-public class HostileWanderAI extends WanderAI implements TimerInterface, PathFindingCallback {
+public class HostileWanderAI extends WanderAI implements TimerInterface {
   private static final short LOOK_LOOP_TIME = 100;
+  private static final short ATTACK_EVERY   = 1000;
+  private static final int MIN_DISTANCE_TO_ATTACK = 1;
   Timer lookIfICanSeePlayerTimer;
-  private Position lastSeenTargetAt;
+  Timer attackTimer;
   private Path pathToLastSeenTargetPosition;
   
   public HostileWanderAI() {
     super();
     lookIfICanSeePlayerTimer = new Timer(LOOK_LOOP_TIME, this);
+    lookIfICanSeePlayerTimer.setEnabled(true);
+    attackTimer = new Timer(ATTACK_EVERY, this);
+    attackTimer.setEnabled(false);
   }
   
   @Override
   public void update(int delta) throws SlickException {
     lookIfICanSeePlayerTimer.update(delta);
+    attackTimer.update(delta);
     super.update(delta);
     
-    if (this.getTarget() != null) {
+    switch(getState()) {
+      
+      case CHECK_PLAYER_LAST_POSITION:
+        if (pathToLastSeenTargetPosition != null && !this.tileMovement.isMoving()) {
+          this.tileFollowPath.followPath(this.pathToLastSeenTargetPosition);
+          pathToLastSeenTargetPosition = null;
+        }
+      break;
+    
+      case ATTACK:
+        if (this.getOwner().distanceTo(this.getTarget()) > MIN_DISTANCE_TO_ATTACK) {
+          this.setState(State.TARGET_PLAYER);
+        }
+      break;
+    
+      case TARGET_PLAYER:
+        if (!this.tileMovement.isMoving()) {
+          if (this.getOwner().distanceTo(this.getTarget()) > MIN_DISTANCE_TO_ATTACK) {
+            this.tileMovement.lookAt(this.getTarget());
+            if (!this.tileMovement.moveForward()) {
+              this.setState(State.WANDERING);
+            }
+          } else {
+            this.setState(State.ATTACK);
+          }
+        }
+        
+      break;
+    
+      default:
+        
+      break;
+    }
+  }
+  
+  @Override
+  protected void onStateTransition(State old, State next) throws SlickException {
+    super.onStateTransition(old, next);
+    Log.info("Switching from state: " + old + " to " + next);
+    
+    if (next == State.ATTACK) {
+      attackTimer.startAndFire();
+    }
+    
+    if (old == State.ATTACK) {
+      attackTimer.stop();
+    }
+    
+    if (next == State.WANDERING) {
+      this.randomMovement.enabled = true;
+    }
+    
+    if (old == State.WANDERING) {
       this.randomMovement.enabled = false;
-      if (!this.tileMovement.isMoving()) {
-        
-        //if (this.getOwner().distanceTo(this.getTarget()) > 4) {
-          //PathFindingQueue.shared().findPathToEntity(this.getOwner(), this.getTarget(), this);
-       // } else {
-          this.tileMovement.lookAt(this.getTarget());
-          this.tileMovement.moveForward();
-       // }
-      }
-    } else {
-      if (this.pathToLastSeenTargetPosition != null) {
-        this.randomMovement.enabled = false;
-        
-      } if (this.lastSeenTargetAt != null) {
-        PathFindingQueue.shared().findPathToPosition(this.getOwner(), this.lastSeenTargetAt, this);
-      } else {
-        this.randomMovement.enabled = true;
-      }
     }
   }
 
@@ -54,38 +101,51 @@ public class HostileWanderAI extends WanderAI implements TimerInterface, PathFin
   public void onStart() throws SlickException {
     super.onStart();
     lookIfICanSeePlayerTimer.start();
+    attackTimer.stop();
+    this.setState(State.WANDERING);
   }
 
   @Override
   public void onStop() throws SlickException {
     super.onStop();
     lookIfICanSeePlayerTimer.stop();
+    attackTimer.stop();
   }
 
+  public void checkIfISee() throws SlickException {
+    if (canISeePlayer()) {
+      this.setState(State.TARGET_PLAYER);
+      setTarget(Level.shared().getPlayer());
+    } else {
+      this.setState(State.WANDERING);
+      
+      setTarget(null);
+    }
+  }
+  
   @Override
-  public void onTimerFire(Timer timer) {
-    if (lookIfICanSeePlayerTimer == timer) {
-      if (canISeePlayer()) {
-        this.pathToLastSeenTargetPosition = null;
-        this.lastSeenTargetAt             = null;
-        setTarget(Level.shared().getPlayer());
+  public void onTimerFire(Timer timer) throws SlickException {
+    if (lookIfICanSeePlayerTimer == timer && (getState() == State.WANDERING || getState() == State.TARGET_PLAYER || getState() == State.WANDERING)) {
+      checkIfISee();
+    } else if (timer == attackTimer) {
+      if (this.getOwner().distanceTo(this.getTarget()) > MIN_DISTANCE_TO_ATTACK) {
+        this.setState(State.TARGET_PLAYER);
       } else {
-        if (getTarget() != null) {
-          this.lastSeenTargetAt = this.getTarget().getPosition();
-        }
-        setTarget(null);
+        attack();
       }
     }
   }
 
-  @Override
-  public void onPathFound(Path path) {
-    this.lastSeenTargetAt = null;
-    if (path != null) {
-      this.pathToLastSeenTargetPosition = path;
-      Log.info("Found path: " + path.getLength());
-    } else {
-      Log.info("No path found!");
-    }
+  private void attack() throws SlickException {
+    AnimationEntity entity = (AnimationEntity) Level.shared().getUsedEntity(AnimationEntity.class);
+    entity.setAnimation(AnimationManager.shared().biteAnimation);
+    this.getOwner().getLevel().addEntity(entity);
+    entity.setTilePosition(this.getTarget().getTileX(), this.getTarget().getTileY());
+    
+    this.getTarget().getHealth().applyDamage(new Damage(5));
+    this.tileMovement.lookAt(this.getTarget());
+    
+    SoundManager.shared().playAt(this.getTarget().getTileX(), this.getTarget().getTileY(), SoundManager.shared().bite);
   }
+
 }

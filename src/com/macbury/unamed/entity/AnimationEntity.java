@@ -1,5 +1,6 @@
 package com.macbury.unamed.entity;
 
+import org.newdawn.slick.Animation;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
@@ -8,30 +9,21 @@ import com.macbury.unamed.AnimationManager;
 import com.macbury.unamed.Timer;
 import com.macbury.unamed.TimerInterface;
 import com.macbury.unamed.component.AnimatedSprite;
-import com.macbury.unamed.inventory.InventoryItem;
 import com.macbury.unamed.inventory.PickItem;
 
-public class DigEffectEntity extends ReusableEntity implements TimerInterface {
+public class AnimationEntity extends ReusableEntity implements TimerInterface {
   public final static int ENTITY_ZINDEX = Character.ENTITY_ZINDEX + 1;
   private Timer timer;
   
-  public DigEffectEntity() throws SlickException {
+  public AnimationEntity() throws SlickException {
     super();
-    this.z = ENTITY_ZINDEX;
-    this.timer = new Timer((short)Player.MAX_TAKING_TIME, this);
     
-    addComponent(new AnimatedSprite(AnimationManager.shared().punchAnimation));
+    this.z = ENTITY_ZINDEX;
+    this.timer = new Timer((short)250, this);
+    
+    addComponent(new AnimatedSprite(AnimationManager.shared().biteAnimation));
   }
 
-  public void setAnimationByItem(InventoryItem item) throws SlickException {
-    AnimatedSprite sprite = (AnimatedSprite) getComponent(AnimatedSprite.class);
-    if (PickItem.class.isInstance(item)) {
-      sprite.setCurrentAnimation(AnimationManager.shared().swordAnimation);
-    } else {
-      sprite.setCurrentAnimation(AnimationManager.shared().punchAnimation);
-    }
-  }
-  
   @Override
   public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
     super.update(gc, sb, delta);
@@ -46,5 +38,11 @@ public class DigEffectEntity extends ReusableEntity implements TimerInterface {
   @Override
   public void onReuse() {
     this.timer.restart();
+  }
+  
+  public void setAnimation(Animation animation) {
+    AnimatedSprite sprite = (AnimatedSprite) getComponent(AnimatedSprite.class);
+    sprite.setCurrentAnimation(animation);
+    //his.timer.setTime((short) animation.getDuration(0));
   }
 }
