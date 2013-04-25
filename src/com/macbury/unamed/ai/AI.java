@@ -25,7 +25,6 @@ public abstract class AI {
     this.owner = owner;
   }
   
-  
   public boolean canISee(Entity e) {
     RaycastHitResult hit = Level.shared().raytrace(this.owner, e.getTileX(), e.getTileY(), LINE_OF_SIGHT_LENGTH);
 

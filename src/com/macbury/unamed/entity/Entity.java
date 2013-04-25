@@ -188,13 +188,11 @@ public abstract class Entity implements Comparable<Entity> {
   
   public void setX(float x) {
     this.tileX = null;
-    this.getPosition().setX(x);
     this.rectangle.setX(x);
   }
   
   public void setY(float y) {
     this.tileY = null;
-    this.getPosition().setX(y);
     this.rectangle.setY(y);
   }
   
@@ -352,6 +350,8 @@ public abstract class Entity implements Comparable<Entity> {
     if (this.position == null) {
       this.position = new Position(this.getX(), this.getY());
     }
+    this.position.setX(this.getX());
+    this.position.setY(this.getY());
     return this.position;
   }
   
@@ -394,5 +394,9 @@ public abstract class Entity implements Comparable<Entity> {
 
   private boolean checkVisiblityForBlock(Block block) {
     return (block != null && (block.isVisible() || (block.isVisited() && this.visibleUnderTheFog)));
+  }
+  
+  public int distanceTo(Entity otherEntity) {
+    return Math.abs(this.getTileX() - otherEntity.getTileX()) + Math.abs(this.getTileY() - otherEntity.getTileY());
   }
 }

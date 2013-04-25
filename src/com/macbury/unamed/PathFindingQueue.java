@@ -49,6 +49,10 @@ public class PathFindingQueue implements TileBasedMap, Runnable {
   }
   
   public void findPathToEntity(Entity fromEntity, Entity targetEntity, PathFindingCallback callback) {
+    findPathToPosition(fromEntity, targetEntity.getPosition(), callback);
+  }
+  
+  public void findPathToPosition(Entity fromEntity, Position targetPosition, PathFindingCallback callback) {
     boolean foundQuery = false;
     for (int i = 0; i < this.queue.size(); i++) {
       PathFindQuery query = this.queue.get(i);
@@ -59,11 +63,12 @@ public class PathFindingQueue implements TileBasedMap, Runnable {
     }
     
     if (!foundQuery) {
-      this.queue.push(new PathFindQuery(fromEntity.getTileX(), fromEntity.getTileY(), targetEntity.getTileX(), targetEntity.getTileY(), callback));
+      this.queue.push(new PathFindQuery(fromEntity.getTileX(), fromEntity.getTileY(), targetPosition.getTileX(), targetPosition.getTileY(), callback));
     }
   }
   
   private Path findPath(int sx, int sy, int ex, int ey) {
+    Log.debug("Searching path from: "+ sx + "x" + sy + " to " + ex + "x" + ey);
     return getPathFinder().findPath(null, sx, sy, ex, ey);
   }
 
@@ -112,6 +117,9 @@ public class PathFindingQueue implements TileBasedMap, Runnable {
   }
   
   private void computeStack() {
+    if (this.queue.size() > 0) {
+      Log.debug("Paths to find: "+ this.queue.size());
+    }
     while(this.queue.size() > 0) {
       PathFindQuery query = this.queue.peek();
       Path path = findPath((int)query.fromPosition.getX(), (int)query.fromPosition.getY(), (int)query.toPosition.getX(), (int)query.toPosition.getY());
@@ -127,4 +135,6 @@ public class PathFindingQueue implements TileBasedMap, Runnable {
       shared = null;
     }
   }
+
+  
 }

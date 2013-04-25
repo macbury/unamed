@@ -1,5 +1,7 @@
 package com.macbury.unamed.component;
 
+import java.util.ArrayList;
+
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
@@ -7,6 +9,7 @@ import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.Log;
+import org.newdawn.slick.util.pathfinding.Path;
 
 import com.macbury.unamed.Core;
 import com.macbury.unamed.Position;
@@ -22,7 +25,7 @@ import com.macbury.unamed.level.Lava;
 import com.macbury.unamed.level.PassableBlock;
 
 public class TileBasedMovement extends Component implements TimerInterface {
-  public final static String NAME = "TileBasedMovement"; 
+  public final static String NAME          = "TileBasedMovement"; 
   public  Direction  direction             = Direction.Down;
   public  float speed                      = 0.0035f;
   private float totalMoveTime              = 0.0f;
@@ -31,10 +34,12 @@ public class TileBasedMovement extends Component implements TimerInterface {
   private Position basePosition;
   private float blockMoveSpeed;
   public boolean playSoundForStep          = true;
+  private ArrayList<TileBasedMovementCallback> callbacks;
   
   public TileBasedMovement() {
     lavaDamageTimer = new Timer(Lava.APPLY_DAMAGE_EVERY_MILISECONDS, this);
     lavaDamageTimer.setIsPausableEvent(true);
+    this.callbacks = new ArrayList<TileBasedMovementCallback>();
   }
   
   public boolean isMoving() {
@@ -119,6 +124,10 @@ public class TileBasedMovement extends Component implements TimerInterface {
         if (this.owner.haveLight()) {
           this.owner.getLight().updateLight();
         }
+        
+        for (TileBasedMovementCallback callback : this.callbacks) {
+          callback.onFinishMovement();
+        }
       }
     }
     
@@ -179,5 +188,12 @@ public class TileBasedMovement extends Component implements TimerInterface {
     } else {
       return false;
     }
+  }
+  
+  public void registerListener(TileBasedMovementCallback callback) throws SlickException {
+    if (this.callbacks.contains(callback)) {
+      throw new SlickException("Cannot duplicate callbacks: " + callback.getClass().getSimpleName());
+    }
+    this.callbacks.add(callback);
   }
 }
