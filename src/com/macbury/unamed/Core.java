@@ -13,6 +13,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.macbury.unamed.entity.Entity;
+import com.macbury.unamed.entity.Monster;
 import com.macbury.unamed.intefrace.InterfaceManager;
 import com.macbury.unamed.inventory.InventoryManager;
 import com.macbury.unamed.level.Block;
@@ -27,6 +28,7 @@ import com.macbury.unamed.scenes.MenuScene;
 import com.macbury.unamed.serializers.BlockSerializer;
 import com.macbury.unamed.serializers.EntitySerializer;
 import com.macbury.unamed.serializers.LevelSerializer;
+import com.macbury.unamed.util.MonsterManager;
 
 public class Core extends StateBasedGame {
   public static final boolean DEBUG_RAYCAST = false;
@@ -89,6 +91,7 @@ public class Core extends StateBasedGame {
   
   public void resetGame() throws SlickException {
     if (gameplayScene != null) {
+      MonsterManager.shared().clear();
       InterfaceManager.shared().clear();
       if (Level.shared() != null) {
         Level.shared().clear();

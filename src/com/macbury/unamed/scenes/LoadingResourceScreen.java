@@ -23,6 +23,7 @@ import com.macbury.unamed.ParticleManager;
 import com.macbury.unamed.ShaderManager;
 import com.macbury.unamed.SoundManager;
 import com.macbury.unamed.level.BlockResources;
+import com.macbury.unamed.util.MonsterManager;
 
 public class LoadingResourceScreen extends BasicGameState {
   private static final Color HUD_COLOR = new Color(0,0,0,100);
@@ -44,6 +45,7 @@ public class LoadingResourceScreen extends BasicGameState {
     SoundManager.shared();
     ParticleManager.shared();
     AnimationManager.shared();
+    MonsterManager.shared();
     Log.info("Init LoadingResourceScreen");
     initFinished = true;
   }
