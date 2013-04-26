@@ -1,5 +1,6 @@
 package com.macbury.unamed.ai;
 
+import org.ini4j.Wini;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.util.Log;
 import org.newdawn.slick.util.pathfinding.Path;
@@ -26,7 +27,7 @@ public class HostileWanderAI extends WanderAI implements TimerInterface {
   Timer attackTimer;
   private Path pathToLastSeenTargetPosition;
   
-  public HostileWanderAI() {
+  public HostileWanderAI(Wini ini) {
     super();
     lookIfICanSeePlayerTimer = new Timer(LOOK_LOOP_TIME, this);
     lookIfICanSeePlayerTimer.setEnabled(true);

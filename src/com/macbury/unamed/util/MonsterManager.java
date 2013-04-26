@@ -16,6 +16,8 @@ public class MonsterManager {
   public static final String BASE_GROUP = "Base";
   public static final String BASE_HEALTH = "health";
   public static final String BASE_IMAGE = "image";
+  public static final String MOVE_GROUP = "Move";
+  public static final String MOVE_SPEED = "speed";
   private static MonsterManager shared;
   private ArrayList<Monster> population;
   private ArrayList<Wini> monsterConfigs;

@@ -29,7 +29,6 @@ public class Monster extends Character implements PlayerTriggers {
     tileMovement.speed = MONSTER_DEFAULT_SPEED;
     tileMovement.playSoundForStep = false;
 
-    this.setAi(new HostileWanderAI());
   }
 
   @Override
@@ -55,6 +54,9 @@ public class Monster extends Character implements PlayerTriggers {
     this.charactedAnimation.loadCharacterImage("chars/"+config.get(MonsterManager.BASE_GROUP, MonsterManager.BASE_IMAGE));
     this.getHealth().setMaxHelath(config.get(MonsterManager.BASE_GROUP, MonsterManager.BASE_HEALTH, Short.class));
     MonsterManager.shared().push(this);
+    this.setAi(new HostileWanderAI(this.config));
+    
+    tileMovement.speed = config.get(MonsterManager.MOVE_GROUP, MonsterManager.MOVE_SPEED, Float.class);
   }
 
   @Override
