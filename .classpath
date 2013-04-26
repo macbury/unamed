@@ -13,5 +13,6 @@
 	<classpathentry kind="lib" path="libs/jars/jogg-0.0.7.jar"/>
 	<classpathentry kind="lib" path="libs/jars/jorbis-0.0.15.jar"/>
 	<classpathentry kind="lib" path="libs/jars/kryo-2.21-all.jar"/>
+	<classpathentry kind="lib" path="libs/jars/ini4j-0.5.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

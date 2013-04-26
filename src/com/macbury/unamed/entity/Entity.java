@@ -267,7 +267,7 @@ public abstract class Entity implements Comparable<Entity> {
   @Override
   public int compareTo(Entity otherEntity) {
     if (otherEntity.z == this.z) {
-      if (otherEntity.getY() > this.getY()){
+      if (otherEntity.getY() < this.getY()){
         return 1;
       } else {
         return -1;

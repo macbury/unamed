@@ -86,7 +86,7 @@ public class HealthComponent extends Component implements TimerInterface {
       this.health = 0;
     }
     this.addDamage(damage);
-    Log.debug("Apply damage: " + damage);
+    Log.debug("Apply damage: " + damage.getPower());
   }
 
   private void addDamage(Damage damage) {

@@ -12,8 +12,6 @@ import com.macbury.unamed.ai.AI;
 import com.macbury.unamed.component.CharacterAnimation;
 import com.macbury.unamed.component.Direction;
 import com.macbury.unamed.component.HealthComponent;
-import com.macbury.unamed.component.KeyboardMovement;
-import com.macbury.unamed.component.Light;
 import com.macbury.unamed.component.TileBasedMovement;
 import com.macbury.unamed.intefrace.InterfaceManager;
 
