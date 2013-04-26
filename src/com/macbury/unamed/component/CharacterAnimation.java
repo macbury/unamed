@@ -7,6 +7,7 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.state.StateBasedGame;
+import org.newdawn.slick.util.Log;
 
 import com.macbury.unamed.Core;
 import com.macbury.unamed.ImagesManager;
@@ -45,6 +46,7 @@ public class CharacterAnimation extends RenderComponent implements TimerInterfac
   }
   
   public void loadCharacterImage(String characteFileName) throws SlickException{
+    Log.info("Character animation load: " + characteFileName);
     spriteSheet = ImagesManager.shared().getSpriteSheet(characteFileName+".png", SPRITE_TILE_WIDTH, SPRITE_TILE_HEIGHT);
     buildAnimation();
     

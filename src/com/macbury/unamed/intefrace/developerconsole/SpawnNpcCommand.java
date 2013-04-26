@@ -13,6 +13,7 @@ import com.macbury.unamed.entity.Player;
 import com.macbury.unamed.inventory.InventoryItem;
 import com.macbury.unamed.inventory.InventoryManager;
 import com.macbury.unamed.level.Level;
+import com.macbury.unamed.util.MonsterManager;
 
 public class SpawnNpcCommand extends ConsoleCommand {
 
@@ -28,6 +29,11 @@ public class SpawnNpcCommand extends ConsoleCommand {
         InventoryManager manager = InventoryManager.shared();
         Class<?> klass     = Entity.class.forName("com.macbury.unamed.entity."+itemName);
         Entity entity = (Entity) klass.newInstance();
+        
+        if (Monster.class.isInstance(entity)) {
+          Monster monster = (Monster) entity;
+          monster.setConfig(MonsterManager.shared().getRandomConfig());
+        }
         
         Player player = Level.shared().getPlayer();
         Vector2f inFront = player.getTilePositionInFront();
