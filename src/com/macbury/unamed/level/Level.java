@@ -26,6 +26,7 @@ import com.macbury.unamed.ParticleManager;
 import com.macbury.unamed.PathFindingQueue;
 import com.macbury.unamed.Position;
 import com.macbury.unamed.RaycastHitResult;
+import com.macbury.unamed.SoundManager;
 import com.macbury.unamed.Timer;
 import com.macbury.unamed.TimerInterface;
 import com.macbury.unamed.entity.CollectableItem;
@@ -41,7 +42,7 @@ public class Level implements TimerInterface {
 
   private static final Color VISITED_BLOCK_COLOR  = new Color(0,0,0, Block.VISITED_ALPHA);
   private static final Color WALL_SHADE_COLOR     = new Color(0,0,0,180);
-  private static final short REFRESH_ENTITY_TIMER = 400;
+  private static final short REFRESH_ENTITY_TIMER = 100;
   private static final int MAX_REUSABLE_ENTITY_CACHE_SIZE = 100;
 
   private ArrayList<Room> rooms;
@@ -106,6 +107,7 @@ public class Level implements TimerInterface {
     this.refreshEntityTimer = new Timer(REFRESH_ENTITY_TIMER, this);
     this.raycastDebugList   = new Stack<RaycastHitResult>();
     this.reusableEntities   = new ArrayList<Entity>();
+    
   }
 
   

@@ -24,13 +24,6 @@ public class SoundManager {
   private static final float SUPPRESION_PER_TILE_FACTOR = 4;
   private static final int NO_SOUND_AFTER_TILES         = 20;
   public static SoundManager sharedInstance = null;
-  
-  public static SoundManager shared() {
-    if (SoundManager.sharedInstance == null) {
-      SoundManager.sharedInstance = new SoundManager();
-    }
-    return SoundManager.sharedInstance;
-  }
 
   public Audio igniteSound;
   public Audio cancelSound;
@@ -59,6 +52,16 @@ public class SoundManager {
   public Audio decision;
   public Audio cursor;
   public Audio bite;
+  public Audio drips;
+  
+  private ArrayList<Audio> loopedSounds;
+  
+  public static SoundManager shared() {
+    if (SoundManager.sharedInstance == null) {
+      SoundManager.sharedInstance = new SoundManager();
+    }
+    return SoundManager.sharedInstance;
+  }
   
   private Audio loadOgg(String filename) {
     try {
@@ -66,13 +69,13 @@ public class SoundManager {
       Log.info("Loading sound: " + filepath);
       return AudioLoader.getAudio("OGG", new FileInputStream(filepath));
     } catch (IOException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
       return null;
     }
   }
   
   public SoundManager() {
+    this.loopedSounds     = new ArrayList<Audio>();
     this.cancelSound      = loadOgg("Cancel1");
     this.placeBlockSound  = loadOgg("PlaceBlock");
     this.removeBlock      = loadOgg("RemoveBlock");
@@ -86,6 +89,7 @@ public class SoundManager {
     this.cursor           = loadOgg("Cursor2");
     this.fuse             = loadOgg("dynamite/fuse");
     this.bite             = loadOgg("effects/Bite");
+    this.drips            = loadOgg("effects/Drips");
     this.stepsStone       = new ArrayList<Audio>();
     
     this.explodes       = new ArrayList<Audio>();
@@ -214,5 +218,15 @@ public class SoundManager {
     this.y = y;
   }
 
-  
+  public void loop(Audio loop) {
+    loop.playAsSoundEffect(1.0f, 1.0f, true);
+    loopedSounds.add(loop);
+  }
+
+  public void stop() {
+    for (Audio sound : this.loopedSounds) {
+      sound.stop();
+    }
+    loopedSounds.clear();
+  }
 }

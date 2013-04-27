@@ -91,6 +91,8 @@ public class Core extends StateBasedGame {
   
   public void resetGame() throws SlickException {
     if (gameplayScene != null) {
+      SoundManager.shared().stop();
+      InterfaceManager.shared().clear();
       MonsterManager.shared().clear();
       InterfaceManager.shared().clear();
       if (Level.shared() != null) {

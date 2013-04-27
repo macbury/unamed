@@ -1,6 +1,5 @@
 package com.macbury.unamed.ai;
 
-import org.ini4j.Wini;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.util.Log;
 import org.newdawn.slick.util.pathfinding.Path;
@@ -18,21 +17,23 @@ import com.macbury.unamed.entity.AnimationEntity;
 import com.macbury.unamed.entity.DigEffectEntity;
 import com.macbury.unamed.inventory.InventoryManager;
 import com.macbury.unamed.level.Level;
+import com.macbury.unamed.util.MonsterManager;
 
 public class HostileWanderAI extends WanderAI implements TimerInterface {
   private static final short LOOK_LOOP_TIME = 100;
-  private static final short ATTACK_EVERY   = 1000;
   private static final int MIN_DISTANCE_TO_ATTACK = 1;
   Timer lookIfICanSeePlayerTimer;
   Timer attackTimer;
   private Path pathToLastSeenTargetPosition;
+  private short attackPower;
   
-  public HostileWanderAI(Wini ini) {
+  public HostileWanderAI() {
     super();
     lookIfICanSeePlayerTimer = new Timer(LOOK_LOOP_TIME, this);
     lookIfICanSeePlayerTimer.setEnabled(true);
-    attackTimer = new Timer(ATTACK_EVERY, this);
+    attackTimer = new Timer((short)1000, this);
     attackTimer.setEnabled(false);
+    attackPower = 5;
   }
   
   @Override
@@ -143,7 +144,7 @@ public class HostileWanderAI extends WanderAI implements TimerInterface {
     this.getOwner().getLevel().addEntity(entity);
     entity.setTilePosition(this.getTarget().getTileX(), this.getTarget().getTileY());
     
-    this.getTarget().getHealth().applyDamage(new Damage(5));
+    this.getTarget().getHealth().applyDamage(new Damage(this.attackPower));
     this.tileMovement.lookAt(this.getTarget());
     
     SoundManager.shared().playAt(this.getTarget().getTileX(), this.getTarget().getTileY(), SoundManager.shared().bite);

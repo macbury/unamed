@@ -103,7 +103,7 @@ public class InterfaceManager extends Stack<Interface> {
       //Core.instance().enterState(MenuScene.STATE_MENU);
     }
     
-    if (Core.DEBUG) {
+   // if (Core.DEBUG) {
       if (input.isKeyPressed(Input.KEY_GRAVE)) {
         if (isOpened(this.developerConsole)) {
           this.close(this.developerConsole);
@@ -111,11 +111,11 @@ public class InterfaceManager extends Stack<Interface> {
           this.push(developerConsole);
         }
       }
-      
-      Interface inte = currentInterface();
-      if (inte != null) {
-        inte.update(gc, sb, delta);
-      }
+ //   }
+    
+    Interface inte = currentInterface();
+    if (inte != null) {
+      inte.update(gc, sb, delta);
     }
   }
 

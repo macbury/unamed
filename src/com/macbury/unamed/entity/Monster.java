@@ -1,6 +1,6 @@
 package com.macbury.unamed.entity;
 
-import org.ini4j.Wini;
+import org.json.simple.JSONObject;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
@@ -18,8 +18,6 @@ import com.macbury.unamed.util.MonsterManager;
 public class Monster extends Character implements PlayerTriggers {
   private static final float MONSTER_DEFAULT_SPEED = 0.0020f;
   public RandomMovement randomMovement;
-  private Wini config;
-  
   public Monster() throws SlickException {
     super();
     randomMovement = new RandomMovement();
@@ -28,7 +26,7 @@ public class Monster extends Character implements PlayerTriggers {
     
     tileMovement.speed = MONSTER_DEFAULT_SPEED;
     tileMovement.playSoundForStep = false;
-
+    //setConfig();
   }
 
   @Override
@@ -45,30 +43,26 @@ public class Monster extends Character implements PlayerTriggers {
     }
   }
 
-  public Wini getConfig() {
-    return config;
-  }
 
-  public void setConfig(Wini config) throws SlickException {
-    this.config = config;
-    this.charactedAnimation.loadCharacterImage("chars/"+config.get(MonsterManager.BASE_GROUP, MonsterManager.BASE_IMAGE));
-    this.getHealth().setMaxHelath(config.get(MonsterManager.BASE_GROUP, MonsterManager.BASE_HEALTH, Short.class));
+  public void setConfig(JSONObject jsonObject) throws SlickException {
+    this.charactedAnimation.loadCharacterImage("chars/monster");
+    this.getHealth().setMaxHelath((short) 10);
     MonsterManager.shared().push(this);
-    this.setAi(new HostileWanderAI(this.config));
+    this.setAi(new HostileWanderAI());
     
-    tileMovement.speed = config.get(MonsterManager.MOVE_GROUP, MonsterManager.MOVE_SPEED, Float.class);
+    tileMovement.speed = 0.0020f;
   }
 
   @Override
   public void writeTo(Kryo kryo, Output output) {
     super.writeTo(kryo, output);
-    output.writeString(this.getConfig().getFile().getName());
+    output.writeString("type");
   }
 
   @Override
   public void loadFrom(Kryo kryo, Input input) throws SlickException {
     super.loadFrom(kryo, input);
-    this.setConfig(MonsterManager.shared().get(input.readString()));
+    String type = input.readString();
   }
 
   @Override

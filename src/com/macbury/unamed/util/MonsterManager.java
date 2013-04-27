@@ -1,11 +1,15 @@
 package com.macbury.unamed.util;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.HashMap;
 
-import org.ini4j.InvalidFileFormatException;
-import org.ini4j.Wini;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.util.Log;
 
@@ -18,27 +22,43 @@ public class MonsterManager {
   public static final String BASE_IMAGE = "image";
   public static final String MOVE_GROUP = "Move";
   public static final String MOVE_SPEED = "speed";
+  public static final String BASE_ATTACK = "Attack";
+  public static final String ATTACK_SPEED = "speed";
+  public static final String ATTACK_POWER = "power";
   private static MonsterManager shared;
   private ArrayList<Monster> population;
-  private ArrayList<Wini> monsterConfigs;
+  private HashMap<String, JSONObject> monsterConfigs;
   public MonsterManager() {
     this.population = new ArrayList<Monster>(MAX_MONSTER_POPULATION);
-    this.monsterConfigs = new ArrayList<Wini>();
+    this.monsterConfigs = new HashMap<String, JSONObject>();
     Log.info("Initializing Monster Manager!");
     File folder = new File("res/entities/");
+    
+    JSONParser parser = new JSONParser();
+    
     for (final File fileEntry : folder.listFiles()) {
-      Log.info("Found: " + fileEntry.getName());
       try {
-        Wini ini = new Wini(fileEntry);
-        this.monsterConfigs.add(ini);
-      } catch (InvalidFileFormatException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      } catch (IOException e) {
+        JSONObject object = (JSONObject)parser.parse(readFile(fileEntry));
+        Log.info("Loading: " + fileEntry.getName() + " and it is: "+(String)object.get("name"));
+        monsterConfigs.put((String)object.get("name"), object);
+      } catch (ParseException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
       }
     }
+  }
+  
+
+  public String readFile(File f) {
+    try {
+        byte[] bytes = Files.readAllBytes(f.toPath());
+        return new String(bytes,"UTF-8");
+    } catch (FileNotFoundException e) {
+        e.printStackTrace();
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+    return "";
   }
   
   public void clear() {
@@ -53,14 +73,14 @@ public class MonsterManager {
     return shared;
   }
   
-  public Wini getRandomConfig() {
+  public JSONObject getRandomConfig() {
     return this.monsterConfigs.get((int) Math.round((this.monsterConfigs.size() - 1) * Math.random()));
   }
 
-  public Wini get(String readString) {
-    for (Wini config : this.monsterConfigs) {
-      if (config.getFile().getName().equals(readString)) {
-        return config;
+  public JSONObject get(String readString) {
+    for (String key : this.monsterConfigs.keySet()) {
+      if (key.equals(readString)) {
+        return this.monsterConfigs.get(key);
       }
     }
     return null;

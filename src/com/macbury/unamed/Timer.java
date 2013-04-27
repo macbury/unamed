@@ -13,9 +13,13 @@ public class Timer {
   
   public Timer(short fireEveryMiliseconds, TimerInterface delegate) {
     this.setTime(fireEveryMiliseconds);
-    this.delegate = delegate;
+    this.setDelegate(delegate);
   }
   
+  public Timer() {
+    // TODO Auto-generated constructor stub
+  }
+
   public void setIsPausableEvent(boolean flag) {
     this.isPausableEvent = flag;
   }
