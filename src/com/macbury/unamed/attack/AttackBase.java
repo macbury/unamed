@@ -1,23 +1,23 @@
 package com.macbury.unamed.attack;
 
+import org.json.simple.JSONObject;
 import org.newdawn.slick.SlickException;
 
 import com.macbury.unamed.Timer;
 import com.macbury.unamed.TimerInterface;
 import com.macbury.unamed.entity.Entity;
 
-public abstract class AttackBase implements TimerInterface {
+public abstract class AttackBase implements TimerInterface, Comparable<AttackBase> {
   private Timer attackTimer;
   private short power;
+  private short distance;
   private boolean canAttack = false;
   
-  private Entity hunter;
-  private Entity prey;
-  
-  public AttackBase(Entity hunter, Entity prey) {
+  public AttackBase() {
     attackTimer = new Timer();
     attackTimer.setDelegate(this);
-    attackTimer.setEnabled(false);
+    attackTimer.setEnabled(true);
+    this.distance = 1;
   }
   
   public void update(int delta) throws SlickException {
@@ -27,16 +27,18 @@ public abstract class AttackBase implements TimerInterface {
   @Override
   public void onTimerFire(Timer timer) throws SlickException {
     this.canAttack  = true;
+    timer.stop();
   }
 
-  public void attack() {
+  public void attack(Entity hunter, Entity prey) throws SlickException {
     if (this.canAttack) {
-      this.onAttack();
+      this.onAttack(hunter, prey);
+      attackTimer.start();
       this.canAttack = false;
     }
   }
   
-  abstract protected void onAttack();
+  abstract protected void onAttack(Entity hunter, Entity prey) throws SlickException;
 
   public Timer getAttackTimer() {
     return attackTimer;
@@ -55,19 +57,33 @@ public abstract class AttackBase implements TimerInterface {
     this.power = power;
   }
 
-  public Entity getHunter() {
-    return hunter;
+  public void setConfig(JSONObject attackJSON) {
+    long pow  = (long) attackJSON.get("power");
+    long dist = (long) attackJSON.get("distance");
+    setDistance((short) dist);
+    setPower((short) pow);
+    attackTimer.setTime((long) attackJSON.get("speed"));
+    attackTimer.restart();
   }
 
-  public void setHunter(Entity hunter) {
-    this.hunter = hunter;
+  public short getDistance() {
+    return distance;
   }
 
-  public Entity getPrey() {
-    return prey;
+  public void setDistance(short distance) {
+    this.distance = distance;
   }
-
-  public void setPrey(Entity prey) {
-    this.prey = prey;
+  
+  @Override
+  public int compareTo(AttackBase attack) {
+    if (attack.getDistance() == this.getDistance()) {
+      return 0;
+    } else {
+      if (attack.getDistance() > this.getDistance()) {
+        return -1;
+      } else {
+        return 1;
+      }
+    }
   }
 }

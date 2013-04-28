@@ -134,7 +134,7 @@ public class CharacterAnimation extends RenderComponent implements TimerInterfac
     if (currentAnimation != null) {
       Image image = currentAnimation.getCurrentFrame();
       LiquidBlock block = this.owner.getBlock().getAsLiquidBlock();
-      if (block != null) {
+      if (block != null && !this.tileBasedMovement.flying) {
         int diveLevel = Math.round(Core.TILE_SIZE * block.divePower());
         image.draw(0, 0, Core.TILE_SIZE, diveLevel, 0, 0, Core.TILE_SIZE, diveLevel);
       } else {

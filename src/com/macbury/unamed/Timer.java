@@ -87,4 +87,8 @@ public class Timer {
     this.maxTime  = speed;
     this.time = 0;
   }
+
+  public void setTime(long val) {
+    this.setTime((short)val);
+  }
 }

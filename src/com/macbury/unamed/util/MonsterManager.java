@@ -17,14 +17,7 @@ import com.macbury.unamed.entity.Monster;
 
 public class MonsterManager {
   private static final int MAX_MONSTER_POPULATION = 100;
-  public static final String BASE_GROUP = "Base";
-  public static final String BASE_HEALTH = "health";
-  public static final String BASE_IMAGE = "image";
-  public static final String MOVE_GROUP = "Move";
-  public static final String MOVE_SPEED = "speed";
-  public static final String BASE_ATTACK = "Attack";
-  public static final String ATTACK_SPEED = "speed";
-  public static final String ATTACK_POWER = "power";
+  
   private static MonsterManager shared;
   private ArrayList<Monster> population;
   private HashMap<String, JSONObject> monsterConfigs;
@@ -74,7 +67,15 @@ public class MonsterManager {
   }
   
   public JSONObject getRandomConfig() {
-    return this.monsterConfigs.get((int) Math.round((this.monsterConfigs.size() - 1) * Math.random()));
+    int index = (int) Math.round((this.monsterConfigs.keySet().size() - 1) * Math.random());
+    for (String key : this.monsterConfigs.keySet()) {
+      if (index == 0) {
+        return this.monsterConfigs.get(key);
+      } else {
+        index--;
+      }
+    }
+    return null;
   }
 
   public JSONObject get(String readString) {

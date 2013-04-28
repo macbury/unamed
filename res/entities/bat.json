@@ -3,18 +3,19 @@
   
   "base": {
     "health": 100,
-    "image": "monster"
+    "image": "bat"
   },
   
   "move": {
-    "speed": 0.0020
+    "speed": 0.0020,
+    "fly": true
   },
   
   "attacks": [
     {
       "speed": 1000,
       "power": 5,
-      "type": "Bite",
+      "type": "BiteAttack",
       "distance": 1
     }
   ]

@@ -18,6 +18,7 @@ import com.macbury.unamed.util.MonsterManager;
 public class Monster extends Character implements PlayerTriggers {
   private static final float MONSTER_DEFAULT_SPEED = 0.0020f;
   public RandomMovement randomMovement;
+  private String name;
   public Monster() throws SlickException {
     super();
     randomMovement = new RandomMovement();
@@ -43,26 +44,36 @@ public class Monster extends Character implements PlayerTriggers {
     }
   }
 
-
   public void setConfig(JSONObject jsonObject) throws SlickException {
-    this.charactedAnimation.loadCharacterImage("chars/monster");
-    this.getHealth().setMaxHelath((short) 10);
-    MonsterManager.shared().push(this);
-    this.setAi(new HostileWanderAI());
+    this.name = (String)jsonObject.get("name");
     
-    tileMovement.speed = 0.0020f;
+    JSONObject base = (JSONObject) jsonObject.get("base");
+    long health = (long) base.get("health");
+    
+    this.charactedAnimation.loadCharacterImage("chars/"+base.get("image"));
+    
+    this.getHealth().setMaxHelath((short)health);
+    MonsterManager.shared().push(this);
+    HostileWanderAI ai = new HostileWanderAI();
+    ai.setConfig(jsonObject);
+    this.setAi(ai);
+    
+    JSONObject move = (JSONObject) jsonObject.get("move");
+    double speed = (double) move.get("speed");
+    tileMovement.speed = (float)speed;
+    tileMovement.flying = (boolean) move.get("fly");
   }
 
   @Override
   public void writeTo(Kryo kryo, Output output) {
     super.writeTo(kryo, output);
-    output.writeString("type");
+    output.writeString(this.name);
   }
 
   @Override
   public void loadFrom(Kryo kryo, Input input) throws SlickException {
     super.loadFrom(kryo, input);
-    String type = input.readString();
+    this.setConfig(MonsterManager.shared().get(input.readString()));
   }
 
   @Override
@@ -70,6 +81,4 @@ public class Monster extends Character implements PlayerTriggers {
     super.destroy();
     MonsterManager.shared().remove(this);
   }
-  
-  
 }

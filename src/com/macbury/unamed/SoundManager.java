@@ -55,6 +55,7 @@ public class SoundManager {
   public Audio drips;
   
   private ArrayList<Audio> loopedSounds;
+  public Audio caveMusic;
   
   public static SoundManager shared() {
     if (SoundManager.sharedInstance == null) {
@@ -90,6 +91,9 @@ public class SoundManager {
     this.fuse             = loadOgg("dynamite/fuse");
     this.bite             = loadOgg("effects/Bite");
     this.drips            = loadOgg("effects/Drips");
+    
+    this.caveMusic        = loadOgg("music/main");
+    
     this.stepsStone       = new ArrayList<Audio>();
     
     this.explodes       = new ArrayList<Audio>();
@@ -221,6 +225,11 @@ public class SoundManager {
   public void loop(Audio loop) {
     loop.playAsSoundEffect(1.0f, 1.0f, true);
     loopedSounds.add(loop);
+  }
+  
+  public void music(Audio sound) {
+    sound.playAsMusic(1.0f, 1.0f, true);
+    loopedSounds.add(sound);
   }
 
   public void stop() {

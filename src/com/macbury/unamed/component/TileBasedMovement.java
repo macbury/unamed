@@ -35,6 +35,7 @@ public class TileBasedMovement extends Component implements TimerInterface {
   private float blockMoveSpeed;
   public boolean playSoundForStep          = true;
   private ArrayList<TileBasedMovementCallback> callbacks;
+  public boolean flying = false;
   
   public TileBasedMovement() {
     lavaDamageTimer = new Timer(Lava.APPLY_DAMAGE_EVERY_MILISECONDS, this);

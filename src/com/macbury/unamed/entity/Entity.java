@@ -44,7 +44,6 @@ public abstract class Entity implements Comparable<Entity> {
   ArrayList<Component> components = null;
   
   private Level level;
-
   Integer tileX = null;
   Integer tileY = null;
 
