@@ -56,6 +56,7 @@ public class SoundManager {
   
   private ArrayList<Audio> loopedSounds;
   public Audio caveMusic;
+  public Audio sword;
   
   public static SoundManager shared() {
     if (SoundManager.sharedInstance == null) {
@@ -90,6 +91,7 @@ public class SoundManager {
     this.cursor           = loadOgg("Cursor2");
     this.fuse             = loadOgg("dynamite/fuse");
     this.bite             = loadOgg("effects/Bite");
+    this.sword            = loadOgg("effects/Sword");
     this.drips            = loadOgg("effects/Drips");
     
     this.caveMusic        = loadOgg("music/main");

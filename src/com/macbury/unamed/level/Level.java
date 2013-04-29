@@ -674,7 +674,7 @@ public class Level implements TimerInterface {
     Log.debug("Refreshing order of entities");
   }
 
-  public RaycastHitResult raytrace(Entity emitter, int x1, int y1, byte length) {
+  public RaycastHitResult raytrace(Entity emitter, int x1, int y1, byte length, Class<? extends Entity> skipClass) {
     int x0 = emitter.getTileX();
     int y0 = emitter.getTileY();
     int dx = Math.abs(x1 - x0);
@@ -705,7 +705,7 @@ public class Level implements TimerInterface {
         resultHit = new RaycastHitResult(x, y);
       } else {
         Entity e = getSolidEntityForTilePosition(x, y);
-        if (e != null && !e.equals(emitter)) {
+        if (e != null && !e.equals(emitter) && !skipClass.isInstance(e)) {
           resultHit = new RaycastHitResult(x,y,e);
         }
       }

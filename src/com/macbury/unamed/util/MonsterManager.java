@@ -21,6 +21,9 @@ public class MonsterManager {
   private static MonsterManager shared;
   private ArrayList<Monster> population;
   private HashMap<String, JSONObject> monsterConfigs;
+
+  private int lastIndex;
+  
   public MonsterManager() {
     this.population = new ArrayList<Monster>(MAX_MONSTER_POPULATION);
     this.monsterConfigs = new HashMap<String, JSONObject>();
@@ -39,6 +42,8 @@ public class MonsterManager {
         e.printStackTrace();
       }
     }
+    
+    this.lastIndex = -1;
   }
   
 
@@ -67,7 +72,14 @@ public class MonsterManager {
   }
   
   public JSONObject getRandomConfig() {
-    int index = (int) Math.round((this.monsterConfigs.keySet().size() - 1) * Math.random());
+    int index = lastIndex;
+    
+    while(index == lastIndex) {
+      index = (int) Math.round((this.monsterConfigs.keySet().size() - 1) * Math.random());
+    }
+    
+    lastIndex = index;
+    
     for (String key : this.monsterConfigs.keySet()) {
       if (index == 0) {
         return this.monsterConfigs.get(key);

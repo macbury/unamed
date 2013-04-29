@@ -4,6 +4,7 @@ import org.newdawn.slick.SlickException;
 
 import com.macbury.unamed.RaycastHitResult;
 import com.macbury.unamed.entity.Entity;
+import com.macbury.unamed.entity.Monster;
 import com.macbury.unamed.level.Level;
 
 public abstract class AI {
@@ -12,7 +13,7 @@ public abstract class AI {
   private Entity target;
   
   private State state = State.IDLE;
-
+  
 
   public AI() {}
   
@@ -29,7 +30,7 @@ public abstract class AI {
   }
   
   public boolean canISee(Entity e) {
-    RaycastHitResult hit = Level.shared().raytrace(this.owner, e.getTileX(), e.getTileY(), LINE_OF_SIGHT_LENGTH);
+    RaycastHitResult hit = Level.shared().raytrace(this.owner, e.getTileX(), e.getTileY(), LINE_OF_SIGHT_LENGTH, Monster.class);
 
     return (hit != null && e.equals(hit.getEntity()));
   }

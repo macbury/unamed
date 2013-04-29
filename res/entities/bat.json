@@ -14,7 +14,7 @@
   "attacks": [
     {
       "speed": 1000,
-      "power": 5,
+      "power": 2,
       "type": "BiteAttack",
       "distance": 1
     }

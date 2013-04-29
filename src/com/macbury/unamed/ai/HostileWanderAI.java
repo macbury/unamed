@@ -27,29 +27,25 @@ import com.macbury.unamed.inventory.InventoryManager;
 import com.macbury.unamed.level.Level;
 import com.macbury.unamed.util.MonsterManager;
 
-public class HostileWanderAI extends WanderAI implements TimerInterface {
+public class HostileWanderAI extends WanderAI implements TimerInterface, PathFindingCallback, TileFollowCallback {
   private static final short LOOK_LOOP_TIME = 100;
   Timer lookIfICanSeePlayerTimer;
-  //Timer attackTimer;
   private Path pathToLastSeenTargetPosition;
-  //private short attackPower;
   private ArrayList<AttackBase> attacks;
   private int minAttackDistance;
   private Short currentDistanceToTarget;
+  private Position lastTargetPosition;
+  
   public HostileWanderAI() {
     super();
     attacks = new ArrayList<AttackBase>();
     lookIfICanSeePlayerTimer = new Timer(LOOK_LOOP_TIME, this);
     lookIfICanSeePlayerTimer.setEnabled(true);
-    //attackTimer = new Timer((short)1000, this);
-    //attackTimer.setEnabled(false);
-   // attackPower = 5;
   }
   
   @Override
   public void update(int delta) throws SlickException {
     lookIfICanSeePlayerTimer.update(delta);
-    //attackTimer.update(delta);
     super.update(delta);
     currentDistanceToTarget = null;
     for (AttackBase attack : this.attacks) {
@@ -60,6 +56,7 @@ public class HostileWanderAI extends WanderAI implements TimerInterface {
       case CHECK_PLAYER_LAST_POSITION:
         if (pathToLastSeenTargetPosition != null && !this.tileMovement.isMoving()) {
           this.tileFollowPath.followPath(this.pathToLastSeenTargetPosition);
+          this.tileFollowPath.setDelegate(this);
           pathToLastSeenTargetPosition = null;
         }
       break;
@@ -80,6 +77,10 @@ public class HostileWanderAI extends WanderAI implements TimerInterface {
             this.tileMovement.lookAt(this.getTarget());
             if (!this.tileMovement.moveForward()) {
               this.setState(State.WANDERING);
+            } else {
+              this.setState(State.CHECK_PLAYER_LAST_POSITION);
+              lastTargetPosition = getTarget().getPosition();
+              PathFindingQueue.shared().findPathToPosition(this.getOwner(), lastTargetPosition, this);
             }
           } else {
             this.setState(State.ATTACK);
@@ -113,14 +114,16 @@ public class HostileWanderAI extends WanderAI implements TimerInterface {
   @Override
   protected void onStateTransition(State old, State next) throws SlickException {
     super.onStateTransition(old, next);
-    Log.info("Switching from state: " + old + " to " + next);
+    //Log.info("Switching from state: " + old + " to " + next);
     
-    if (next == State.ATTACK) {
-     // attackTimer.startAndFire();
+    if (next == State.CHECK_PLAYER_LAST_POSITION) {
+      this.tileFollowPath.reset();
+      this.tileFollowPath.enabled = true;
     }
     
-    if (old == State.ATTACK) {
-     // attackTimer.stop();
+    if (old == State.CHECK_PLAYER_LAST_POSITION) {
+      this.tileFollowPath.reset();
+      this.tileFollowPath.enabled = false;
     }
     
     if (next == State.WANDERING) {
@@ -136,7 +139,6 @@ public class HostileWanderAI extends WanderAI implements TimerInterface {
   public void onStart() throws SlickException {
     super.onStart();
     lookIfICanSeePlayerTimer.start();
-    //attackTimer.stop();
     this.setState(State.WANDERING);
   }
 
@@ -144,16 +146,14 @@ public class HostileWanderAI extends WanderAI implements TimerInterface {
   public void onStop() throws SlickException {
     super.onStop();
     lookIfICanSeePlayerTimer.stop();
-   // attackTimer.stop();
   }
 
   public void checkIfISee() throws SlickException {
     if (canISeePlayer()) {
       this.setState(State.TARGET_PLAYER);
       setTarget(Level.shared().getPlayer());
-    } else {
+    } else if (this.getState() != State.CHECK_PLAYER_LAST_POSITION) {
       this.setState(State.WANDERING);
-      
       setTarget(null);
     }
   }
@@ -162,12 +162,6 @@ public class HostileWanderAI extends WanderAI implements TimerInterface {
   public void onTimerFire(Timer timer) throws SlickException {
     if (lookIfICanSeePlayerTimer == timer && (getState() == State.WANDERING || getState() == State.TARGET_PLAYER || getState() == State.WANDERING)) {
       checkIfISee();
-    //} else if (timer == attackTimer) {
-      /*if (this.getOwner().distanceTo(this.getTarget()) > MIN_DISTANCE_TO_ATTACK) {
-        this.setState(State.TARGET_PLAYER);
-      } else {
-        attack();
-      }*/
     }
   }
 
@@ -198,6 +192,29 @@ public class HostileWanderAI extends WanderAI implements TimerInterface {
       this.minAttackDistance = Math.min((int)this.minAttackDistance, attack.getDistance());
     }
     Collections.sort(this.attacks);
+  }
+
+  @Override
+  public void onPathFound(Path path) throws SlickException {
+    if (this.getState() == State.CHECK_PLAYER_LAST_POSITION) {
+      if (path == null) {
+        this.setState(State.WANDERING);
+      } else {
+        pathToLastSeenTargetPosition = path;
+      }
+    }
+  }
+
+  @Override
+  public void onPathComplete(Path pathToFollow) throws SlickException {
+    this.setState(State.IDLE);
+    checkIfISee();
+  }
+
+  @Override
+  public void onPathError(Path pathToFollow) throws SlickException {
+    this.setState(State.IDLE);
+    checkIfISee();
   }
 
 }

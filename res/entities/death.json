@@ -1,0 +1,22 @@
+{
+  "name": "death",
+  
+  "base": {
+    "health": 100,
+    "image": "death"
+  },
+  
+  "move": {
+    "speed": 0.0025,
+    "fly": false
+  },
+  
+  "attacks": [
+    {
+      "speed": 800,
+      "power": 4,
+      "type": "SwordAttack",
+      "distance": 1
+    }
+  ]
+}

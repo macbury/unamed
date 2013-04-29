@@ -36,7 +36,7 @@ public class GameplayScene extends BasicGameState implements LevelLoaderInterfac
     input.clearKeyPressedRecord();
     if (Level.shared() == null) {
       LevelLoader.defferedLoad(this);
-      SoundManager.shared().music(SoundManager.shared().caveMusic);
+     // SoundManager.shared().music(SoundManager.shared().caveMusic);
       SoundManager.shared().loop(SoundManager.shared().drips);
     }
   }

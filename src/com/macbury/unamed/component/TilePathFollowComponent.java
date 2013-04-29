@@ -36,13 +36,19 @@ public class TilePathFollowComponent extends Component implements TileBasedMovem
 
   
   public void followPath(Path pathToFollow) throws SlickException {
+    
     if (this.tileMovement.isMoving()) {
       throw new SlickException("Cannot follow path while moving!");
     }
     
-    this.currentStep  = 0;
+    reset();
     this.pathToFollow = pathToFollow;
     nextStep();
+  }
+  
+  public void reset() {
+    this.pathToFollow = null;
+    this.currentStep  = 0;
   }
 
   private boolean nextStep() throws SlickException {
@@ -89,6 +95,4 @@ public class TilePathFollowComponent extends Component implements TileBasedMovem
   public void setDelegate(TileFollowCallback callback) {
     this.callback = callback;
   }
-  
-  
 }

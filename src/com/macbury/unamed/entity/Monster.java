@@ -10,6 +10,7 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.macbury.unamed.ai.HostileWanderAI;
 import com.macbury.unamed.combat.Damage;
+import com.macbury.unamed.component.Light;
 import com.macbury.unamed.component.RandomMovement;
 import com.macbury.unamed.component.TilePathFollowComponent;
 import com.macbury.unamed.npc.PlayerTriggers;
@@ -27,6 +28,11 @@ public class Monster extends Character implements PlayerTriggers {
     
     tileMovement.speed = MONSTER_DEFAULT_SPEED;
     tileMovement.playSoundForStep = false;
+    Light light = new Light();
+    light.setLightPower(2);
+    light.updateLight();
+    light.setUpdateFogOfWar(false);
+    addComponent(light);
     //setConfig();
   }
 
