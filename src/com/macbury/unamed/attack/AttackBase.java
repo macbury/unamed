@@ -18,6 +18,8 @@ public abstract class AttackBase implements TimerInterface, Comparable<AttackBas
     attackTimer.setDelegate(this);
     attackTimer.setEnabled(true);
     this.distance = 1;
+    attackTimer.setTime(300);
+    attackTimer.restart();
   }
   
   public void update(int delta) throws SlickException {

@@ -341,10 +341,8 @@ public abstract class Block {
       block.setId(input.readInt());
       block.setVisited(input.readBoolean());
     } catch (KryoException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     } catch (SlickException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
     return block;
@@ -359,7 +357,7 @@ public abstract class Block {
   }
   
   public String toString() {
-    return getClass().getSimpleName() + " at: " + x + "x" + y;
+    return "Block " + getClass().getSimpleName() + " at: " + x + "x" + y;
   }
 
   public boolean isHarvestable() {

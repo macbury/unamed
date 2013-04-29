@@ -2,7 +2,7 @@
   "name": "bat",
   
   "base": {
-    "health": 100,
+    "health": 10,
     "image": "bat"
   },
   
@@ -14,7 +14,7 @@
   "attacks": [
     {
       "speed": 1000,
-      "power": 2,
+      "power": 1,
       "type": "BiteAttack",
       "distance": 1
     }

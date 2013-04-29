@@ -16,10 +16,12 @@ import com.macbury.unamed.component.TilePathFollowComponent;
 import com.macbury.unamed.npc.PlayerTriggers;
 import com.macbury.unamed.util.MonsterManager;
 
-public class Monster extends Character implements PlayerTriggers {
+public class Monster extends Character {
   private static final float MONSTER_DEFAULT_SPEED = 0.0020f;
   public RandomMovement randomMovement;
   private String name;
+  
+  
   public Monster() throws SlickException {
     super();
     randomMovement = new RandomMovement();
@@ -28,17 +30,6 @@ public class Monster extends Character implements PlayerTriggers {
     
     tileMovement.speed = MONSTER_DEFAULT_SPEED;
     tileMovement.playSoundForStep = false;
-    Light light = new Light();
-    light.setLightPower(2);
-    light.updateLight();
-    light.setUpdateFogOfWar(false);
-    addComponent(light);
-    //setConfig();
-  }
-
-  @Override
-  public void onActionButton(Player player) throws SlickException {
-    this.getHealth().applyDamage(new Damage(10));
   }
 
   @Override

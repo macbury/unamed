@@ -27,10 +27,9 @@ import com.macbury.unamed.inventory.InventoryManager;
 import com.macbury.unamed.level.Level;
 import com.macbury.unamed.util.MonsterManager;
 
-public class HostileWanderAI extends WanderAI implements TimerInterface, PathFindingCallback, TileFollowCallback {
+public class HostileWanderAI extends WanderAI implements TimerInterface {
   private static final short LOOK_LOOP_TIME = 100;
   Timer lookIfICanSeePlayerTimer;
-  private Path pathToLastSeenTargetPosition;
   private ArrayList<AttackBase> attacks;
   private int minAttackDistance;
   private Short currentDistanceToTarget;
@@ -54,10 +53,13 @@ public class HostileWanderAI extends WanderAI implements TimerInterface, PathFin
     switch(getState()) {
       
       case CHECK_PLAYER_LAST_POSITION:
-        if (pathToLastSeenTargetPosition != null && !this.tileMovement.isMoving()) {
-          this.tileFollowPath.followPath(this.pathToLastSeenTargetPosition);
-          this.tileFollowPath.setDelegate(this);
-          pathToLastSeenTargetPosition = null;
+        if (lastTargetPosition != null) {
+          this.tileMovement.lookAt(lastTargetPosition.getTileX(), lastTargetPosition.getTileY());
+          if (!this.tileMovement.moveForward() || (this.getOwner().getTileX() == lastTargetPosition.getTileX() && this.getOwner().getTileY() == lastTargetPosition.getTileY())) {
+            this.setState(State.WANDERING);
+          }
+        } else {
+          this.setState(State.WANDERING);
         }
       break;
     
@@ -77,16 +79,11 @@ public class HostileWanderAI extends WanderAI implements TimerInterface, PathFin
             this.tileMovement.lookAt(this.getTarget());
             if (!this.tileMovement.moveForward()) {
               this.setState(State.WANDERING);
-            } else {
-              this.setState(State.CHECK_PLAYER_LAST_POSITION);
-              lastTargetPosition = getTarget().getPosition();
-              PathFindingQueue.shared().findPathToPosition(this.getOwner(), lastTargetPosition, this);
             }
           } else {
             this.setState(State.ATTACK);
           }
         }
-        
       break;
     
       default:
@@ -95,6 +92,7 @@ public class HostileWanderAI extends WanderAI implements TimerInterface, PathFin
     }
   }
   
+
   private AttackBase getBestAttackForCurrentDistance() {
     for (AttackBase attack : this.attacks) {
       if (attack.getDistance() <= distanceToTarget()) {
@@ -117,13 +115,13 @@ public class HostileWanderAI extends WanderAI implements TimerInterface, PathFin
     //Log.info("Switching from state: " + old + " to " + next);
     
     if (next == State.CHECK_PLAYER_LAST_POSITION) {
-      this.tileFollowPath.reset();
-      this.tileFollowPath.enabled = true;
+      //this.tileFollowPath.reset();
+      //this.tileFollowPath.enabled = true;
     }
     
     if (old == State.CHECK_PLAYER_LAST_POSITION) {
-      this.tileFollowPath.reset();
-      this.tileFollowPath.enabled = false;
+      //this.tileFollowPath.reset();
+      //this.tileFollowPath.enabled = false;
     }
     
     if (next == State.WANDERING) {
@@ -153,7 +151,11 @@ public class HostileWanderAI extends WanderAI implements TimerInterface, PathFin
       this.setState(State.TARGET_PLAYER);
       setTarget(Level.shared().getPlayer());
     } else if (this.getState() != State.CHECK_PLAYER_LAST_POSITION) {
-      this.setState(State.WANDERING);
+      if (this.getTarget() != null) {
+        this.setState(State.CHECK_PLAYER_LAST_POSITION);
+      } else {
+        this.setState(State.WANDERING);
+      }
       setTarget(null);
     }
   }
@@ -178,7 +180,6 @@ public class HostileWanderAI extends WanderAI implements TimerInterface, PathFin
         attack.setConfig(attackJSON);
         attacks.add(attack);
       } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-        // TODO Auto-generated catch block
         e.printStackTrace();
       }
     }
@@ -193,28 +194,4 @@ public class HostileWanderAI extends WanderAI implements TimerInterface, PathFin
     }
     Collections.sort(this.attacks);
   }
-
-  @Override
-  public void onPathFound(Path path) throws SlickException {
-    if (this.getState() == State.CHECK_PLAYER_LAST_POSITION) {
-      if (path == null) {
-        this.setState(State.WANDERING);
-      } else {
-        pathToLastSeenTargetPosition = path;
-      }
-    }
-  }
-
-  @Override
-  public void onPathComplete(Path pathToFollow) throws SlickException {
-    this.setState(State.IDLE);
-    checkIfISee();
-  }
-
-  @Override
-  public void onPathError(Path pathToFollow) throws SlickException {
-    this.setState(State.IDLE);
-    checkIfISee();
-  }
-
 }

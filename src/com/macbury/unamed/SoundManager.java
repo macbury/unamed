@@ -29,6 +29,7 @@ public class SoundManager {
   public Audio cancelSound;
   public Audio placeBlockSound;
   public Audio removeBlock;
+  public Audio blowSound;
   int lastIndex = 0;
   public Audio dig;
   public Audio theme;
@@ -93,7 +94,7 @@ public class SoundManager {
     this.bite             = loadOgg("effects/Bite");
     this.sword            = loadOgg("effects/Sword");
     this.drips            = loadOgg("effects/Drips");
-    
+    this.blowSound        = loadOgg("effects/Blow");
     this.caveMusic        = loadOgg("music/main");
     
     this.stepsStone       = new ArrayList<Audio>();

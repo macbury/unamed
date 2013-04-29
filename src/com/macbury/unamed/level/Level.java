@@ -35,6 +35,7 @@ import com.macbury.unamed.entity.Player;
 import com.macbury.unamed.entity.ReusableEntity;
 import com.macbury.unamed.intefrace.InterfaceManager;
 import com.macbury.unamed.inventory.InventoryItem;
+import com.macbury.unamed.util.MonsterManager;
 
 public class Level implements TimerInterface {
   private static Level shared;
@@ -72,6 +73,7 @@ public class Level implements TimerInterface {
   public Stack<RaycastHitResult> raycastDebugList;
   
   private HashMap<Integer, Color> lightColorMap;
+  public Random random;
   
   public static Level shared() {
     return shared;
@@ -107,9 +109,8 @@ public class Level implements TimerInterface {
     this.refreshEntityTimer = new Timer(REFRESH_ENTITY_TIMER, this);
     this.raycastDebugList   = new Stack<RaycastHitResult>();
     this.reusableEntities   = new ArrayList<Entity>();
-    
+    this.random = new Random();
   }
-
   
   public Entity getEntityForTilePosition(int x, int y) {
     for (Entity e : this.entities) {
@@ -268,6 +269,7 @@ public class Level implements TimerInterface {
   }
 
   public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
+    MonsterManager.shared().update(delta);
     BlockResources.shared().update(delta);
     ParticleManager.shared().update(delta);
     refreshEntityTimer.update(delta);
@@ -432,7 +434,7 @@ public class Level implements TimerInterface {
 
   public Sidewalk findRandomSidewalk() {
     Sidewalk dirt = null;
-    Random random = new Random();
+    
     while(dirt == null) {
       int x = random.nextInt(this.mapTileWidth);
       int y = random.nextInt(this.mapTileHeight);
@@ -765,5 +767,27 @@ public class Level implements TimerInterface {
       e.printStackTrace();
       return null;
     }
+  }
+  
+  public Block getPassableInvisibleBlockInArea() {
+    int sx = (int) this.updateArea.getX() / Core.TILE_SIZE;
+    int sy = (int) this.updateArea.getY() / Core.TILE_SIZE;
+    int tw = (int) (this.updateArea.getWidth() / Core.TILE_SIZE);
+    int th = (int) (this.updateArea.getHeight() / Core.TILE_SIZE);
+    
+    int tryies = tw * th / 2;
+    while (tryies > 0) {
+      int x = random.nextInt(tw) + sx;
+      int y = random.nextInt(th) + sy;
+      
+      Block block = getBlockForPosition(x, y);
+      if (!block.isVisible() && block.isSidewalk()) {
+        return block;
+      }
+      
+      tryies--;
+    }
+    
+    return null;
   }
 }

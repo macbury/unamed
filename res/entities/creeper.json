@@ -1,0 +1,22 @@
+{
+  "name": "creeper",
+  
+  "base": {
+    "health": 14,
+    "image": "creeper"
+  },
+  
+  "move": {
+    "speed": 0.0030,
+    "fly": true
+  },
+  
+  "attacks": [
+    {
+      "speed": 900,
+      "power": 4,
+      "type": "PunchAttack",
+      "distance": 1
+    }
+  ]
+}

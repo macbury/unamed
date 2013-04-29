@@ -9,6 +9,8 @@ import org.newdawn.slick.state.StateBasedGame;
 import com.macbury.unamed.Core;
 import com.macbury.unamed.InputManager;
 import com.macbury.unamed.SoundManager;
+import com.macbury.unamed.attack.PunchAttack;
+import com.macbury.unamed.combat.Damage;
 import com.macbury.unamed.component.CharacterAnimation;
 import com.macbury.unamed.component.HealthComponent;
 import com.macbury.unamed.component.HitBox;
@@ -39,7 +41,7 @@ public class Player extends Character {
   final static int MAX_PLACING_TIME                   = 250;
   public static final int MAX_TAKING_TIME            = 300;
   private static final short START_HEALTH             = 100;
-  private static final float PLAYER_REGENERATE_FACTOR = 0.1F;
+  private static final float PLAYER_REGENERATE_FACTOR = 0.45f;
   
   private boolean pressedPlaceKey   = false;
   private boolean pressedTakeKey    = false;
@@ -47,6 +49,8 @@ public class Player extends Character {
   private int buttonPlacingThrottle = 0;
   private int buttonTakingThrottle  = 0;
   KeyboardMovement   keyboardMovement;
+
+  private PunchAttack punchAttack;
   
   public void setKeyboardEnabled(boolean enabled) {
     this.keyboardMovement.enabled = enabled;
@@ -68,11 +72,16 @@ public class Player extends Character {
     
     keyboardMovement = new KeyboardMovement();
     addComponent(keyboardMovement);
+    
+    this.punchAttack = new PunchAttack();
+    punchAttack.setPower((short) 2);
+    
   }
 
   @Override
   public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
     super.update(gc, sb, delta);
+    this.punchAttack.update(delta);
     SoundManager.shared().setPosition(getTileX(), getTileY());
     
     if (this.keyboardMovement.enabled) {
@@ -210,7 +219,10 @@ public class Player extends Character {
     }
     
     if (entityInFront != null) {
-      if (BlockEntity.class.isInstance(entityInFront)) {
+      if (Monster.class.isInstance(entityInFront)) {
+        Monster monster = (Monster)entityInFront;
+        punchAttack.attack(this, monster);
+      } else if (BlockEntity.class.isInstance(entityInFront)) {
         BlockEntity usableEntity = (BlockEntity) entityInFront;
         
         InventoryItem item = usableEntity.harvest(currentHarvestPower());

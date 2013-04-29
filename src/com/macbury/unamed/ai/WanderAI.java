@@ -11,7 +11,7 @@ public class WanderAI extends AI {
 
   protected RandomMovement randomMovement;
   protected TileBasedMovement tileMovement;
-  protected TilePathFollowComponent tileFollowPath;
+  //protected TilePathFollowComponent tileFollowPath;
 
   @Override
   public void update(int delta) throws SlickException {
@@ -22,7 +22,7 @@ public class WanderAI extends AI {
   public void onStart() throws SlickException {
     this.randomMovement = (RandomMovement) this.getOwner().getComponent(RandomMovement.class);
     this.tileMovement   = (TileBasedMovement) this.getOwner().getComponent(TileBasedMovement.class);
-    this.tileFollowPath = (TilePathFollowComponent) this.getOwner().getComponent(TilePathFollowComponent.class);
+    //this.tileFollowPath = (TilePathFollowComponent) this.getOwner().getComponent(TilePathFollowComponent.class);
     this.randomMovement.enabled = true;
     if (this.randomMovement == null) {
       throw new SlickException("Entity " + this.getOwner().getClass().getSimpleName() + " requires component RandomMovement!");
@@ -30,9 +30,9 @@ public class WanderAI extends AI {
     if (this.tileMovement == null) {
       throw new SlickException("Entity " + this.getOwner().getClass().getSimpleName() + " requires component TileBasedMovement!");
     }
-    if (this.tileFollowPath == null) {
+    /*if (this.tileFollowPath == null) {
       throw new SlickException("Entity " + this.getOwner().getClass().getSimpleName() + " requires component TilePathFollowComponent!");
-    }
+    }*/
   }
 
   @Override

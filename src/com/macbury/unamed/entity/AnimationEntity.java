@@ -42,7 +42,7 @@ public class AnimationEntity extends ReusableEntity implements TimerInterface {
   
   public void setAnimation(Animation animation) {
     AnimatedSprite sprite = (AnimatedSprite) getComponent(AnimatedSprite.class);
-    sprite.setCurrentAnimation(animation);
+    sprite.setCurrentAnimation(animation.copy());
     //his.timer.setTime((short) animation.getDuration(0));
   }
 }

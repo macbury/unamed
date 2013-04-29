@@ -68,7 +68,7 @@ public class PathFindingQueue implements TileBasedMap, Runnable {
     }
   }
   
-  private Path findPath(int sx, int sy, int ex, int ey) {
+  public Path findPath(int sx, int sy, int ex, int ey) {
     Log.debug("Searching path from: "+ sx + "x" + sy + " to " + ex + "x" + ey);
     return getPathFinder().findPath(null, sx, sy, ex, ey);
   }

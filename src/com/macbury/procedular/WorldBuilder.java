@@ -37,6 +37,7 @@ import com.macbury.unamed.level.Rock;
 import com.macbury.unamed.level.Sand;
 import com.macbury.unamed.level.Sidewalk;
 import com.macbury.unamed.level.Water;
+import com.macbury.unamed.util.MonsterManager;
 
 public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCallback, DungeonBSPNodeRoomGenerateCallback {
   private static final int SEED_THROTTLE      = 1000;
@@ -597,6 +598,7 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
   public void save() throws SlickException {
     LevelLoader ll = new LevelLoader(level);
     try {
+      MonsterManager.shared().fillWorldWithMonsters();
       level.spawnPlayer();
     } catch (SlickException e) {
       // TODO Auto-generated catch block

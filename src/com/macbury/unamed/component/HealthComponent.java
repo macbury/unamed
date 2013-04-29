@@ -130,7 +130,7 @@ public class HealthComponent extends Component implements TimerInterface {
   @Override
   public void onTimerFire(Timer timer) {
     if (timer == regenerateTimer) {
-      this.health += Math.min(this.maxHelath* this.regenerateFactor, 1);
+      this.health += Math.min((float)this.maxHelath* this.regenerateFactor, 1);
     }
     if (this.health > this.maxHelath) {
       this.health = this.maxHelath;
