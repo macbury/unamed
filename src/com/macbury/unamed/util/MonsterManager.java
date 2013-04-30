@@ -168,9 +168,9 @@ public class MonsterManager implements TimerInterface {
   }
   
   public void fillWorldWithMonsters() throws SlickException {
-    for (int i = 0; i < MAX_MONSTER_POPULATION; i++) {
+    for (int i = 0; i < MAX_MONSTER_POPULATION - MAX_RESPAWN_MONSTER_AT_ONCE * 2; i++) {
       Block block = Level.shared().findRandomSidewalk();
-      Monster monster = getRandomMonster();
+      Monster monster = createNewMonster();
       monster.setTileX(block.x);
       monster.setTileY(block.y);
       Log.info("Spawning monster on position: " + block.toString());
