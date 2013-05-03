@@ -21,7 +21,7 @@ import com.macbury.unamed.level.Cobblestone;
 import com.macbury.unamed.level.Level;
 
 public class MonsterManager implements TimerInterface {
-  private static final int MAX_MONSTER_POPULATION = 350;
+  private static final int MAX_MONSTER_POPULATION = 200;
   private static final int MAX_RESPAWN_MONSTER_AT_ONCE = 5;
 
   private static final short UPDATE_POPULATION_EVERY = 7500;

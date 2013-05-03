@@ -37,7 +37,7 @@ public abstract class Entity implements Comparable<Entity> {
   public  boolean   solid              = false;
   public  boolean   collidable         = false;
   public  boolean   visibleUnderTheFog = false;
-  
+  private boolean   haveHud            = false;
   public int z                    = ENTITY_BASE_LAYER;
   private Light lightComponent    = null;
   private HealthComponent health  = null;
@@ -57,6 +57,10 @@ public abstract class Entity implements Comparable<Entity> {
     setRect(new Rectangle(0, 0, Core.TILE_SIZE, Core.TILE_SIZE));
   }
   
+  public boolean haveHud() {
+    return haveHud;
+  }
+  
   public void addComponent(Component component) throws SlickException {
     if(Light.class.isInstance(component)){
       if (lightComponent != null) {
@@ -70,6 +74,10 @@ public abstract class Entity implements Comparable<Entity> {
         throw new SlickException("You can only assign one health component to entity");
       }
       health = (HealthComponent) component;
+    }
+    
+    if (HUDComponentInterface.class.isInstance(component)) {
+      this.haveHud = true;
     }
     
     component.setOwnerEntity(this);
@@ -112,7 +120,25 @@ public abstract class Entity implements Comparable<Entity> {
       }
     }
   }
-
+  
+  public void renderHUD(GameContainer gc, StateBasedGame sb, Graphics gr) throws SlickException { 
+    if (!this.haveHud) {
+      throw new SlickException("dont have hud!");
+    }
+    
+    gr.pushTransform();
+    gr.translate(this.getX(), this.getY());
+    
+    for(Component component : components) {
+      if (HUDComponentInterface.class.isInstance(component) && component.enabled) {
+        HUDComponentInterface c = (HUDComponentInterface) component;
+        c.onHUDRender(gc, sb, gr);
+      }
+    }
+    
+    gr.popTransform();
+  }
+  
   public void render(GameContainer gc, StateBasedGame sb, Graphics gr) throws SlickException {
     gr.pushTransform();
     gr.translate(this.getX(), this.getY());

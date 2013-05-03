@@ -14,9 +14,10 @@ import com.macbury.unamed.Core;
 import com.macbury.unamed.Timer;
 import com.macbury.unamed.TimerInterface;
 import com.macbury.unamed.combat.Damage;
+import com.macbury.unamed.entity.HUDComponentInterface;
 import com.macbury.unamed.intefrace.InterfaceManager;
 
-public class HealthComponent extends Component implements TimerInterface {
+public class HealthComponent extends Component implements TimerInterface, HUDComponentInterface {
   private short health    = 1;
   private short maxHelath = 1;
   private float regenerateFactor = 0.1f;
@@ -60,12 +61,7 @@ public class HealthComponent extends Component implements TimerInterface {
 
   @Override
   public void render(GameContainer gc, StateBasedGame sb, Graphics gr) throws SlickException {
-    if (this.damages != null && this.damages.size() > 0) {
-      for (int i = 0; i < damages.size(); i++) {
-        Damage damage = damages.get(i);
-        Core.instance().getFont().drawString(0, (float)DAMAGE_ANIMATION_OFFSET_Y - DAMAGE_ANIMATION_OFFSET_Y * ((float)damage.getLifeTime() / (float)DAMAGE_ANIMATION_LIFESPAN), "- "+damage.getPower());
-      }
-    }
+    
   }
 
   public short getHealth() {
@@ -134,6 +130,16 @@ public class HealthComponent extends Component implements TimerInterface {
     }
     if (this.health > this.maxHelath) {
       this.health = this.maxHelath;
+    }
+  }
+
+  @Override
+  public void onHUDRender(GameContainer gc, StateBasedGame sb, Graphics gr) throws SlickException {
+    if (this.damages != null && this.damages.size() > 0) {
+      for (int i = 0; i < damages.size(); i++) {
+        Damage damage = damages.get(i);
+        Core.instance().getFont().drawString(0, (float)DAMAGE_ANIMATION_OFFSET_Y - DAMAGE_ANIMATION_OFFSET_Y * ((float)damage.getLifeTime() / (float)DAMAGE_ANIMATION_LIFESPAN), "- "+damage.getPower());
+      }
     }
   }
 

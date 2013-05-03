@@ -66,8 +66,9 @@ public class Level implements TimerInterface {
   Entity        cameraTarget;
   Player        player;
   private ArrayList<Entity> entities;
-  private Stack<Block> visibleBlocks;
-  private Stack<Entity> collidableEntities;
+  private Stack<Entity>     hudEntities;
+  private Stack<Block>      visibleBlocks;
+  private Stack<Entity>     collidableEntities;
   private ArrayList<Entity> reusableEntities;
 
   public Stack<RaycastHitResult> raycastDebugList;
@@ -105,6 +106,7 @@ public class Level implements TimerInterface {
     this.blockResources     = BlockResources.shared();
     this.shadowMap          = ImagesManager.shared().getShadowMapSpriteSheet();
     this.visibleBlocks      = new Stack<Block>();
+    this.hudEntities        = new Stack<Entity>();
     this.lightColorMap      = new HashMap<Integer, Color>();
     this.refreshEntityTimer = new Timer(REFRESH_ENTITY_TIMER, this);
     this.raycastDebugList   = new Stack<RaycastHitResult>();
@@ -211,6 +213,9 @@ public class Level implements TimerInterface {
       Entity e    = this.entities.get(i);
       if (this.viewPort.intersects(e.getRect()) && e.isOnVisibleBlock()) {
         e.render(gc, sb, gr);
+        if (e.haveHud()) {
+          hudEntities.push(e);
+        }
       }
     }
     
@@ -229,6 +234,16 @@ public class Level implements TimerInterface {
       }
       
       gr.fillRect(block.x*Core.TILE_SIZE, block.y*Core.TILE_SIZE, Core.TILE_SIZE, Core.TILE_SIZE);
+    }
+    
+    Entity entity = null;
+    while(true) {
+      try {
+        entity = hudEntities.pop();
+        entity.renderHUD(gc, sb, gr);
+      } catch (EmptyStackException e) {
+        break;
+      }
     }
     
     if (Core.DEBUG_RAYCAST) {
@@ -770,10 +785,10 @@ public class Level implements TimerInterface {
   }
   
   public Block getPassableInvisibleBlockInArea() {
-    int sx = (int) this.updateArea.getX() / Core.TILE_SIZE;
-    int sy = (int) this.updateArea.getY() / Core.TILE_SIZE;
-    int tw = (int) (this.updateArea.getWidth() / Core.TILE_SIZE);
-    int th = (int) (this.updateArea.getHeight() / Core.TILE_SIZE);
+    int sx = (int) this.viewPort.getX() / Core.TILE_SIZE;
+    int sy = (int) this.viewPort.getY() / Core.TILE_SIZE;
+    int tw = (int) (this.viewPort.getWidth() / Core.TILE_SIZE);
+    int th = (int) (this.viewPort.getHeight() / Core.TILE_SIZE);
     
     int tryies = tw * th / 2;
     while (tryies > 0) {

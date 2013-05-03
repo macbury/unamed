@@ -39,7 +39,7 @@ public class Player extends Character {
   private static final int LIGHT_POWER                = 10;
   
   final static int MAX_PLACING_TIME                   = 250;
-  public static final int MAX_TAKING_TIME            = 300;
+  public static final int MAX_TAKING_TIME             = 300;
   private static final short START_HEALTH             = 100;
   private static final float PLAYER_REGENERATE_FACTOR = 0.45f;
   
@@ -75,7 +75,6 @@ public class Player extends Character {
     
     this.punchAttack = new PunchAttack();
     punchAttack.setPower((short) 2);
-    
   }
 
   @Override
