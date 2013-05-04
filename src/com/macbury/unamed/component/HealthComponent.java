@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
@@ -62,8 +63,8 @@ public class HealthComponent extends Component implements TimerInterface {
       this.health = 0;
     }
     
-    
-    TextParticle.spawnTextAt("-"+damage.getPower(), (int)this.owner.getCenteredPosition().getX(), (int)this.owner.getCenteredPosition().getY());
+    Color color = (Level.shared().getPlayer() == this.owner) ? Color.orange : Color.red;
+    TextParticle.spawnTextFor("-"+damage.getPower(), this.owner, color);
     Log.debug("Apply damage: " + damage.getPower());
   }
 

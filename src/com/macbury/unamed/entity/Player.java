@@ -11,6 +11,7 @@ import com.macbury.unamed.InputManager;
 import com.macbury.unamed.SoundManager;
 import com.macbury.unamed.Timer;
 import com.macbury.unamed.TimerInterface;
+import com.macbury.unamed.attack.HarvestAttack;
 import com.macbury.unamed.attack.PunchAttack;
 import com.macbury.unamed.block.Block;
 import com.macbury.unamed.block.Cobblestone;
@@ -48,7 +49,7 @@ public class Player extends Character implements TimerInterface {
   
   KeyboardMovement   keyboardMovement;
   
-  private Timer takeActionTimer;
+  private HarvestAttack harvestAttack;
   private Timer placeActionTimer;
   
   public void setKeyboardEnabled(boolean enabled) {
@@ -72,7 +73,7 @@ public class Player extends Character implements TimerInterface {
     keyboardMovement = new KeyboardMovement();
     addComponent(keyboardMovement);
     
-    takeActionTimer  = new Timer(MAX_TAKING_TIME, this);
+    harvestAttack = new HarvestAttack();
     placeActionTimer = new Timer(MAX_PLACING_TIME, this);
 
   }
@@ -80,7 +81,7 @@ public class Player extends Character implements TimerInterface {
   @Override
   public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
     super.update(gc, sb, delta);
-    this.takeActionTimer.update(delta);
+    this.harvestAttack.update(delta);
     this.placeActionTimer.update(delta);
     SoundManager.shared().setPosition(getTileX(), getTileY());
     
@@ -89,12 +90,7 @@ public class Player extends Character implements TimerInterface {
 
       if (!tileMovement.isMoving()) {
         if (input.isKeyDown(Core.CANCEL_KEY)) {
-          if (!this.takeActionTimer.running()) {
-            useElementInFrontOfMe();
-            this.takeActionTimer.start();
-          } else {
-            attackEntityInFrontOfMe();
-          }
+          attackOrHarvestElementInFrontOfMe();
         }
         
         if(input.isKeyDown(Core.ACTION_KEY)) {
@@ -138,14 +134,31 @@ public class Player extends Character implements TimerInterface {
   }
 
 
-  private void attackEntityInFrontOfMe() throws SlickException {
+  private void attackOrHarvestElementInFrontOfMe() throws SlickException {
     Entity entityInFront = getEntityInFront();
     
-    if (Monster.class.isInstance(entityInFront)) {
-      Monster monster = (Monster)entityInFront;
-      InventoryManager.shared().getCurrentAttack().attack(this, monster);
+    if (entityInFront == null) {
+      Vector2f frontTilePosition = getTilePositionInFront();
+      Block block = this.getLevel().getBlockForPosition((int)frontTilePosition.x, (int)frontTilePosition.y);
+      if (HarvestableBlock.class.isInstance(block)) {
+        HarvestingBlock harvestingEntityAction = new HarvestingBlock();
+        this.getLevel().addEntity(harvestingEntityAction);
+        harvestingEntityAction.setBlock((HarvestableBlock) block);
+        entityInFront = (Entity)harvestingEntityAction;
+      }
+    }
+    
+    if (entityInFront != null) {
+      if (Monster.class.isInstance(entityInFront)) {
+        InventoryManager.shared().getCurrentAttack().attack(this, entityInFront);
+      } else if (BlockEntity.class.isInstance(entityInFront)) {
+        harvestAttack.attack(this, entityInFront);
+      }
+    } else {
+      //SoundManager.shared().miss.playAsSoundEffect(1.0f, 1.0f, false);
     }
   }
+
 
   private void placeOrUseElementInFrontOfMe() throws SlickException {
     Vector2f frontTilePosition = getTilePositionInFront();
@@ -190,7 +203,7 @@ public class Player extends Character implements TimerInterface {
     }
   }
   
-  private int currentHarvestPower() throws SlickException {
+  public int currentHarvestPower() throws SlickException {
     InventoryItem currentItem = InventoryManager.shared().getCurrentHotBarItem();
     
     if (currentItem == null) {
@@ -200,46 +213,6 @@ public class Player extends Character implements TimerInterface {
     }
   }
 
-  private void useElementInFrontOfMe() throws SlickException {
-
-    Entity entityInFront = getEntityInFront();
-    
-    if (entityInFront == null) {
-      Vector2f frontTilePosition = getTilePositionInFront();
-      Block block = this.getLevel().getBlockForPosition((int)frontTilePosition.x, (int)frontTilePosition.y);
-      if (HarvestableBlock.class.isInstance(block)) {
-        HarvestingBlock harvestingEntityAction = new HarvestingBlock();
-        this.getLevel().addEntity(harvestingEntityAction);
-        harvestingEntityAction.setBlock((HarvestableBlock) block);
-        entityInFront = (Entity)harvestingEntityAction;
-      }
-    }
-    
-    if (entityInFront != null) {
-      if (Monster.class.isInstance(entityInFront)) {
-        attackEntityInFrontOfMe();
-      } else if (BlockEntity.class.isInstance(entityInFront)) {
-        BlockEntity usableEntity = (BlockEntity) entityInFront;
-        
-        InventoryItem item = usableEntity.harvest(currentHarvestPower());
-        
-        TextParticle.spawnTextAt("-"+currentHarvestPower(), (int)usableEntity.getCenteredPosition().getX(), (int)usableEntity.getCenteredPosition().getY());
-        
-        DigEffectEntity punchEntity = (DigEffectEntity) Level.shared().getUsedEntity(DigEffectEntity.class);
-        punchEntity.setAnimationByItem(InventoryManager.shared().getCurrentHotBarItem());
-        this.getLevel().addEntity(punchEntity);
-        punchEntity.setTilePosition(entityInFront.getTileX(), entityInFront.getTileY());
-        
-        if (item == null) {
-          SoundManager.shared().playDigForBlock(entityInFront.getBlock());
-        } else {
-          SoundManager.shared().pop.playAsSoundEffect(1.0f, 1.0f, false);
-        }
-      }
-    } else {
-      SoundManager.shared().miss.playAsSoundEffect(1.0f, 1.0f, false);
-    }
-  }
 
   private Entity getEntityInFront() {
     Vector2f frontTilePosition = getTilePositionInFront();

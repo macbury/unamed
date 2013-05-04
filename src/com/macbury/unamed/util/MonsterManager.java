@@ -17,13 +17,15 @@ import com.macbury.unamed.Timer;
 import com.macbury.unamed.TimerInterface;
 import com.macbury.unamed.block.Block;
 import com.macbury.unamed.block.Cobblestone;
+import com.macbury.unamed.entity.Entity;
 import com.macbury.unamed.entity.Monster;
 import com.macbury.unamed.level.Level;
 
 public class MonsterManager implements TimerInterface {
-  private static final int MAX_MONSTER_POPULATION = 200;
+  private static final int MAX_MONSTER_POPULATION      = 200;
   private static final int MAX_RESPAWN_MONSTER_AT_ONCE = 5;
-
+  private static final int MIN_MONSTER_DENSITY         = 10;
+  
   private static final short UPDATE_POPULATION_EVERY = 7500;
   
   private static MonsterManager shared;
@@ -31,7 +33,7 @@ public class MonsterManager implements TimerInterface {
   private HashMap<String, JSONObject> monsterConfigs;
 
   private int lastIndex;
-
+  
   private Timer updatePopulationTimer;
   
   public MonsterManager() {
@@ -149,19 +151,12 @@ public class MonsterManager implements TimerInterface {
 
   @Override
   public void onTimerFire(Timer timer) throws SlickException {
-    spawnMonster();
-    
-    int times = MAX_MONSTER_POPULATION - this.population.size();
-    Log.info("Will spawn monsters: "+ times);
-    for (int i = 0; i < times; i++) {
+    ArrayList<Entity> visibleMonsters = Level.shared().entitiesInRect(Level.shared().getUpdateArea(), Monster.class);
+    int needToSpawn = MIN_MONSTER_DENSITY - visibleMonsters.size();
+    Log.info("There are "+ visibleMonsters.size() + " on screen, will spawn another: "+ needToSpawn);
+    while(needToSpawn >= 0) {
       spawnMonster();
-    }
-    
-    if (times <= 0) {
-      times = Level.shared().random.nextInt(MAX_RESPAWN_MONSTER_AT_ONCE) + 1;
-      for (int i = 0; i < times; i++) {
-        spawnMonster();
-      }
+      needToSpawn--;
     }
     
     timer.setTime(UPDATE_POPULATION_EVERY + Level.shared().random.nextInt(UPDATE_POPULATION_EVERY));
@@ -178,7 +173,7 @@ public class MonsterManager implements TimerInterface {
   }
 
   private void spawnMonster() throws SlickException {
-    Block block = Level.shared().getPassableInvisibleBlockInArea();
+    Block block = Level.shared().getPassableInvisibleBlockInRect(Level.shared().getUpdateArea());
     
     if (block != null) {
       Log.info("Spawning monster on pos: " + block.toString());

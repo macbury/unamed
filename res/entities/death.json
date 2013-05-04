@@ -2,7 +2,7 @@
   "name": "death",
   
   "base": {
-    "health": 7,
+    "health": 11,
     "image": "death"
   },
   

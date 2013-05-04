@@ -47,4 +47,10 @@ public class DigEffectEntity extends ReusableEntity implements TimerInterface {
   public void onReuse() {
     this.timer.restart();
   }
+  
+  @Override
+  public boolean allowInteraction() {
+    return false;
+  }
+
 }

@@ -2,7 +2,7 @@
   "name": "slime",
   
   "base": {
-    "health": 4,
+    "health": 6,
     "image": "slime"
   },
   

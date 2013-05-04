@@ -32,11 +32,14 @@ public abstract class AttackBase implements TimerInterface, Comparable<AttackBas
     timer.stop();
   }
 
-  public void attack(Entity hunter, Entity prey) throws SlickException {
+  public boolean attack(Entity hunter, Entity prey) throws SlickException {
     if (this.canAttack) {
       this.onAttack(hunter, prey);
       attackTimer.start();
       this.canAttack = false;
+      return true;
+    } else {
+      return false;
     }
   }
   

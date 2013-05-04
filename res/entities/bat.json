@@ -2,7 +2,7 @@
   "name": "bat",
   
   "base": {
-    "health": 6,
+    "health": 8,
     "image": "bat"
   },
   

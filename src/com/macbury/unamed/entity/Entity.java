@@ -38,6 +38,7 @@ public abstract class Entity implements Comparable<Entity> {
   public  boolean   collidable         = false;
   public  boolean   visibleUnderTheFog = false;
   private boolean   haveHud            = false;
+
   public int z                    = ENTITY_BASE_LAYER;
   private Light lightComponent    = null;
   private HealthComponent health  = null;
@@ -435,5 +436,12 @@ public abstract class Entity implements Comparable<Entity> {
   public void setPositionUsingEntityCenter(Entity owner) {
     Position pos = owner.getCenteredPosition();
     this.setPosition((int)pos.getX(), (int)pos.getY());
+  }
+  
+  /*
+   * Allow player interaction for harvest
+   */
+  public boolean allowInteraction() {
+    return true;
   }
 }

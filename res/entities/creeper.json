@@ -2,7 +2,7 @@
   "name": "creeper",
   
   "base": {
-    "health": 8,
+    "health": 10,
     "image": "creeper"
   },
   

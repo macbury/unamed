@@ -100,7 +100,7 @@ public class Level implements TimerInterface {
     this.cameraTarget      = null;
     this.refreshEntityTimer.stop();
     this.viewPort          = null;
-    this.updateArea        = null;
+    this.setUpdateArea(null);
     this.reusableEntities  = null;
     shared                 = null;
     PathFindingQueue.exit();
@@ -119,12 +119,12 @@ public class Level implements TimerInterface {
     this.refreshEntityTimer = new Timer(REFRESH_ENTITY_TIMER, this);
     this.raycastDebugList   = new Stack<RaycastHitResult>();
     this.reusableEntities   = new ArrayList<Entity>();
-    this.random = new Random();
+    this.random             = new Random();
   }
   
   public Entity getEntityForTilePosition(int x, int y) {
     for (Entity e : this.entities) {
-      if (e.getTileX() == x && e.getTileY() == y) {
+      if (e.allowInteraction() && e.getTileX() == x && e.getTileY() == y) {
         return e;
       }
     }
@@ -300,7 +300,7 @@ public class Level implements TimerInterface {
     
     for (int i = 0; i < this.entities.size(); i++) {
       Entity e    = this.entities.get(i);
-      if (this.updateArea.intersects(e.getRect())) {
+      if (this.getUpdateArea().intersects(e.getRect())) {
         e.update(gc, sb, delta);
         if (e.collidable && !InterfaceManager.shared().shouldBlockGamePlay()) {
           collidableEntities.add(e);
@@ -354,9 +354,9 @@ public class Level implements TimerInterface {
   public void setupViewport(GameContainer gc) {
     if (getViewPort() == null) {
       this.viewPort   = new Rectangle(0, 0, gc.getWidth()+Core.TILE_SIZE, gc.getHeight()+Core.TILE_SIZE);
-      this.updateArea = new Rectangle(0, 0, Math.round(this.viewPort.getWidth()*2.5), Math.round(this.viewPort.getHeight()*2.5));
+      this.setUpdateArea(new Rectangle(0, 0, Math.round(this.viewPort.getWidth()*2.5), Math.round(this.viewPort.getHeight()*2.5)));
       Log.info("Viewport size is: " + this.viewPort.getWidth() + "x" + this.viewPort.getHeight() );
-      Log.info("Update area size is: " + this.updateArea.getWidth() + "x" + this.updateArea.getHeight() );
+      Log.info("Update area size is: " + this.getUpdateArea().getWidth() + "x" + this.getUpdateArea().getHeight() );
       
       this.tileCountHorizontal =  Math.round((this.viewPort.getWidth() / Core.TILE_SIZE) + 2);
       this.tileCountVertical   =  Math.round((this.viewPort.getHeight() / Core.TILE_SIZE) + 2);
@@ -371,8 +371,8 @@ public class Level implements TimerInterface {
       float cy = cameraTarget.getRect().getCenterY();
       this.viewPort.setCenterX(cx);
       this.viewPort.setCenterY(cy);
-      this.updateArea.setCenterX(cx);
-      this.updateArea.setCenterY(cy);
+      this.getUpdateArea().setCenterX(cx);
+      this.getUpdateArea().setCenterY(cy);
     }
   }
   
@@ -787,17 +787,16 @@ public class Level implements TimerInterface {
       Log.debug("Initialized new: " + klass.getSimpleName());
       return klass.newInstance();
     } catch (InstantiationException | IllegalAccessException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
       return null;
     }
   }
   
-  public Block getPassableInvisibleBlockInArea() {
-    int sx = (int) this.viewPort.getX() / Core.TILE_SIZE;
-    int sy = (int) this.viewPort.getY() / Core.TILE_SIZE;
-    int tw = (int) (this.viewPort.getWidth() / Core.TILE_SIZE);
-    int th = (int) (this.viewPort.getHeight() / Core.TILE_SIZE);
+  public Block getPassableInvisibleBlockInRect(Rectangle rect) {
+    int sx = (int) rect.getX() / Core.TILE_SIZE;
+    int sy = (int) rect.getY() / Core.TILE_SIZE;
+    int tw = (int) (rect.getWidth() / Core.TILE_SIZE);
+    int th = (int) (rect.getHeight() / Core.TILE_SIZE);
     
     int tryies = tw * th / 2;
     while (tryies > 0) {
@@ -813,5 +812,25 @@ public class Level implements TimerInterface {
     }
     
     return null;
+  }
+  
+  public ArrayList<Entity> entitiesInRect(Rectangle rect, Class<? extends Entity> entityClass) {
+    ArrayList<Entity> foundEntities = new ArrayList<Entity>();
+    
+    for (Entity entity : this.entities) {
+      if (rect.intersects(entity.getRect()) && entityClass.isInstance(entity)) {
+        foundEntities.add(entity);
+      }
+    }
+    
+    return foundEntities;
+  }
+
+  public Rectangle getUpdateArea() {
+    return updateArea;
+  }
+
+  public void setUpdateArea(Rectangle updateArea) {
+    this.updateArea = updateArea;
   }
 }

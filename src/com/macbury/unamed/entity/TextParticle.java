@@ -1,5 +1,6 @@
 package com.macbury.unamed.entity;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
@@ -10,7 +11,7 @@ import com.macbury.unamed.component.TextComponent;
 import com.macbury.unamed.level.Level;
 
 public class TextParticle extends ReusableEntity implements TimerInterface  {
-  private static final short PARTICLE_LIFE_TIME = 800;
+  private static final short PARTICLE_LIFE_TIME = 600;
   static private float SPEED = 0.1f; 
   TextComponent textComponent;
   
@@ -74,17 +75,31 @@ public class TextParticle extends ReusableEntity implements TimerInterface  {
   public void setMsg(String msg) {
     this.textComponent.setText(msg);
   }
-
+  
+  public void setColor(Color color) {
+    this.textComponent.setColor(color);
+  }
+  
   @Override
   public void onTimerFire(Timer timer) throws SlickException {
     this.destroy();
   }
-
-  public static void spawnTextAt(String string, int x, int y) throws SlickException {
+  
+  public static void spawnTextFor(String string, Entity target, Color color) throws SlickException {
+    TextParticle.spawnTextAt(string, (int)target.getCenteredPosition().getX(), (int)target.getCenteredPosition().getY(), color);
+  }
+  
+  public static void spawnTextAt(String string, int x, int y, Color color) throws SlickException {
     TextParticle particle = (TextParticle)Level.shared().getUsedEntity(TextParticle.class);
     particle.setMsg(string);
     particle.setPosition(x, y);
+    particle.setColor(color);
     Level.shared().addEntity(particle);
+  }
+
+  @Override
+  public boolean allowInteraction() {
+    return false;
   }
 
 

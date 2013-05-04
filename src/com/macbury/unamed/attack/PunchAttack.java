@@ -13,7 +13,7 @@ import com.macbury.unamed.level.Level;
 public class PunchAttack extends AttackBase {
 
   public static final short PUNCH_ATTACK = 2;
-  public static final short PUNCH_SPEED  = 200;
+  public static final short PUNCH_SPEED  = 350;
 
   public PunchAttack() {
     super();
