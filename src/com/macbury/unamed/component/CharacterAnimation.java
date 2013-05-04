@@ -13,8 +13,8 @@ import com.macbury.unamed.Core;
 import com.macbury.unamed.ImagesManager;
 import com.macbury.unamed.Timer;
 import com.macbury.unamed.TimerInterface;
-import com.macbury.unamed.level.LiquidBlock;
-import com.macbury.unamed.level.PassableBlock;
+import com.macbury.unamed.block.LiquidBlock;
+import com.macbury.unamed.block.PassableBlock;
 
 public class CharacterAnimation extends RenderComponent implements TimerInterface {
   public final static int SPRITE_TILE_WIDTH  = 32;

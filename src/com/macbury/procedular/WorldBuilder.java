@@ -23,20 +23,20 @@ import org.newdawn.slick.imageout.ImageOut;
 import org.newdawn.slick.util.Log;
 
 import com.macbury.unamed.PerlinGen;
-import com.macbury.unamed.level.Bedrock;
-import com.macbury.unamed.level.Block;
-import com.macbury.unamed.level.CoalOre;
-import com.macbury.unamed.level.CopperOre;
-import com.macbury.unamed.level.DiamondOre;
-import com.macbury.unamed.level.Dirt;
-import com.macbury.unamed.level.GoldOre;
-import com.macbury.unamed.level.Lava;
+import com.macbury.unamed.block.Bedrock;
+import com.macbury.unamed.block.Block;
+import com.macbury.unamed.block.CoalOre;
+import com.macbury.unamed.block.CopperOre;
+import com.macbury.unamed.block.DiamondOre;
+import com.macbury.unamed.block.Dirt;
+import com.macbury.unamed.block.GoldOre;
+import com.macbury.unamed.block.Lava;
+import com.macbury.unamed.block.Rock;
+import com.macbury.unamed.block.Sand;
+import com.macbury.unamed.block.Sidewalk;
+import com.macbury.unamed.block.Water;
 import com.macbury.unamed.level.Level;
 import com.macbury.unamed.level.LevelLoader;
-import com.macbury.unamed.level.Rock;
-import com.macbury.unamed.level.Sand;
-import com.macbury.unamed.level.Sidewalk;
-import com.macbury.unamed.level.Water;
 import com.macbury.unamed.util.MonsterManager;
 
 public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCallback, DungeonBSPNodeRoomGenerateCallback {

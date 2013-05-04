@@ -14,11 +14,11 @@ import org.newdawn.slick.openal.Audio;
 import org.newdawn.slick.openal.AudioLoader;
 import org.newdawn.slick.util.Log;
 
-import com.macbury.unamed.level.Block;
-import com.macbury.unamed.level.Dirt;
-import com.macbury.unamed.level.Sand;
-import com.macbury.unamed.level.Sidewalk;
-import com.macbury.unamed.level.Water;
+import com.macbury.unamed.block.Block;
+import com.macbury.unamed.block.Dirt;
+import com.macbury.unamed.block.Sand;
+import com.macbury.unamed.block.Sidewalk;
+import com.macbury.unamed.block.Water;
 
 public class SoundManager {
   private static final float SUPPRESION_PER_TILE_FACTOR = 4;

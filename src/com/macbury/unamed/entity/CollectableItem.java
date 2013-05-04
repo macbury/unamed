@@ -16,11 +16,11 @@ import com.macbury.unamed.SoundManager;
 import com.macbury.unamed.Timer;
 import com.macbury.unamed.TimerInterface;
 import com.macbury.unamed.Util;
+import com.macbury.unamed.block.BlockResources;
 import com.macbury.unamed.component.CollectableItemSprite;
 import com.macbury.unamed.inventory.BlockItem;
 import com.macbury.unamed.inventory.InventoryItem;
 import com.macbury.unamed.inventory.InventoryManager;
-import com.macbury.unamed.level.BlockResources;
 
 public class CollectableItem extends ReusableEntity implements TimerInterface {
   public final static short LIFE_TIME = 15000;

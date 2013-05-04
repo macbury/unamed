@@ -3,34 +3,46 @@ package com.macbury.unamed.inventory;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
 
-public class WeaponItem extends InventoryItem {
+import com.macbury.unamed.attack.AttackBase;
 
+public abstract class WeaponItem extends InventoryItem {
+  private AttackBase attack;
+  
   public WeaponItem() {
     // TODO Auto-generated constructor stub
   }
 
   @Override
-  public String getKey() {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  public abstract String getKey();
 
   @Override
-  public String getName() {
-    // TODO Auto-generated method stub
-    return null;
-  }
+  public abstract String getName();
 
   @Override
   public boolean place(Vector2f tilePos) throws SlickException {
-    // TODO Auto-generated method stub
     return false;
   }
 
   @Override
   public int harvestPower() {
-    // TODO Auto-generated method stub
-    return 0;
+    return 1;
+  }
+  
+  public void update(int delta) throws SlickException {
+    attack.update(delta);
+  }
+  
+  public AttackBase getAttack() {
+    return attack;
   }
 
+  public void setAttack(AttackBase attack) {
+    this.attack = attack;
+  }
+
+  public void reset() {
+    this.attack.getAttackTimer().restart();
+  }
+  
+  
 }

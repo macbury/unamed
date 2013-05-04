@@ -91,4 +91,15 @@ public class Timer {
   public void setTime(long val) {
     this.setTime((short)val);
   }
+
+  public boolean running() {
+    return this.enabled;
+  }
+
+  public void startAndFireUnlessRunning() throws SlickException {
+    if (!this.running()) {
+      this.fire();
+    }
+    this.start();
+  }
 }

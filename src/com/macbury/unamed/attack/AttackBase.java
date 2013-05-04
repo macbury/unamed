@@ -64,8 +64,7 @@ public abstract class AttackBase implements TimerInterface, Comparable<AttackBas
     long dist = (long) attackJSON.get("distance");
     setDistance((short) dist);
     setPower((short) pow);
-    attackTimer.setTime((long) attackJSON.get("speed"));
-    attackTimer.restart();
+    setAttackSpeed((long) attackJSON.get("speed"));
   }
 
   public short getDistance() {
@@ -74,6 +73,15 @@ public abstract class AttackBase implements TimerInterface, Comparable<AttackBas
 
   public void setDistance(short distance) {
     this.distance = distance;
+  }
+  
+  public void setAttackSpeed(long time) {
+    setAttackSpeed((short)time);
+  }
+  
+  public void setAttackSpeed(short time) {
+    attackTimer.setTime(time);
+    attackTimer.restart();
   }
   
   @Override

@@ -1,4 +1,4 @@
-package com.macbury.unamed.level;
+package com.macbury.unamed.block;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,6 +14,7 @@ import com.esotericsoftware.kryo.KryoException;
 import com.esotericsoftware.kryo.io.InputChunked;
 import com.esotericsoftware.kryo.io.Output;
 import com.macbury.unamed.component.Light;
+import com.macbury.unamed.level.Level;
 
 public abstract class Block {
   public static final int VISITED_ALPHA             = 210;

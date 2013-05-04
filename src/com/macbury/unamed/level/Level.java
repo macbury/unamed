@@ -29,12 +29,20 @@ import com.macbury.unamed.RaycastHitResult;
 import com.macbury.unamed.SoundManager;
 import com.macbury.unamed.Timer;
 import com.macbury.unamed.TimerInterface;
+import com.macbury.unamed.block.Block;
+import com.macbury.unamed.block.BlockResources;
+import com.macbury.unamed.block.Cobblestone;
+import com.macbury.unamed.block.Dirt;
+import com.macbury.unamed.block.HarvestableBlock;
+import com.macbury.unamed.block.PassableBlock;
+import com.macbury.unamed.block.Sidewalk;
 import com.macbury.unamed.entity.CollectableItem;
 import com.macbury.unamed.entity.Entity;
 import com.macbury.unamed.entity.Player;
 import com.macbury.unamed.entity.ReusableEntity;
 import com.macbury.unamed.intefrace.InterfaceManager;
 import com.macbury.unamed.inventory.InventoryItem;
+import com.macbury.unamed.inventory.InventoryManager;
 import com.macbury.unamed.util.MonsterManager;
 
 public class Level implements TimerInterface {
@@ -287,6 +295,7 @@ public class Level implements TimerInterface {
     MonsterManager.shared().update(delta);
     BlockResources.shared().update(delta);
     ParticleManager.shared().update(delta);
+    InventoryManager.shared().update(delta);
     refreshEntityTimer.update(delta);
     
     for (int i = 0; i < this.entities.size(); i++) {

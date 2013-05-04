@@ -15,9 +15,9 @@ import org.newdawn.slick.util.Log;
 
 import com.macbury.unamed.Timer;
 import com.macbury.unamed.TimerInterface;
+import com.macbury.unamed.block.Block;
+import com.macbury.unamed.block.Cobblestone;
 import com.macbury.unamed.entity.Monster;
-import com.macbury.unamed.level.Block;
-import com.macbury.unamed.level.Cobblestone;
 import com.macbury.unamed.level.Level;
 
 public class MonsterManager implements TimerInterface {

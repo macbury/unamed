@@ -1,7 +1,10 @@
-package com.macbury.unamed.level;
+package com.macbury.unamed.block;
 
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SpriteSheet;
+
+import com.macbury.unamed.level.Level;
+import com.macbury.unamed.level.Shadow;
 
 public abstract class PassableBlock extends Block {
   public Shadow shadowMapIndex = Shadow.SHADOW_NEED_TO_REFRESH;

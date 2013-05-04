@@ -13,8 +13,8 @@ import org.newdawn.slick.util.Log;
 import com.macbury.unamed.Core;
 import com.macbury.unamed.Position;
 import com.macbury.unamed.RaycastHitResult;
+import com.macbury.unamed.block.Block;
 import com.macbury.unamed.entity.Entity;
-import com.macbury.unamed.level.Block;
 import com.macbury.unamed.level.Level;
 
 public class Light extends Component {

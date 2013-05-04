@@ -8,11 +8,11 @@ import org.newdawn.slick.util.Log;
 import com.macbury.unamed.AnimationManager;
 import com.macbury.unamed.Core;
 import com.macbury.unamed.ImagesManager;
+import com.macbury.unamed.block.HarvestableBlock;
+import com.macbury.unamed.block.Sidewalk;
 import com.macbury.unamed.component.AnimatedSprite;
 import com.macbury.unamed.component.Sprite;
 import com.macbury.unamed.inventory.InventoryItem;
-import com.macbury.unamed.level.HarvestableBlock;
-import com.macbury.unamed.level.Sidewalk;
 
 
 public class HarvestingBlock extends BlockEntity {

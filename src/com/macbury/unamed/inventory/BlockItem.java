@@ -5,13 +5,13 @@ import org.newdawn.slick.geom.Vector2f;
 
 import com.esotericsoftware.kryo.Registration;
 import com.macbury.unamed.SoundManager;
+import com.macbury.unamed.block.Cobblestone;
+import com.macbury.unamed.block.Dirt;
+import com.macbury.unamed.block.HarvestableBlock;
+import com.macbury.unamed.block.Rock;
+import com.macbury.unamed.block.Sand;
 import com.macbury.unamed.entity.Player;
-import com.macbury.unamed.level.Cobblestone;
-import com.macbury.unamed.level.Dirt;
-import com.macbury.unamed.level.HarvestableBlock;
 import com.macbury.unamed.level.Level;
-import com.macbury.unamed.level.Rock;
-import com.macbury.unamed.level.Sand;
 
 public class BlockItem extends InventoryItem {
   public Class<HarvestableBlock> blockType;

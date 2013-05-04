@@ -1,4 +1,4 @@
-package com.macbury.unamed.level;
+package com.macbury.unamed.block;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.macbury.unamed.combat.Damage;

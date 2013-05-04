@@ -16,11 +16,11 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.macbury.unamed.Core;
 import com.macbury.unamed.Position;
+import com.macbury.unamed.block.Block;
 import com.macbury.unamed.component.Component;
 import com.macbury.unamed.component.HealthComponent;
 import com.macbury.unamed.component.Light;
 import com.macbury.unamed.intefrace.InterfaceManager;
-import com.macbury.unamed.level.Block;
 import com.macbury.unamed.level.Level;
 import com.macbury.unamed.monkey.GroupObject;
 
@@ -425,5 +425,15 @@ public abstract class Entity implements Comparable<Entity> {
   
   public int distanceTo(Entity otherEntity) {
     return Math.abs(this.getTileX() - otherEntity.getTileX()) + Math.abs(this.getTileY() - otherEntity.getTileY());
+  }
+  
+  public void setPositionUsingEntity(Entity otherEntity) {
+    this.setX(otherEntity.getX());
+    this.setY(otherEntity.getY());
+  }
+  
+  public void setPositionUsingEntityCenter(Entity owner) {
+    Position pos = owner.getCenteredPosition();
+    this.setPosition((int)pos.getX(), (int)pos.getY());
   }
 }

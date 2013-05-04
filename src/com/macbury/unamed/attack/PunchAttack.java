@@ -12,6 +12,15 @@ import com.macbury.unamed.level.Level;
 
 public class PunchAttack extends AttackBase {
 
+  public static final short PUNCH_ATTACK = 2;
+  public static final short PUNCH_SPEED  = 200;
+
+  public PunchAttack() {
+    super();
+    setPower(PUNCH_ATTACK);
+    setAttackSpeed(PUNCH_SPEED);
+  }
+  
   @Override
   protected void onAttack(Entity hunter, Entity prey) throws SlickException {
     AnimationEntity entity = (AnimationEntity) Level.shared().getUsedEntity(AnimationEntity.class);

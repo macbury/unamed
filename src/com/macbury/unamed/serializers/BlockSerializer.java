@@ -8,8 +8,8 @@ import com.esotericsoftware.kryo.KryoException;
 import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
-import com.macbury.unamed.level.Block;
-import com.macbury.unamed.level.HarvestableBlock;
+import com.macbury.unamed.block.Block;
+import com.macbury.unamed.block.HarvestableBlock;
 
 public class BlockSerializer extends Serializer<Block> {
 

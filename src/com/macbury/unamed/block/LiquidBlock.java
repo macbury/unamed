@@ -1,4 +1,4 @@
-package com.macbury.unamed.level;
+package com.macbury.unamed.block;
 
 public abstract class LiquidBlock extends PassableBlock {
 

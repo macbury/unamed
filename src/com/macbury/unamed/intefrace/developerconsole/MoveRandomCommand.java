@@ -1,8 +1,8 @@
 package com.macbury.unamed.intefrace.developerconsole;
 
+import com.macbury.unamed.block.Sidewalk;
 import com.macbury.unamed.entity.Player;
 import com.macbury.unamed.level.Level;
-import com.macbury.unamed.level.Sidewalk;
 
 public class MoveRandomCommand extends ConsoleCommand {
 

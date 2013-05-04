@@ -17,12 +17,12 @@ import com.macbury.unamed.SoundManager;
 import com.macbury.unamed.Timer;
 import com.macbury.unamed.TimerInterface;
 import com.macbury.unamed.Util;
+import com.macbury.unamed.block.Block;
+import com.macbury.unamed.block.Lava;
+import com.macbury.unamed.block.PassableBlock;
 import com.macbury.unamed.entity.Entity;
 import com.macbury.unamed.entity.Player;
 import com.macbury.unamed.intefrace.InterfaceManager;
-import com.macbury.unamed.level.Block;
-import com.macbury.unamed.level.Lava;
-import com.macbury.unamed.level.PassableBlock;
 
 public class TileBasedMovement extends Component implements TimerInterface {
   public final static String NAME          = "TileBasedMovement"; 
@@ -154,7 +154,7 @@ public class TileBasedMovement extends Component implements TimerInterface {
   }
 
   @Override
-  public void onTimerFire(Timer timer) {
+  public void onTimerFire(Timer timer) throws SlickException {
     if (timer == lavaDamageTimer) {
       if (this.owner.haveHealth()) {
         Block block = this.owner.getBlock();

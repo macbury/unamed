@@ -1,9 +1,9 @@
 package com.macbury.procedular;
 
-import com.macbury.unamed.level.Block;
-import com.macbury.unamed.level.Cobblestone;
+import com.macbury.unamed.block.Block;
+import com.macbury.unamed.block.Cobblestone;
+import com.macbury.unamed.block.Sidewalk;
 import com.macbury.unamed.level.Level;
-import com.macbury.unamed.level.Sidewalk;
 
 public class CorridorDigger {
 

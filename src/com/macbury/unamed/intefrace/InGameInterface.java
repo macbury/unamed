@@ -17,6 +17,7 @@ import org.newdawn.slick.util.Log;
 import com.macbury.unamed.Core;
 import com.macbury.unamed.FpsGraph;
 import com.macbury.unamed.ImagesManager;
+import com.macbury.unamed.block.BlockResources;
 import com.macbury.unamed.component.HealthComponent;
 import com.macbury.unamed.entity.Player;
 import com.macbury.unamed.inventory.BlockItem;
@@ -25,7 +26,6 @@ import com.macbury.unamed.inventory.CopperItem;
 import com.macbury.unamed.inventory.InventoryItem;
 import com.macbury.unamed.inventory.InventoryManager;
 import com.macbury.unamed.inventory.TorchItem;
-import com.macbury.unamed.level.BlockResources;
 import com.macbury.unamed.level.Level;
 
 public class InGameInterface extends Interface{

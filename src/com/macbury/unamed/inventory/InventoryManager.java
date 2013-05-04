@@ -9,6 +9,8 @@ import org.newdawn.slick.SpriteSheet;
 
 import com.macbury.unamed.ImagesManager;
 import com.macbury.unamed.SoundManager;
+import com.macbury.unamed.attack.AttackBase;
+import com.macbury.unamed.attack.PunchAttack;
 
 public class InventoryManager extends ArrayList<InventoryItem> {
   private static InventoryManager shared;
@@ -19,6 +21,8 @@ public class InventoryManager extends ArrayList<InventoryItem> {
   public int currentHotBarInventoryIndex = 0;
   private SpriteSheet spriteSheet;
   private HashMap<String, Image> itemImageCache;
+  
+  private PunchAttack defaultAttack;
   
   public static InventoryManager shared() throws SlickException {
     if (shared == null) {
@@ -33,8 +37,18 @@ public class InventoryManager extends ArrayList<InventoryItem> {
     this.setSpriteSheet(ImagesManager.shared().getHotBarCellSpriteSheet());
     this.itemImageCache = new HashMap<>();
     InventoryManager.shared = this;
+    defaultAttack = new PunchAttack();
   }
-
+  
+  public void update(int delta) throws SlickException {
+    if (WeaponItem.class.isInstance(getCurrentHotBarItem())) {
+      WeaponItem item = (WeaponItem)getCurrentHotBarItem();
+      item.update(delta);
+    } else {
+      defaultAttack.update(delta);
+    }
+  }
+  
   public InventoryItem getCurrentHotBarItem() {
     return this.getItem(currentHotBarInventoryIndex);
   }
@@ -43,7 +57,24 @@ public class InventoryManager extends ArrayList<InventoryItem> {
     SoundManager.shared().cursor.playAsSoundEffect(1.0f, 1.0f, false);
     index = Math.min(index, MAX_HOTBAR_INVENTORY_INDEX);
     index = Math.max(index, MIN_HOTBAR_INVENTORY_INDEX);
-    this.currentHotBarInventoryIndex = index-1;
+    index -= 1;
+    
+    if (WeaponItem.class.isInstance(this.getItem(index)) && this.getCurrentHotBarItem() != getItem(index)) {
+      WeaponItem item = (WeaponItem)this.getItem(index);
+      item.reset();
+    } else {
+      defaultAttack.getAttackTimer().restart();
+    }
+    this.currentHotBarInventoryIndex = index;
+  }
+  
+  public AttackBase getCurrentAttack() {
+    if (WeaponItem.class.isInstance(this.getItem(this.currentHotBarInventoryIndex))) {
+      WeaponItem item = (WeaponItem)getCurrentHotBarItem();
+      return item.getAttack();
+    } else {
+      return defaultAttack;
+    }
   }
 
   public int getCurrentHotBarIndex() {
@@ -87,7 +118,9 @@ public class InventoryManager extends ArrayList<InventoryItem> {
   }
   
   public Image getImageForInventoryItem(InventoryItem item) throws SlickException {
-    if (CopperPickItem.class.isInstance(item)) {
+    if (RockPickItem.class.isInstance(item)) {
+      return getOrLoadInventoryItemImage(RockPickItem.class, 1, 3);
+    } if (CopperPickItem.class.isInstance(item)) {
       return getOrLoadInventoryItemImage(CopperPickItem.class, 1, 3);
     } else if (DynamiteItem.class.isInstance(item)) {
       return getOrLoadInventoryItemImage(DynamiteItem.class, 0, 3);
@@ -101,4 +134,6 @@ public class InventoryManager extends ArrayList<InventoryItem> {
     
     throw new SlickException("No image for inventory item: " +item.getClass().getName());    
   }
+  
+  
 }

@@ -4,10 +4,10 @@ import java.util.Random;
 
 import org.newdawn.slick.SlickException;
 
-import com.macbury.unamed.level.Block;
-import com.macbury.unamed.level.Dirt;
+import com.macbury.unamed.block.Block;
+import com.macbury.unamed.block.Dirt;
+import com.macbury.unamed.block.Sidewalk;
 import com.macbury.unamed.level.Level;
-import com.macbury.unamed.level.Sidewalk;
 
 public class CaveDigger {
   private static final float CHANCE_TO_SPAWN_NEW_MINER = 0.92f;

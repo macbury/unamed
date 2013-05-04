@@ -22,6 +22,8 @@ public abstract class Character extends Entity {
   CharacterAnimation charactedAnimation;
   private AI ai;
   
+  Vector2f frontTilePositionCache;
+  
   public Character() throws SlickException {
     super();
     this.collidable = true;
@@ -35,6 +37,7 @@ public abstract class Character extends Entity {
     addComponent(tileMovement);
     
     addComponent(new HealthComponent(START_HEALTH));
+    frontTilePositionCache = new Vector2f();
   }
   
   public Vector2f getTilePositionInFront() {
@@ -59,7 +62,9 @@ public abstract class Character extends Entity {
       break;
     }
     
-    return new Vector2f(dx, dy);
+    frontTilePositionCache.set(dx, dy);
+    
+    return frontTilePositionCache;
   }
   
   /*

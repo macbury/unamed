@@ -1,35 +1,31 @@
-package com.macbury.unamed.level;
+package com.macbury.unamed.block;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.macbury.unamed.entity.Player;
+import com.macbury.unamed.inventory.BlockItem;
 import com.macbury.unamed.inventory.InventoryItem;
 import com.macbury.unamed.serializers.BlockSerializer;
-
 @DefaultSerializer(BlockSerializer.class)
-public class GoldOre extends HarvestableBlock {
-
-  public GoldOre(int x, int y) {
-    super(x, y);
+public class Rock extends HarvestableBlock {
+  
+  public Rock(int x, int y) {
+    super(x,y);
+    this.solid = true;
   }
 
   @Override
   public int getHardness() {
-    return 50;
+    return 8;
   }
 
   @Override
   public InventoryItem harvestedByPlayer() {
-    return null;
+    return new BlockItem(Rock.class);
   }
 
   @Override
   public byte getBlockTypeId() {
-    return Block.RESOURCE_GOLD;
+    return Block.RESOURCE_STONE;
   }
-
-  @Override
-  public Class<?> getHarvestableClass() {
-    return Rock.class;
-  }
-
+  
 }

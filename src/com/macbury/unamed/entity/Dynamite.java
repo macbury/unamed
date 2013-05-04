@@ -6,13 +6,13 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import com.macbury.unamed.ImagesManager;
 import com.macbury.unamed.SoundManager;
+import com.macbury.unamed.block.Block;
+import com.macbury.unamed.block.HarvestableBlock;
 import com.macbury.unamed.combat.Damage;
 import com.macbury.unamed.component.Light;
 import com.macbury.unamed.component.Sprite;
 import com.macbury.unamed.intefrace.InterfaceManager;
 import com.macbury.unamed.inventory.InventoryItem;
-import com.macbury.unamed.level.Block;
-import com.macbury.unamed.level.HarvestableBlock;
 import com.macbury.unamed.util.RaytraceCallback;
 import com.macbury.unamed.util.RaytraceUtil;
 

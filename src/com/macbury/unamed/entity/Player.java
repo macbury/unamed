@@ -9,7 +9,17 @@ import org.newdawn.slick.state.StateBasedGame;
 import com.macbury.unamed.Core;
 import com.macbury.unamed.InputManager;
 import com.macbury.unamed.SoundManager;
+import com.macbury.unamed.Timer;
+import com.macbury.unamed.TimerInterface;
 import com.macbury.unamed.attack.PunchAttack;
+import com.macbury.unamed.block.Block;
+import com.macbury.unamed.block.Cobblestone;
+import com.macbury.unamed.block.Dirt;
+import com.macbury.unamed.block.HarvestableBlock;
+import com.macbury.unamed.block.LiquidBlock;
+import com.macbury.unamed.block.PassableBlock;
+import com.macbury.unamed.block.Rock;
+import com.macbury.unamed.block.Sand;
 import com.macbury.unamed.combat.Damage;
 import com.macbury.unamed.component.CharacterAnimation;
 import com.macbury.unamed.component.HealthComponent;
@@ -17,40 +27,29 @@ import com.macbury.unamed.component.HitBox;
 import com.macbury.unamed.component.KeyboardMovement;
 import com.macbury.unamed.component.Light;
 import com.macbury.unamed.component.Sprite;
+import com.macbury.unamed.component.TextComponent;
 import com.macbury.unamed.component.TileBasedMovement;
 import com.macbury.unamed.intefrace.InterfaceManager;
 import com.macbury.unamed.inventory.BlockItem;
 import com.macbury.unamed.inventory.InventoryItem;
 import com.macbury.unamed.inventory.InventoryManager;
 import com.macbury.unamed.inventory.TorchItem;
-import com.macbury.unamed.level.Block;
-import com.macbury.unamed.level.Cobblestone;
-import com.macbury.unamed.level.Dirt;
-import com.macbury.unamed.level.HarvestableBlock;
 import com.macbury.unamed.level.Level;
-import com.macbury.unamed.level.LiquidBlock;
-import com.macbury.unamed.level.PassableBlock;
-import com.macbury.unamed.level.Rock;
-import com.macbury.unamed.level.Sand;
 import com.macbury.unamed.npc.PlayerTriggers;
 
-public class Player extends Character {
+public class Player extends Character implements TimerInterface {
   //public final static int  FOG_OF_WAR_RADIUS = 10;
   private static final int LIGHT_POWER                = 10;
   
-  final static int MAX_PLACING_TIME                   = 250;
-  public static final int MAX_TAKING_TIME             = 300;
+  final static short MAX_PLACING_TIME                   = 250;
+  public static final short MAX_TAKING_TIME           = 300;
   private static final short START_HEALTH             = 100;
   private static final float PLAYER_REGENERATE_FACTOR = 0.45f;
   
-  private boolean pressedPlaceKey   = false;
-  private boolean pressedTakeKey    = false;
-  
-  private int buttonPlacingThrottle = 0;
-  private int buttonTakingThrottle  = 0;
   KeyboardMovement   keyboardMovement;
-
-  private PunchAttack punchAttack;
+  
+  private Timer takeActionTimer;
+  private Timer placeActionTimer;
   
   public void setKeyboardEnabled(boolean enabled) {
     this.keyboardMovement.enabled = enabled;
@@ -73,47 +72,36 @@ public class Player extends Character {
     keyboardMovement = new KeyboardMovement();
     addComponent(keyboardMovement);
     
-    this.punchAttack = new PunchAttack();
-    punchAttack.setPower((short) 2);
+    takeActionTimer  = new Timer(MAX_TAKING_TIME, this);
+    placeActionTimer = new Timer(MAX_PLACING_TIME, this);
+
   }
 
   @Override
   public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
     super.update(gc, sb, delta);
-    this.punchAttack.update(delta);
+    this.takeActionTimer.update(delta);
+    this.placeActionTimer.update(delta);
     SoundManager.shared().setPosition(getTileX(), getTileY());
     
     if (this.keyboardMovement.enabled) {
       Input input    = gc.getInput();
-      
-      if (pressedPlaceKey) {
-        buttonPlacingThrottle += delta;
-      }
-      
-      if (pressedTakeKey) {
-        buttonTakingThrottle += delta;
-      }
-      
-      if (buttonPlacingThrottle > MAX_PLACING_TIME) {
-        pressedPlaceKey = false;
-      }
-      
-      if (buttonTakingThrottle > MAX_TAKING_TIME) {
-        pressedTakeKey = false;
-      }
-      
+
       if (!tileMovement.isMoving()) {
-        if (input.isKeyDown(Core.CANCEL_KEY) && !pressedTakeKey) {
-          pressedTakeKey       = true;
-          buttonTakingThrottle = 0;
-          
-          useElementInFrontOfMe();
+        if (input.isKeyDown(Core.CANCEL_KEY)) {
+          if (!this.takeActionTimer.running()) {
+            useElementInFrontOfMe();
+            this.takeActionTimer.start();
+          } else {
+            attackEntityInFrontOfMe();
+          }
         }
         
-        if(input.isKeyPressed(Core.ACTION_KEY)) {
-          pressedPlaceKey         = true;
-          buttonPlacingThrottle   = 0;
-          placeOrUseElementInFrontOfMe();
+        if(input.isKeyDown(Core.ACTION_KEY)) {
+          if (!this.placeActionTimer.running()) {
+            placeOrUseElementInFrontOfMe();
+            this.placeActionTimer.start();
+          }
         }
       }
       
@@ -149,6 +137,15 @@ public class Player extends Character {
     }
   }
 
+
+  private void attackEntityInFrontOfMe() throws SlickException {
+    Entity entityInFront = getEntityInFront();
+    
+    if (Monster.class.isInstance(entityInFront)) {
+      Monster monster = (Monster)entityInFront;
+      InventoryManager.shared().getCurrentAttack().attack(this, monster);
+    }
+  }
 
   private void placeOrUseElementInFrontOfMe() throws SlickException {
     Vector2f frontTilePosition = getTilePositionInFront();
@@ -204,10 +201,11 @@ public class Player extends Character {
   }
 
   private void useElementInFrontOfMe() throws SlickException {
-    Vector2f frontTilePosition = getTilePositionInFront();
-    Entity entityInFront       = this.getLevel().getEntityForTilePosition((int)frontTilePosition.x, (int)frontTilePosition.y);
+
+    Entity entityInFront = getEntityInFront();
     
     if (entityInFront == null) {
+      Vector2f frontTilePosition = getTilePositionInFront();
       Block block = this.getLevel().getBlockForPosition((int)frontTilePosition.x, (int)frontTilePosition.y);
       if (HarvestableBlock.class.isInstance(block)) {
         HarvestingBlock harvestingEntityAction = new HarvestingBlock();
@@ -219,18 +217,21 @@ public class Player extends Character {
     
     if (entityInFront != null) {
       if (Monster.class.isInstance(entityInFront)) {
-        Monster monster = (Monster)entityInFront;
-        punchAttack.attack(this, monster);
+        attackEntityInFrontOfMe();
       } else if (BlockEntity.class.isInstance(entityInFront)) {
         BlockEntity usableEntity = (BlockEntity) entityInFront;
         
         InventoryItem item = usableEntity.harvest(currentHarvestPower());
+        
+        TextParticle.spawnTextAt("-"+currentHarvestPower(), (int)usableEntity.getCenteredPosition().getX(), (int)usableEntity.getCenteredPosition().getY());
+        
+        DigEffectEntity punchEntity = (DigEffectEntity) Level.shared().getUsedEntity(DigEffectEntity.class);
+        punchEntity.setAnimationByItem(InventoryManager.shared().getCurrentHotBarItem());
+        this.getLevel().addEntity(punchEntity);
+        punchEntity.setTilePosition(entityInFront.getTileX(), entityInFront.getTileY());
+        
         if (item == null) {
           SoundManager.shared().playDigForBlock(entityInFront.getBlock());
-          DigEffectEntity punchEntity = (DigEffectEntity) Level.shared().getUsedEntity(DigEffectEntity.class);
-          punchEntity.setAnimationByItem(InventoryManager.shared().getCurrentHotBarItem());
-          this.getLevel().addEntity(punchEntity);
-          punchEntity.setTilePosition(entityInFront.getTileX(), entityInFront.getTileY());
         } else {
           SoundManager.shared().pop.playAsSoundEffect(1.0f, 1.0f, false);
         }
@@ -238,6 +239,16 @@ public class Player extends Character {
     } else {
       SoundManager.shared().miss.playAsSoundEffect(1.0f, 1.0f, false);
     }
+  }
+
+  private Entity getEntityInFront() {
+    Vector2f frontTilePosition = getTilePositionInFront();
+    return this.getLevel().getEntityForTilePosition((int)frontTilePosition.x, (int)frontTilePosition.y);
+  }
+
+  @Override
+  public void onTimerFire(Timer timer) throws SlickException {
+    timer.stop();
   }
 
 }

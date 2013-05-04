@@ -17,7 +17,7 @@ import com.macbury.procedular.WorldBuilderListener;
 import com.macbury.unamed.Core;
 import com.macbury.unamed.ImagesManager;
 import com.macbury.unamed.SoundManager;
-import com.macbury.unamed.level.BlockResources;
+import com.macbury.unamed.block.BlockResources;
 import com.macbury.unamed.level.LevelLoader;
 
 public class GeneratingWorldState extends BasicGameState implements WorldBuilderListener {

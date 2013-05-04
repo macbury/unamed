@@ -15,16 +15,14 @@ import com.macbury.unamed.Timer;
 import com.macbury.unamed.TimerInterface;
 import com.macbury.unamed.combat.Damage;
 import com.macbury.unamed.entity.HUDComponentInterface;
+import com.macbury.unamed.entity.TextParticle;
 import com.macbury.unamed.intefrace.InterfaceManager;
+import com.macbury.unamed.level.Level;
 
-public class HealthComponent extends Component implements TimerInterface, HUDComponentInterface {
+public class HealthComponent extends Component implements TimerInterface {
   private short health    = 1;
   private short maxHelath = 1;
   private float regenerateFactor = 0.1f;
-  private ArrayList<Damage> damages;
-  private Damage lastDamage = null;
-  private final static short DAMAGE_ANIMATION_LIFESPAN = 500;
-  private final static short DAMAGE_ANIMATION_OFFSET_Y = -34;
   private final static short REGENERATE_EVERY = 1500;
   private Timer regenerateTimer;
   
@@ -38,25 +36,7 @@ public class HealthComponent extends Component implements TimerInterface, HUDCom
   @Override
   public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
     regenerateTimer.update(delta);
-    lastDamage         = null;
-    boolean tookDamage = false;
-    if (this.damages != null && this.damages.size() > 0) {
-      for (int i = 0; i < damages.size(); i++) {
-        Damage damage = damages.get(i);
-        short time    = damage.getLifeTime();
-        time -= delta;
-        damage.setLifeTime(time);
-        if (time < 0) {
-          this.damages.remove(damage);
-        }
-        
-      }
-      tookDamage = true;
-    } else {
-      tookDamage = false;
-    }
-    
-    regenerateTimer.setEnabled(!tookDamage);
+    regenerateTimer.setEnabled(true);
   }
 
   @Override
@@ -76,26 +56,15 @@ public class HealthComponent extends Component implements TimerInterface, HUDCom
     return this.health <= 0;
   }
   
-  public void applyDamage(Damage damage) {
+  public void applyDamage(Damage damage) throws SlickException {
     this.health -= damage.getPower();
     if (this.health < 0) {
       this.health = 0;
     }
-    this.addDamage(damage);
+    
+    
+    TextParticle.spawnTextAt("-"+damage.getPower(), (int)this.owner.getCenteredPosition().getX(), (int)this.owner.getCenteredPosition().getY());
     Log.debug("Apply damage: " + damage.getPower());
-  }
-
-  private void addDamage(Damage damage) {
-    if (this.damages == null) {
-      this.damages = new ArrayList<Damage>();
-    }
-    if (lastDamage != null) {
-      lastDamage.addPower(damage.getPower());
-    } else {
-      lastDamage = damage;
-      damage.setLifeTime(DAMAGE_ANIMATION_LIFESPAN);
-      damages.add(damage);
-    }
   }
 
   public short getMaxHelath() {
@@ -130,16 +99,6 @@ public class HealthComponent extends Component implements TimerInterface, HUDCom
     }
     if (this.health > this.maxHelath) {
       this.health = this.maxHelath;
-    }
-  }
-
-  @Override
-  public void onHUDRender(GameContainer gc, StateBasedGame sb, Graphics gr) throws SlickException {
-    if (this.damages != null && this.damages.size() > 0) {
-      for (int i = 0; i < damages.size(); i++) {
-        Damage damage = damages.get(i);
-        Core.instance().getFont().drawString(0, (float)DAMAGE_ANIMATION_OFFSET_Y - DAMAGE_ANIMATION_OFFSET_Y * ((float)damage.getLifeTime() / (float)DAMAGE_ANIMATION_LIFESPAN), "- "+damage.getPower());
-      }
     }
   }
 

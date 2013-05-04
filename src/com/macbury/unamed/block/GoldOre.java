@@ -1,4 +1,4 @@
-package com.macbury.unamed.level;
+package com.macbury.unamed.block;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.macbury.unamed.entity.Player;
@@ -6,16 +6,15 @@ import com.macbury.unamed.inventory.InventoryItem;
 import com.macbury.unamed.serializers.BlockSerializer;
 
 @DefaultSerializer(BlockSerializer.class)
-public class DiamondOre extends HarvestableBlock {
+public class GoldOre extends HarvestableBlock {
 
-  public DiamondOre(int x, int y) {
+  public GoldOre(int x, int y) {
     super(x, y);
-    // TODO Auto-generated constructor stub
   }
 
   @Override
   public int getHardness() {
-    return 100;
+    return 50;
   }
 
   @Override
@@ -25,9 +24,9 @@ public class DiamondOre extends HarvestableBlock {
 
   @Override
   public byte getBlockTypeId() {
-    return Block.RESOURCE_DIAMOND;
+    return Block.RESOURCE_GOLD;
   }
-  
+
   @Override
   public Class<?> getHarvestableClass() {
     return Rock.class;

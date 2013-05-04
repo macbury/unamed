@@ -22,7 +22,7 @@ import com.macbury.unamed.ImagesManager;
 import com.macbury.unamed.ParticleManager;
 import com.macbury.unamed.ShaderManager;
 import com.macbury.unamed.SoundManager;
-import com.macbury.unamed.level.BlockResources;
+import com.macbury.unamed.block.BlockResources;
 import com.macbury.unamed.util.MonsterManager;
 
 public class LoadingResourceScreen extends BasicGameState {

@@ -2,7 +2,7 @@
   "name": "death",
   
   "base": {
-    "health": 16,
+    "health": 7,
     "image": "death"
   },
   
@@ -14,7 +14,7 @@
   "attacks": [
     {
       "speed": 800,
-      "power": 5,
+      "power": 3,
       "type": "SwordAttack",
       "distance": 1
     }
