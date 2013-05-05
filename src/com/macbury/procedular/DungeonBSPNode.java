@@ -7,6 +7,8 @@ import java.util.Stack;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.util.Log;
 
+import com.macbury.unamed.Core;
+
 public class DungeonBSPNode extends Rectangle {
   public final static int MAX_SPLIT_DEPTH   = 6; 
   public final static byte SPLIT_VERITICAL  = 0;
@@ -61,7 +63,7 @@ public class DungeonBSPNode extends Rectangle {
   }
   
   private void splitHorizontaly() {
-    Log.info("Spliting horizontal on depth: "+this.depth);
+    Core.log(this.getClass(),"Spliting horizontal on depth: "+this.depth);
     int sizeA          = getSizeA(this.getWidth());
     int sizeB          = (int)(this.getWidth() - sizeA);
     
@@ -84,7 +86,7 @@ public class DungeonBSPNode extends Rectangle {
   }
 
   private void splitVertical() {
-    Log.info("Spliting vertical on depth: "+this.depth);
+    Core.log(this.getClass(),"Spliting vertical on depth: "+this.depth);
     int sizeA          = getSizeA(this.getHeight());
     int sizeB          = (int)(this.getHeight() - sizeA);
     

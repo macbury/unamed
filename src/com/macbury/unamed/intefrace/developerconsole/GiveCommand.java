@@ -11,15 +11,15 @@ import com.macbury.unamed.inventory.InventoryManager;
 import com.macbury.unamed.level.Level;
 
 public class GiveCommand extends ConsoleCommand {
-  private final static String REGEXP = "give\\s+([a-zA-Z]+)\\s+(\\d{1,2})";
+  private final static String REGEXP = "give\\s+(\\d{1,2})\\s+(.+)";
   @Override
   public boolean parseCommand(String command) {
     Pattern pattern = Pattern.compile(REGEXP, Pattern.CASE_INSENSITIVE);
     Matcher matcher = pattern.matcher(command);
     if (matcher.find()) {
       
-      String itemName  = matcher.group(1);
-      int itemQuantity = Integer.parseInt(matcher.group(2));
+      String itemName  = matcher.group(2);
+      int itemQuantity = Integer.parseInt(matcher.group(1));
       try {
         InventoryManager manager = InventoryManager.shared();
         Class<?> klass     = InventoryItem.class.forName("com.macbury.unamed.inventory."+itemName+"Item");
@@ -56,7 +56,7 @@ public class GiveCommand extends ConsoleCommand {
 
   @Override
   public String getExample() {
-    return "give <item name> <quantity>";
+    return "give <quantity> <item name>";
   }
 
   @Override

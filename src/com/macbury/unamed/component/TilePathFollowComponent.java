@@ -52,7 +52,7 @@ public class TilePathFollowComponent extends Component implements TileBasedMovem
   }
 
   private boolean nextStep() throws SlickException {
-    //Log.info("Moving next step");
+    //Core.log(this.getClass(),"Moving next step");
     
     if (this.pathToFollow != null && this.currentStep < this.pathToFollow.getLength()) {
       Step step = this.pathToFollow.getStep(currentStep);

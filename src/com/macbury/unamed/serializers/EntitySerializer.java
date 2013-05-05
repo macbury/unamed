@@ -1,5 +1,7 @@
 package com.macbury.unamed.serializers;
 
+import java.util.logging.Logger;
+
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.util.Log;
 
@@ -7,6 +9,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import com.macbury.unamed.Core;
 import com.macbury.unamed.entity.Entity;
 
 public class EntitySerializer extends Serializer<Entity> {
@@ -15,7 +18,7 @@ public class EntitySerializer extends Serializer<Entity> {
     entity.setId(input.readInt());
     entity.setX(input.readFloat());
     entity.setY(input.readFloat());
-    
+     
     return entity;
   }
   
@@ -36,7 +39,7 @@ public class EntitySerializer extends Serializer<Entity> {
     output.writeInt(entity.getId());
     output.writeFloat(entity.getX());
     output.writeFloat(entity.getY());
-    Log.info("Writing entity: " + entity.toString());
+    Core.log(this.getClass(),"Writing entity: " + entity.toString());
   }
 
 }

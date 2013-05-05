@@ -46,7 +46,7 @@ public class CharacterAnimation extends RenderComponent implements TimerInterfac
   }
   
   public void loadCharacterImage(String characteFileName) throws SlickException{
-    Log.info("Character animation load: " + characteFileName);
+    Core.log(this.getClass(),"Character animation load: " + characteFileName);
     spriteSheet = ImagesManager.shared().getSpriteSheet(characteFileName+".png", SPRITE_TILE_WIDTH, SPRITE_TILE_HEIGHT);
     buildAnimation();
     

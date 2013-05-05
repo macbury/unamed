@@ -35,7 +35,7 @@ public class Light extends Component {
   public Light() {
     this.lightedBlocks = new ArrayList<Block>();
     this.id = ++Light.gid;
-    Log.info("New light with id: "+ this.getId());
+    Core.log(this.getClass(),"New light with id: "+ this.getId());
   }
   
   public void cleanLightedBlocks() {

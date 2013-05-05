@@ -118,9 +118,11 @@ public class InventoryManager extends ArrayList<InventoryItem> {
   }
   
   public Image getImageForInventoryItem(InventoryItem item) throws SlickException {
-    if (RockPickItem.class.isInstance(item)) {
+    if (RockSwordItem.class.isInstance(item)) {
+      return getOrLoadInventoryItemImage(RockSwordItem.class, 2, 3);
+    } else if (RockPickItem.class.isInstance(item)) {
       return getOrLoadInventoryItemImage(RockPickItem.class, 1, 3);
-    } if (CopperPickItem.class.isInstance(item)) {
+    } else if (CopperPickItem.class.isInstance(item)) {
       return getOrLoadInventoryItemImage(CopperPickItem.class, 1, 3);
     } else if (DynamiteItem.class.isInstance(item)) {
       return getOrLoadInventoryItemImage(DynamiteItem.class, 0, 3);

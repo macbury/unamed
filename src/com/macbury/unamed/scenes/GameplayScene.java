@@ -11,20 +11,23 @@ import org.newdawn.slick.state.StateBasedGame;
 import com.macbury.unamed.Core;
 import com.macbury.unamed.ShaderManager;
 import com.macbury.unamed.SoundManager;
+import com.macbury.unamed.Timer;
+import com.macbury.unamed.TimerInterface;
 import com.macbury.unamed.intefrace.InGameInterface;
 import com.macbury.unamed.intefrace.InterfaceManager;
 import com.macbury.unamed.level.Level;
 import com.macbury.unamed.level.LevelLoader;
 import com.macbury.unamed.level.LevelLoaderInterface;
 
-public class GameplayScene extends BasicGameState implements LevelLoaderInterface {
+public class GameplayScene extends BasicGameState implements LevelLoaderInterface, TimerInterface {
   public final static int STATE_GAMEPLAY = 0;
 
   private boolean loading = true;
   private int startTime = 0;
-
+  private Timer gameplayTimer;
   @Override
   public void init(GameContainer gc, StateBasedGame sb) throws SlickException {
+    gameplayTimer = new Timer((short)1000, this);
   }
 
   @Override
@@ -54,6 +57,7 @@ public class GameplayScene extends BasicGameState implements LevelLoaderInterfac
 
   @Override
   public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
+    gameplayTimer.update(delta);
     if (loading) {
       return;
     }
@@ -86,6 +90,11 @@ public class GameplayScene extends BasicGameState implements LevelLoaderInterfac
     Sys.alert("Load error", "Save file is corrupted!");
     
     Core.instance().exit();
+  }
+
+  @Override
+  public void onTimerFire(Timer timer) throws SlickException {
+    Level.shared().gameplayTime++;
   }
   
   

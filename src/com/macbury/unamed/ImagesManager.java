@@ -47,7 +47,7 @@ public class ImagesManager {
     
     if (image == null) {
       String path = "res/images/"+name;
-      Log.info("Loading image: " + path);
+      Core.log(this.getClass(),"Loading image: " + path);
       image = new Image(path);
       imagesCache.put(name, image);
     }
@@ -60,7 +60,7 @@ public class ImagesManager {
     
     if (image == null) {
       String path = "res/images/"+name;
-      Log.info("Loading sprite sheet: " + path);
+      Core.log(this.getClass(),"Loading sprite sheet: " + path);
       image = new SpriteSheet(path, width, height);
       spriteSheetCache.put(name, image);
     }

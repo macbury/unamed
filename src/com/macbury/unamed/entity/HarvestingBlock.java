@@ -34,7 +34,7 @@ public class HarvestingBlock extends BlockEntity {
     this.setWidth(Core.TILE_SIZE);
     this.setHeight(Core.TILE_SIZE);
     
-    Log.info("Starting harvesting block: " + block.getId());
+    Core.log(this.getClass(),"Starting harvesting block: " + block.getId());
   }
   
   @Override
@@ -51,7 +51,7 @@ public class HarvestingBlock extends BlockEntity {
   public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
     super.update(gc, sb, delta);
     if (!isHarvesting) {
-      Log.info("Did not finished in time to harvest block: "+ currentBlock.getId());
+      Core.log(this.getClass(),"Did not finished in time to harvest block: "+ currentBlock.getId());
       this.destroy();
     } else {
       float progress = 1.0f - (float)Math.max(this.hardness, 0) / this.getHardness();

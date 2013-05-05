@@ -13,24 +13,27 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.util.Log;
 
 import com.macbury.unamed.Core;
+import com.macbury.unamed.Timer;
+import com.macbury.unamed.TimerInterface;
 import com.macbury.unamed.intefrace.developerconsole.DeveloperConsole;
 import com.macbury.unamed.npc.MessagesQueue;
 import com.macbury.unamed.scenes.MenuScene;
 
-public class InterfaceManager extends Stack<Interface> {
+public class InterfaceManager extends Stack<Interface> implements TimerInterface {
   
   private DeveloperConsole developerConsole;
   private final static String CURSOR_TEXT     = "|";
   private String cursorText                   = "";
   
   private final static int CURSOR_BLINK_DELAY = 500;
+  private static final short INTERFACE_KEYBOARD_TIMEOUT = 200;
   private int cursorBlinkTime                 = 0;
   private static InterfaceManager shared;
   
   Graphics interfaceGraphics;
   Image    interfaceImage;
+  Timer    blockInputTimer;
   private MessageBoxInterface messageBox;
-  private GameMenuInterface gameMenuInterface;
   
   public static InterfaceManager shared() throws SlickException {
     if (shared == null) {
@@ -49,7 +52,8 @@ public class InterfaceManager extends Stack<Interface> {
   public InterfaceManager() throws SlickException {
     this.developerConsole  = new DeveloperConsole();
     this.messageBox        = new MessageBoxInterface();
-    this.gameMenuInterface = new GameMenuInterface();
+    this.blockInputTimer   = new Timer(INTERFACE_KEYBOARD_TIMEOUT, this);
+    blockInputTimer.stop();
   }
   
   public boolean isOpened(Interface inte) {
@@ -62,26 +66,28 @@ public class InterfaceManager extends Stack<Interface> {
   }
   
   public void render(GameContainer gc, StateBasedGame sb, Graphics gr) throws SlickException {
-    if (this.interfaceGraphics != null) {
-      gr.drawImage(interfaceImage, 0, 0);
+    if (currentInterface() != null && currentInterface().shouldRenderOnlyThis()) {
+      currentInterface().render(gc, sb, gr);
+    } else {
+      for (Interface inte : this) {
+        inte.render(gc, sb, gr);
+      }
     }
     
-    for (Interface inte : this) {
-      inte.render(gc, sb, gr);
-    }
   }
   
   public Graphics getInterfaceContexts() throws SlickException {
     if (this.interfaceGraphics == null) {
       GameContainer gc       = Core.instance().getContainer();
       this.interfaceImage    = new Image(gc.getWidth(), gc.getHeight());
-      Log.info("Initializing interface Context: " + gc.getWidth() + " x " + gc.getHeight());
+      Core.log(this.getClass(),"Initializing interface Context: " + gc.getWidth() + " x " + gc.getHeight());
       this.interfaceGraphics = interfaceImage.getGraphics();
     }
     return this.interfaceGraphics;
   }
   
   public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
+    blockInputTimer.update(delta);
     Input input = gc.getInput();
     cursorBlinkTime -= delta;
     
@@ -94,14 +100,7 @@ public class InterfaceManager extends Stack<Interface> {
       }
     }
     
-    if (input.isKeyPressed(Input.KEY_ESCAPE)) {
-      if (isOpened(this.gameMenuInterface)) {
-        this.close(this.gameMenuInterface);
-      } else {
-        this.push(gameMenuInterface);
-      }
-      //Core.instance().enterState(MenuScene.STATE_MENU);
-    }
+    
     
    // if (Core.DEBUG) {
       if (input.isKeyPressed(Input.KEY_GRAVE)) {
@@ -120,7 +119,7 @@ public class InterfaceManager extends Stack<Interface> {
   }
 
   public void close(Interface face) {
-    Log.info("Closing interface: " + face.getClass().getSimpleName());
+    Core.log(this.getClass(),"Closing interface: " + face.getClass().getSimpleName());
     Interface currentlyOpenedInterface = null;
     while(true) {
       currentlyOpenedInterface = this.pop();
@@ -128,6 +127,8 @@ public class InterfaceManager extends Stack<Interface> {
         break;
       }
     }
+    Core.instance().getInput().pause();
+    blockInputTimer.restart();
   }
 
   public Interface currentInterface() {
@@ -139,7 +140,7 @@ public class InterfaceManager extends Stack<Interface> {
   }
   
   public boolean shouldBlockGamePlay() {
-    return (currentInterface() == null || currentInterface().shouldBlockGamePlay());
+    return (currentInterface() == null || currentInterface().shouldBlockGamePlay() || blockInputTimer.running());
   }
 
   public String getCursorText() {
@@ -161,7 +162,7 @@ public class InterfaceManager extends Stack<Interface> {
     }
     Core.instance().getInput().clearKeyPressedRecord();
     inte.onEnter();
-    Log.info("Opening inteface:" + inte.getClass().getSimpleName() + " of opened: " + this.size());
+    Core.log(this.getClass(),"Opening inteface:" + inte.getClass().getSimpleName() + " of opened: " + this.size());
     return super.push(inte);
   }
   
@@ -174,5 +175,15 @@ public class InterfaceManager extends Stack<Interface> {
     UnicodeFont font = Core.instance().getFont();
     font.drawString(textX+2, textY+2, text, Color.black);
     font.drawString(textX, textY, text);
+  }
+
+  @Override
+  public void onTimerFire(Timer timer) throws SlickException {
+    blockInputTimer.stop();
+    Input input = Core.instance().getInput();
+    input.clearControlPressedRecord();
+    input.clearKeyPressedRecord();
+    input.clearMousePressedRecord();
+    input.resume();
   }
 }

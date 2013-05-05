@@ -161,4 +161,10 @@ public class MessageBoxInterface extends Interface implements TimerInterface {
     this.currentState       = STATE_IDLE;
   }
 
+  @Override
+  public boolean shouldRenderOnlyThis() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
 }

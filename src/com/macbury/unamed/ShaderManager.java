@@ -26,7 +26,7 @@ public class ShaderManager {
   }
   
   public ShaderProgram loadShader(String name) throws SlickException {
-    Log.info("Loading shader: " + name);
+    Core.log(this.getClass(),"Loading shader: " + name);
     return ShaderProgram.loadProgram("res/shaders/"+name+".vp", "res/shaders/"+name+".fp");
   }
 }

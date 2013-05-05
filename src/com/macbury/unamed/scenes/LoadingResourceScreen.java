@@ -46,7 +46,7 @@ public class LoadingResourceScreen extends BasicGameState {
     ParticleManager.shared();
     AnimationManager.shared();
     MonsterManager.shared();
-    Log.info("Init LoadingResourceScreen");
+    Core.log(this.getClass(),"Init LoadingResourceScreen");
     initFinished = true;
   }
 

@@ -13,8 +13,13 @@ public abstract class Interface {
   public abstract void onExit();
   
   public abstract boolean shouldBlockGamePlay();
+  public abstract boolean shouldRenderOnlyThis();
   
   public void close() throws SlickException {
     InterfaceManager.shared().close(this);
+  }
+  
+  public void push(Interface inte) throws SlickException {
+    InterfaceManager.shared().push(inte);
   }
 }

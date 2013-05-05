@@ -177,5 +177,11 @@ public class DeveloperConsole extends Interface implements KeyListener {
     return true;
   }
 
+  @Override
+  public boolean shouldRenderOnlyThis() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
 
 }

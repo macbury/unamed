@@ -7,6 +7,7 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.UnicodeFont;
@@ -42,7 +43,6 @@ public class InGameInterface extends Interface{
   
   public InGameInterface() throws SlickException {
     this.font  = Core.instance().getFont();
-    
     SpriteSheet spriteSheet = ImagesManager.shared().getHotBarCellSpriteSheet();
     
     this.cellImage         = spriteSheet.getSprite(0, 0);
@@ -127,6 +127,11 @@ public class InGameInterface extends Interface{
 
   @Override
   public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
+    Input input = gc.getInput();
+    if (input.isKeyPressed(Input.KEY_ESCAPE)) {
+      InterfaceManager.shared().push(new GameMenuInterface());
+    }
+    
     if (this.fpsMap != null) {
       this.fpsMap.update(delta);
     }
@@ -146,6 +151,11 @@ public class InGameInterface extends Interface{
 
   @Override
   public boolean shouldBlockGamePlay() {
+    return false;
+  }
+
+  @Override
+  public boolean shouldRenderOnlyThis() {
     return false;
   }
 

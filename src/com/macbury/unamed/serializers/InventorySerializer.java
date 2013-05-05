@@ -7,6 +7,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import com.macbury.unamed.Core;
 import com.macbury.unamed.inventory.BlockItem;
 import com.macbury.unamed.inventory.InventoryItem;
 import com.macbury.unamed.inventory.InventoryManager;
@@ -15,7 +16,7 @@ public class InventorySerializer extends Serializer<InventoryManager> {
 
   @Override
   public InventoryManager read(Kryo kryo, Input input, Class<InventoryManager> klass) {
-    Log.info("Loading inventory");
+    Core.log(this.getClass(),"Loading inventory");
     InventoryManager manager = null;
     try {
       manager = new InventoryManager();
@@ -41,7 +42,7 @@ public class InventorySerializer extends Serializer<InventoryManager> {
 
   @Override
   public void write(Kryo kryo, Output out, InventoryManager inventory) {
-    Log.info("Saving inventory");
+    Core.log(this.getClass(),"Saving inventory");
     out.writeInt(inventory.size());
     out.writeInt(inventory.getCurrentHotBarIndex());
     for (InventoryItem inventoryItem : inventory) {

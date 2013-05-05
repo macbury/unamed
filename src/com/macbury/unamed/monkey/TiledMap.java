@@ -21,6 +21,8 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import com.macbury.unamed.Core;
+
 /**
  * This class is intended to parse TilED maps. TilED is a generic tool for tile
  * map editing and can be found at:
@@ -671,7 +673,7 @@ public class TiledMap {
 
       for (int i = 0; i < objectGroupNodes.getLength(); i++) {
         Element current = (Element) objectGroupNodes.item(i);
-        Log.info(current.toString());
+        Core.log(this.getClass(),current.toString());
         ObjectGroup objectGroup = new ObjectGroup(current, this);
         objectGroup.index = i;
 

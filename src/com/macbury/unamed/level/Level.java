@@ -83,6 +83,7 @@ public class Level implements TimerInterface {
   
   private HashMap<Integer, Color> lightColorMap;
   public Random random;
+  public long gameplayTime = 0;
   
   public static Level shared() {
     return shared;
@@ -148,7 +149,7 @@ public class Level implements TimerInterface {
       this.entities.add(e);
       refreshEntityTimer.restart();
     } else {
-      Log.info("Entity already addedz to entity stack!");
+      Core.log(this.getClass(),"Entity already addedz to entity stack!");
     }
   }
   
@@ -355,13 +356,13 @@ public class Level implements TimerInterface {
     if (getViewPort() == null) {
       this.viewPort   = new Rectangle(0, 0, gc.getWidth()+Core.TILE_SIZE, gc.getHeight()+Core.TILE_SIZE);
       this.setUpdateArea(new Rectangle(0, 0, Math.round(this.viewPort.getWidth()*2.5), Math.round(this.viewPort.getHeight()*2.5)));
-      Log.info("Viewport size is: " + this.viewPort.getWidth() + "x" + this.viewPort.getHeight() );
-      Log.info("Update area size is: " + this.getUpdateArea().getWidth() + "x" + this.getUpdateArea().getHeight() );
+      Core.log(this.getClass(),"Viewport size is: " + this.viewPort.getWidth() + "x" + this.viewPort.getHeight() );
+      Core.log(this.getClass(),"Update area size is: " + this.getUpdateArea().getWidth() + "x" + this.getUpdateArea().getHeight() );
       
       this.tileCountHorizontal =  Math.round((this.viewPort.getWidth() / Core.TILE_SIZE) + 2);
       this.tileCountVertical   =  Math.round((this.viewPort.getHeight() / Core.TILE_SIZE) + 2);
       
-      Log.info("Tile count is: "+ this.tileCountHorizontal + "x" + this.tileCountVertical);
+      Core.log(this.getClass(),"Tile count is: "+ this.tileCountHorizontal + "x" + this.tileCountVertical);
     }
   }
 
@@ -378,7 +379,7 @@ public class Level implements TimerInterface {
   
   public void lookAt(Entity e) {
     cameraTarget = e;
-    Log.info("Setting camera to look at entity: " + this.cameraTarget.getId());
+    Core.log(this.getClass(),"Setting camera to look at entity: " + this.cameraTarget.getId());
   }
   
   public int getShiftTileX() {
@@ -486,7 +487,7 @@ public class Level implements TimerInterface {
     this.mapTileWidth  = size;
     this.mapTileHeight = size;
     this.world         = new Block[mapTileWidth][mapTileHeight];
-    Log.info("Initializing world size: "+this.mapTileWidth + "x" + this.mapTileHeight);
+    Core.log(this.getClass(),"Initializing world size: "+this.mapTileWidth + "x" + this.mapTileHeight);
     
     for (int x = 0; x < this.mapTileWidth; x++) {
       for (int y = 0; y < this.mapTileHeight; y++) {
@@ -642,7 +643,7 @@ public class Level implements TimerInterface {
   }
 
   public void setSize(int w, int h) {
-    Log.info("Tile size is: "+ Core.TILE_SIZE + "x" + Core.TILE_SIZE);
+    Core.log(this.getClass(),"Tile size is: "+ Core.TILE_SIZE + "x" + Core.TILE_SIZE);
     this.mapTileWidth  = w;
     this.mapTileHeight = h;
 
@@ -689,7 +690,7 @@ public class Level implements TimerInterface {
       spawnItem.setCenterTileX(tileX);
       spawnItem.setCenterTileY(tileY);
       
-      Log.info("Spawning item " + spawnItem.toString());
+      Core.log(this.getClass(),"Spawning item " + spawnItem.toString());
     }
   }
 

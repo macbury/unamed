@@ -14,5 +14,6 @@
 	<classpathentry kind="lib" path="libs/jars/jorbis-0.0.15.jar"/>
 	<classpathentry kind="lib" path="libs/jars/kryo-2.21-all.jar"/>
 	<classpathentry kind="lib" path="libs/jars/json-simple-1.1.1.jar"/>
+	<classpathentry kind="lib" path="libs/jars/log4j-1.2.17.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

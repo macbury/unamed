@@ -13,6 +13,7 @@ import org.json.simple.parser.ParseException;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.util.Log;
 
+import com.macbury.unamed.Core;
 import com.macbury.unamed.Timer;
 import com.macbury.unamed.TimerInterface;
 import com.macbury.unamed.block.Block;
@@ -39,7 +40,7 @@ public class MonsterManager implements TimerInterface {
   public MonsterManager() {
     this.population = new ArrayList<Monster>(MAX_MONSTER_POPULATION);
     this.monsterConfigs = new HashMap<String, JSONObject>();
-    Log.info("Initializing Monster Manager!");
+    Core.log(this.getClass(),"Initializing Monster Manager!");
     File folder = new File("res/entities/");
     
     JSONParser parser = new JSONParser();
@@ -47,7 +48,7 @@ public class MonsterManager implements TimerInterface {
     for (final File fileEntry : folder.listFiles()) {
       try {
         JSONObject object = (JSONObject)parser.parse(readFile(fileEntry));
-        Log.info("Loading: " + fileEntry.getName() + " and it is: "+(String)object.get("name"));
+        Core.log(this.getClass(),"Loading: " + fileEntry.getName() + " and it is: "+(String)object.get("name"));
         monsterConfigs.put((String)object.get("name"), object);
       } catch (ParseException e) {
         // TODO Auto-generated catch block
@@ -153,7 +154,7 @@ public class MonsterManager implements TimerInterface {
   public void onTimerFire(Timer timer) throws SlickException {
     ArrayList<Entity> visibleMonsters = Level.shared().entitiesInRect(Level.shared().getUpdateArea(), Monster.class);
     int needToSpawn = MIN_MONSTER_DENSITY - visibleMonsters.size();
-    Log.info("There are "+ visibleMonsters.size() + " on screen, will spawn another: "+ needToSpawn);
+    Core.log(this.getClass(),"There are "+ visibleMonsters.size() + " on screen, will spawn another: "+ needToSpawn);
     while(needToSpawn >= 0) {
       spawnMonster();
       needToSpawn--;
@@ -168,7 +169,7 @@ public class MonsterManager implements TimerInterface {
       Monster monster = createNewMonster();
       monster.setTileX(block.x);
       monster.setTileY(block.y);
-      Log.info("Spawning monster on position: " + block.toString());
+      Core.log(this.getClass(),"Spawning monster on position: " + block.toString());
     }
   }
 
@@ -176,12 +177,12 @@ public class MonsterManager implements TimerInterface {
     Block block = Level.shared().getPassableInvisibleBlockInRect(Level.shared().getUpdateArea());
     
     if (block != null) {
-      Log.info("Spawning monster on pos: " + block.toString());
+      Core.log(this.getClass(),"Spawning monster on pos: " + block.toString());
       Monster monster = getRandomMonster();
       monster.setTileX(block.x);
       monster.setTileY(block.y);
     } else {
-      Log.info("No free space found!");
+      Core.log(this.getClass(),"No free space found!");
     }
   }
 }

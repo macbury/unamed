@@ -83,7 +83,7 @@ public class CollectableItem extends ReusableEntity implements TimerInterface {
 
   @Override
   public void onCollideWith(Entity entity) throws SlickException {
-    Log.info("Collided with: " + entity.toString() + " state: "+STATE_IDLE);
+    Core.log(this.getClass(),"Collided with: " + entity.toString() + " state: "+STATE_IDLE);
     if (this.state == STATE_IDLE) {
       if (Player.class.isInstance(entity)) {
         this.targetPlayer = entity;

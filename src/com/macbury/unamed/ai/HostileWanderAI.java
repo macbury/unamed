@@ -112,7 +112,7 @@ public class HostileWanderAI extends WanderAI implements TimerInterface {
   @Override
   protected void onStateTransition(State old, State next) throws SlickException {
     super.onStateTransition(old, next);
-    //Log.info("Switching from state: " + old + " to " + next);
+    //Core.log(this.getClass(),"Switching from state: " + old + " to " + next);
     
     if (next == State.CHECK_PLAYER_LAST_POSITION) {
       //this.tileFollowPath.reset();

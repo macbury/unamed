@@ -50,13 +50,13 @@ public class LevelLoader implements Runnable{
   }
   
   public void dumpTo(String filePath) throws SlickException {
-    Log.info("Saving dump");
+    Core.log(this.getClass(),"Saving dump");
     Image localImg = Image.createOffscreenImage(this.level.mapTileWidth,this.level.mapTileHeight);
     Graphics localImgG = localImg.getGraphics();
     localImgG.setBackground(Color.black);
     localImgG.clear();
     
-    Log.info("Creating bitmap");
+    Core.log(this.getClass(),"Creating bitmap");
     for (int x = 0; x < this.level.mapTileWidth; x++) {
       for (int y = 0; y < this.level.mapTileHeight; y++) {
         Block block      = this.level.getBlockForPosition(x, y);
@@ -103,9 +103,9 @@ public class LevelLoader implements Runnable{
       localImgG.fill(room);
     }*/
     
-    Log.info("Flushing bitmap");
+    Core.log(this.getClass(),"Flushing bitmap");
     localImgG.flush();
-    Log.info("Writing bitmap");
+    Core.log(this.getClass(),"Writing bitmap");
     ImageOut.write(localImg, filePath, false);
   }
   
@@ -174,7 +174,7 @@ public class LevelLoader implements Runnable{
   }
   
   public void save() throws SlickException {
-    Log.info("Saving map...");
+    Core.log(this.getClass(),"Saving map...");
     Kryo kryo = setupKryo();
     BlockSerializer blockSerializer = new BlockSerializer();
     try {

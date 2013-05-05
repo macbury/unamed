@@ -61,7 +61,7 @@ public class MenuScene extends BasicGameState implements MenuListManagerInterfac
   @Override
   public void init(GameContainer gc, StateBasedGame sg) throws SlickException {
     this.sg = sg;
-    Log.info("Initializing Menu Scene");
+    Core.log(this.getClass(),"Initializing Menu Scene");
   }
 
   @Override
@@ -88,7 +88,7 @@ public class MenuScene extends BasicGameState implements MenuListManagerInterfac
 
   @Override
   public void onItemChange(MenuItem item, MenuList currentMenuList) {
-    Log.info("Selected index: "+ item.getName());
+    Core.log(this.getClass(),"Selected index: "+ item.getName());
   }
 
   @Override
@@ -120,7 +120,7 @@ public class MenuScene extends BasicGameState implements MenuListManagerInterfac
         Core.instance().getContainer().exit();
       }
     }
-    Log.info("Action on index: "+ item.getName());
+    Core.log(this.getClass(),"Action on index: "+ item.getName());
   }
 
   @Override

@@ -22,6 +22,7 @@ import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.imageout.ImageOut;
 import org.newdawn.slick.util.Log;
 
+import com.macbury.unamed.Core;
 import com.macbury.unamed.PerlinGen;
 import com.macbury.unamed.block.Bedrock;
 import com.macbury.unamed.block.Block;
@@ -166,7 +167,7 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
     
     
     this.progress = 100;
-    Log.info("Finished...");
+    Core.log(this.getClass(),"Finished...");
     this.listener.onWorldBuildingFinish();
   }
 
@@ -221,7 +222,7 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
           CaveDigger newCaveDigger = digger.tryToSpawnDigger();
           
           if (newCaveDigger != null) {
-            //Log.info("Spawned digger nr. "+ this.diggers.size());
+            //Core.log(this.getClass(),"Spawned digger nr. "+ this.diggers.size());
             this.diggers.add(newCaveDigger);
             spawnedDigger = true;
           }
@@ -316,7 +317,7 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
     CaveDigger digger = new CaveDigger(level, random);
     digger.setX(block.x);
     digger.setY(block.y);
-    Log.info("Spawning Miner at position: " + block.x + " x " + block.y);
+    Core.log(this.getClass(),"Spawning Miner at position: " + block.x + " x " + block.y);
     this.diggers.add(digger);
     
     if (this.diggers.size() > MAX_DIGGER_COUNT) {
@@ -326,7 +327,7 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
 
   private void buildDungeon() {
     int cellCount = this.size / CELL_SIZE;
-    Log.info("Cell size: " + cellCount); 
+    Core.log(this.getClass(),"Cell size: " + cellCount); 
     
     currentStatus = "Creating dungeon";
     
@@ -541,7 +542,7 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
   }
   
   private void applyBedrockBorder() {
-    Log.info("Adding bedrock border");
+    Core.log(this.getClass(),"Adding bedrock border");
     currentStatus = "Adding bedrock";
     this.progress = 70;
     int y = this.level.mapTileHeight-1;
@@ -562,7 +563,7 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
   }
   
   private void applyResources() throws SlickException {
-    Log.info("Starting building world");
+    Core.log(this.getClass(),"Starting building world");
     this.progress = 5;
     currentStatus = "Filling with ground";
     fillWithGround();
@@ -571,19 +572,19 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
     currentStatus = "Adding sand and water";
     applySandAndWater();
     this.progress = 15;
-    Log.info("Building stone");
+    Core.log(this.getClass(),"Building stone");
     this.progress = 22;
     currentStatus = "Adding stone";
     applyStone();
-    Log.info("Building copper");
+    Core.log(this.getClass(),"Building copper");
     this.progress = 25;
     currentStatus = "Adding copper";
     applyCopper();
-    Log.info("Building coal");
+    Core.log(this.getClass(),"Building coal");
     this.progress = 30;
     currentStatus = "Adding coal";
     applyCoal();
-    Log.info("Building gold");
+    Core.log(this.getClass(),"Building gold");
     this.progress = 35;
     currentStatus = "Adding gold";
     applyGold();

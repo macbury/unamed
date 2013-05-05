@@ -2,6 +2,7 @@ package com.macbury.unamed;
 
 import java.io.File;
 
+import org.apache.log4j.Logger;
 import org.newdawn.slick.BigImage;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Input;
@@ -10,6 +11,7 @@ import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.state.GameState;
 import org.newdawn.slick.state.StateBasedGame;
+import org.newdawn.slick.util.Log;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.macbury.unamed.block.Block;
@@ -28,6 +30,7 @@ import com.macbury.unamed.scenes.MenuScene;
 import com.macbury.unamed.serializers.BlockSerializer;
 import com.macbury.unamed.serializers.EntitySerializer;
 import com.macbury.unamed.serializers.LevelSerializer;
+import com.macbury.unamed.util.Log4jLogSystem;
 import com.macbury.unamed.util.MonsterManager;
 
 public class Core extends StateBasedGame {
@@ -79,6 +82,16 @@ public class Core extends StateBasedGame {
   public Core(String title) {
     super(title);
     Core.coreInstance = this;
+    
+    Log.setLogSystem(new Log4jLogSystem());
+  }
+  
+  public static void log(Class context, String msg, Throwable error) {
+    Logger.getLogger(context).info(msg, error);
+  }
+  
+  public static void log(Class context, String msg) {
+    Logger.getLogger(context).info(msg);
   }
 
   @Override

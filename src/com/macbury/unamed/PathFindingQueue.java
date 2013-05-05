@@ -100,16 +100,16 @@ public class PathFindingQueue implements TileBasedMap, Runnable {
 
   @Override
   public void run() {
-    Log.info("Initializing path finder...");
+    Core.log(this.getClass(),"Initializing path finder...");
     getPathFinder();
-    Log.info("Wating for data");
+    Core.log(this.getClass(),"Wating for data");
     while(true) {
       try {
         Thread.sleep(SLEEP_TIME);
         computeStack();
       } catch (InterruptedException e) {
         e.printStackTrace();
-        Log.info("Stoping path finding queue");
+        Core.log(this.getClass(),"Stoping path finding queue");
       } catch (Exception e) {
         e.printStackTrace();
         exit();
@@ -130,7 +130,7 @@ public class PathFindingQueue implements TileBasedMap, Runnable {
   }
 
   public static void exit() {
-    Log.info("Exiting queue");
+    Core.log(PathFindingQueue.class,"Exiting queue");
     if (shared != null) {
       shared.currentThread.interrupt();
       shared = null;

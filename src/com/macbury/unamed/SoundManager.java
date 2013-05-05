@@ -69,7 +69,7 @@ public class SoundManager {
   private Audio loadOgg(String filename) {
     try {
       String filepath = "res/sounds/"+filename+".ogg";
-      Log.info("Loading sound: " + filepath);
+      Core.log(this.getClass(),"Loading sound: " + filepath);
       return AudioLoader.getAudio("OGG", new FileInputStream(filepath));
     } catch (IOException e) {
       e.printStackTrace();

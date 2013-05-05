@@ -18,6 +18,7 @@ public class LevelSerializer extends Serializer<Level> {
       level = new Level();
       level.setSize(input.readInt(), input.readInt());
       level.fillWorldWithBlocks(level.mapTileWidth);
+      level.gameplayTime = input.readLong();
     } catch (SlickException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -30,6 +31,7 @@ public class LevelSerializer extends Serializer<Level> {
   public void write(Kryo kryo, Output out, Level level) {
     out.writeInt(level.mapTileWidth);
     out.writeInt(level.mapTileHeight);
+    out.writeLong(level.gameplayTime);
   }
 
 }

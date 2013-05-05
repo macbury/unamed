@@ -11,7 +11,11 @@ import com.macbury.unamed.entity.Entity;
 import com.macbury.unamed.level.Level;
 
 public class SwordAttack extends AttackBase {
-
+  
+  public SwordAttack() {
+    super();
+  }
+  
   @Override
   protected void onAttack(Entity hunter, Entity prey) throws SlickException {
     AnimationEntity entity = (AnimationEntity) Level.shared().getUsedEntity(AnimationEntity.class);

@@ -81,6 +81,9 @@ public class Player extends Character implements TimerInterface {
   @Override
   public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
     super.update(gc, sb, delta);
+    if (InterfaceManager.shared().shouldBlockGamePlay()) {
+      return;
+    }
     this.harvestAttack.update(delta);
     this.placeActionTimer.update(delta);
     SoundManager.shared().setPosition(getTileX(), getTileY());

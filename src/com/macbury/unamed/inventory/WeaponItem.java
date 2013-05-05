@@ -6,8 +6,6 @@ import org.newdawn.slick.geom.Vector2f;
 import com.macbury.unamed.attack.AttackBase;
 
 public abstract class WeaponItem extends InventoryItem {
-  private AttackBase attack;
-  
   public WeaponItem() {
     // TODO Auto-generated constructor stub
   }
@@ -29,19 +27,13 @@ public abstract class WeaponItem extends InventoryItem {
   }
   
   public void update(int delta) throws SlickException {
-    attack.update(delta);
+    getAttack().update(delta);
   }
   
-  public AttackBase getAttack() {
-    return attack;
-  }
-
-  public void setAttack(AttackBase attack) {
-    this.attack = attack;
-  }
+  public abstract AttackBase getAttack();
 
   public void reset() {
-    this.attack.getAttackTimer().restart();
+    getAttack().getAttackTimer().restart();
   }
   
   
