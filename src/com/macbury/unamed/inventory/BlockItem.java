@@ -35,7 +35,7 @@ public class BlockItem extends InventoryItem {
 
   @Override
   public String getName() {
-    return "Change this";
+    return this.blockType.getSimpleName();
   }
 
   @Override

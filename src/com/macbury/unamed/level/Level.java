@@ -805,7 +805,7 @@ public class Level implements TimerInterface {
       int y = random.nextInt(th) + sy;
       
       Block block = getBlockForPosition(x, y);
-      if (!block.isVisible() && block.isSidewalk()) {
+      if (block != null && !block.isVisible() && block.isSidewalk()) {
         return block;
       }
       

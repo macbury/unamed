@@ -45,7 +45,7 @@ public class WorldBuilder implements Runnable, DungeonBSPNodeCorridorGenerateCal
   private static final int ROOM_COUNT         = 60;
   private static final int CELL_SIZE          = 256;
   
-  public static final int NORMAL              = 2000;
+  public static final int NORMAL              = 1000;
   public static final int BIG                 = 4000;
   public static final int CRASH_MY_COMPUTER   = 6000;
   private static final int MIN_DIGGER_COUNT   = 50;

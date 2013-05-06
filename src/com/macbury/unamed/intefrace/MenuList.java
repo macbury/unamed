@@ -9,7 +9,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 public class MenuList extends ArrayList<MenuItem> {
   private String title;
-
+  
   public String getTitle() {
     return title;
   }

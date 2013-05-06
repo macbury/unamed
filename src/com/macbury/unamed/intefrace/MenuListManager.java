@@ -17,7 +17,7 @@ import com.macbury.unamed.SoundManager;
 import com.macbury.unamed.util.FrameImageUtil;
 
 public class MenuListManager extends ArrayList<MenuList> {
-  
+  private MenuListType menuType = MenuListType.Veritical;
   private static final int MENU_MOVE_BUTTON_THROTTLE = 200;
   private static final int TEXT_PADDING = 16;
   private static final int LINE_PADDING = 6;
@@ -36,12 +36,14 @@ public class MenuListManager extends ArrayList<MenuList> {
   private MessageBox messageBox;
   private Color pulseColor;
   private Color borderColor;
-  private boolean isVerticla = true;
   private int pulseDirection = 1;
   
   private int width         = 320;
   private int minItemWidth  = 30;
   private int height = LINE_HEIGHT + TEXT_PADDING * 2;
+  private int columns       = 3;
+  private boolean autosize  = true;
+  private boolean canSelect = true;
   
   public MenuListManager() throws SlickException {
     this.messageBox    = new MessageBox(0,0,320,210);
@@ -55,7 +57,9 @@ public class MenuListManager extends ArrayList<MenuList> {
       gr.pushTransform();
       gr.translate(this.getX(), this.getY());
       
-      if (isVerticla()) {
+      if (menuType == MenuListType.Grid) {
+        renderGrid(gc,sg,gr);
+      } else if (isVerticla()) {
         renderVertical(gc,sg,gr);
       } else {
         renderHorizontal(gc,sg,gr);
@@ -63,6 +67,34 @@ public class MenuListManager extends ArrayList<MenuList> {
       
       gr.popTransform(); 
     }
+  }
+
+  private void renderGrid(GameContainer gc, StateBasedGame sg, Graphics gr) throws SlickException {
+    messageBox.setHeight(getHeight());
+    messageBox.setWidth(getWidth());
+    messageBox.draw(gr);
+    
+    gr.pushTransform();
+    gr.translate(TEXT_PADDING, TEXT_PADDING);
+    
+    int elementWidth = getWidth() / getColumns() - TEXT_PADDING;
+    
+    int lx = 0;
+    int ly = 0;
+    int lineCenterY = LINE_HEIGHT / 2 - Core.FONT_SIZE_CENTER_Y - 2;
+    
+    for (int i = 0; i < currentMenuList.size(); i++) {
+      
+      if (currentItemIndex == i) {
+        Image cursorSkin = ImagesManager.shared().windowSpriteSheet.getSubImage(1, 0);
+        FrameImageUtil.render(cursorSkin, gr, elementWidth, LINE_HEIGHT, lx, 0, pulseColor);
+      }
+      
+      currentMenuList.get(i).render(gr, lx+LINE_PADDING, lineCenterY, elementWidth, LINE_HEIGHT);
+      lx += elementWidth + LINE_PADDING;
+    }
+    
+    gr.popTransform();
   }
 
   private void renderHorizontal(GameContainer gc, StateBasedGame sg, Graphics gr) throws SlickException {
@@ -77,7 +109,7 @@ public class MenuListManager extends ArrayList<MenuList> {
     int lineCenterY = LINE_HEIGHT / 2 - Core.FONT_SIZE_CENTER_Y - 2;
     
     for (int i = 0; i < currentMenuList.size(); i++) {
-      int textWidth = Core.instance().getFont().getWidth(currentMenuList.get(i).getName()) + LINE_PADDING * 2;
+      int textWidth = currentMenuList.get(i).getWidth() + LINE_PADDING * 2;
       textWidth = Math.max(getMinItemWidth(), textWidth);
       
       if (currentItemIndex == i) {
@@ -85,7 +117,7 @@ public class MenuListManager extends ArrayList<MenuList> {
         FrameImageUtil.render(cursorSkin, gr, textWidth, LINE_HEIGHT, x, 0, pulseColor);
       }
       
-      InterfaceManager.shared().drawTextWithOutline(x+LINE_PADDING, lineCenterY, currentMenuList.get(i).getName());
+      currentMenuList.get(i).render(gr, x+LINE_PADDING, lineCenterY, textWidth, LINE_HEIGHT);
       x += textWidth + LINE_PADDING;
     }
     
@@ -108,14 +140,16 @@ public class MenuListManager extends ArrayList<MenuList> {
     }
     
     int lineCenterY = LINE_HEIGHT / 2 - Core.FONT_SIZE_CENTER_Y - 2;
+    int width       = getWidth() - TEXT_PADDING * 2;
     int y = sy;
     for (int i = 0; i < currentMenuList.size(); i++) {
       if (currentItemIndex == i) {
         Image cursorSkin = ImagesManager.shared().windowSpriteSheet.getSubImage(1, 0);
-        FrameImageUtil.render(cursorSkin, gr, getWidth() - TEXT_PADDING * 2, LINE_HEIGHT, 0, y, pulseColor);
+        FrameImageUtil.render(cursorSkin, gr, width, LINE_HEIGHT, 0, y, pulseColor);
       }
       
-      InterfaceManager.shared().drawTextWithOutline(TEXT_PADDING, y + lineCenterY, currentMenuList.get(i).getName());
+      currentMenuList.get(i).render(gr, TEXT_PADDING, y + lineCenterY, width, LINE_HEIGHT);
+      
       y += LINE_HEIGHT + LINE_PADDING;
     }
     gr.popTransform();
@@ -123,11 +157,15 @@ public class MenuListManager extends ArrayList<MenuList> {
 
 
   public float getBoxVerticalHeight() {
-    float height = currentMenuList.size() * LINE_HEIGHT + (2*TEXT_PADDING) + (2 * LINE_PADDING);
-    if (currentMenuList.haveTitle()) {
-      height += TITLE_HEIGHT;
+    if (isAutosize()) {
+      float height = currentMenuList.size() * LINE_HEIGHT + (2*TEXT_PADDING) + (2 * LINE_PADDING);
+      if (currentMenuList.haveTitle()) {
+        height += TITLE_HEIGHT;
+      }
+      return height;
+    } else {
+      return getHeight();
     }
-    return height;
   }
 
   public void pushList(MenuList list) {
@@ -168,8 +206,15 @@ public class MenuListManager extends ArrayList<MenuList> {
     if (currentMenuList != null && !startMoving) {
       Input input = gc.getInput();
       
-      int nextItem = isVerticla() ? Input.KEY_DOWN : Input.KEY_RIGHT;
-      int prevItem = isVerticla() ? Input.KEY_UP : Input.KEY_LEFT;
+      int nextItem = Input.KEY_DOWN;
+      int prevItem = Input.KEY_UP;
+      
+      if(getMenuType() == MenuListType.Horizontal) {
+        nextItem = Input.KEY_RIGHT;
+        prevItem = Input.KEY_LEFT;
+      }
+      
+      
       if (input.isKeyDown(nextItem)) {
         if (currentItemIndex < currentMenuList.size() - 1) {
           currentItemIndex++;
@@ -180,11 +225,11 @@ public class MenuListManager extends ArrayList<MenuList> {
           currentItemIndex--;
           startMoving = true;
         }
-      } else if (input.isKeyPressed(Core.ACTION_KEY)) {
+      } else if (input.isKeyPressed(Core.ACTION_KEY) && isCanSelect()) {
         SoundManager.shared().decision.playAsSoundEffect(1.0f, 1.0f, false);
-        menuListener.onSelectItem(this.currentMenuList.get(currentItemIndex), currentMenuList);
+        menuListener.onSelectItem(getCurrentSelectedMenuItem(), currentMenuList);
         startMoving = false;
-      } else if (input.isKeyPressed(Core.CANCEL_KEY)) {
+      } else if (input.isKeyPressed(Core.CANCEL_KEY) && isCanSelect()) {
         SoundManager.shared().cancelSound.playAsSoundEffect(1.0f, 1.0f, false);
         startMoving = false;
         popList();
@@ -194,9 +239,13 @@ public class MenuListManager extends ArrayList<MenuList> {
         pulseColor.a   = 1.0f;
         pulseDirection = -1;
         SoundManager.shared().cursor.playAsSoundEffect(1.0f, 1.0f, false);
-        menuListener.onItemChange(this.currentMenuList.get(currentItemIndex), currentMenuList);
+        menuListener.onItemChange(getCurrentSelectedMenuItem(), currentMenuList);
       }
     }
+  }
+
+  private MenuItem getCurrentSelectedMenuItem() {
+    return this.currentMenuList.get(currentItemIndex);
   }
 
   public void popList() throws SlickException {
@@ -240,11 +289,7 @@ public class MenuListManager extends ArrayList<MenuList> {
   }
 
   public boolean isVerticla() {
-    return isVerticla;
-  }
-
-  public void setVerticla(boolean isVerticla) {
-    this.isVerticla = isVerticla;
+    return menuType == MenuListType.Veritical;
   }
 
   public int getWidth() {
@@ -269,5 +314,37 @@ public class MenuListManager extends ArrayList<MenuList> {
 
   public void setMinItemWidth(int minItemWidth) {
     this.minItemWidth = minItemWidth;
+  }
+
+  public boolean isCanSelect() {
+    return canSelect;
+  }
+
+  public void setCanSelect(boolean canSelect) {
+    this.canSelect = canSelect;
+  }
+
+  public boolean isAutosize() {
+    return autosize;
+  }
+
+  public void setAutosize(boolean autosize) {
+    this.autosize = autosize;
+  }
+
+  public MenuListType getMenuType() {
+    return menuType;
+  }
+
+  public void setMenuType(MenuListType menuType) {
+    this.menuType = menuType;
+  }
+
+  public int getColumns() {
+    return columns;
+  }
+
+  public void setColumns(int columns) {
+    this.columns = columns;
   }
 }

@@ -16,7 +16,7 @@ public class CoalItem extends InventoryItem {
   @Override
   public String getName() {
     // TODO Auto-generated method stub
-    return null;
+    return "Coal";
   }
 
   @Override

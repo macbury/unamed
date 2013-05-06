@@ -11,6 +11,10 @@ import com.macbury.unamed.ImagesManager;
 import com.macbury.unamed.SoundManager;
 import com.macbury.unamed.attack.AttackBase;
 import com.macbury.unamed.attack.PunchAttack;
+import com.macbury.unamed.block.BlockResources;
+import com.macbury.unamed.intefrace.InventoryItemMenuItem;
+import com.macbury.unamed.intefrace.MenuItem;
+import com.macbury.unamed.intefrace.MenuList;
 
 public class InventoryManager extends ArrayList<InventoryItem> {
   private static InventoryManager shared;
@@ -118,7 +122,10 @@ public class InventoryManager extends ArrayList<InventoryItem> {
   }
   
   public Image getImageForInventoryItem(InventoryItem item) throws SlickException {
-    if (RockSwordItem.class.isInstance(item)) {
+    if (BlockItem.class.isInstance(item)) {
+      BlockItem blockItem = (BlockItem) item;
+      return BlockResources.shared().imageForBlockClass(blockItem.blockType);
+    } else if (RockSwordItem.class.isInstance(item)) {
       return getOrLoadInventoryItemImage(RockSwordItem.class, 2, 3);
     } else if (RockPickItem.class.isInstance(item)) {
       return getOrLoadInventoryItemImage(RockPickItem.class, 1, 3);
@@ -135,6 +142,19 @@ public class InventoryManager extends ArrayList<InventoryItem> {
     }
     
     throw new SlickException("No image for inventory item: " +item.getClass().getName());    
+  }
+
+  public MenuList getItemsListForMenu() {
+    MenuList list = new MenuList();
+    
+    int i = 0;
+    
+    for (InventoryItem item : this) {
+      list.add(new InventoryItemMenuItem(item));
+      i++;
+    }
+    
+    return list;
   }
   
   
