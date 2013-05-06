@@ -220,7 +220,7 @@ public class Level implements TimerInterface {
     
     for (int i = 0; i < this.entities.size(); i++) {
       Entity e    = this.entities.get(i);
-      if (this.viewPort.intersects(e.getRect()) && e.isOnVisibleBlock()) {
+      if (this.viewPort.intersects(e.getRect()) && (e.isOnVisibleBlock() || !e.allowInteraction())) {
         e.render(gc, sb, gr);
         if (e.haveHud()) {
           hudEntities.push(e);

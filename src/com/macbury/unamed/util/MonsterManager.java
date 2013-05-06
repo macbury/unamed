@@ -59,6 +59,7 @@ public class MonsterManager implements TimerInterface {
     this.lastIndex = -1;
     this.updatePopulationTimer = new Timer(UPDATE_POPULATION_EVERY, this);
     this.updatePopulationTimer.start();
+    this.updatePopulationTimer.setIsPausableEvent(true);
   }
   
 

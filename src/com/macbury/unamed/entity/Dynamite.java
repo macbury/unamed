@@ -1,5 +1,7 @@
 package com.macbury.unamed.entity;
 
+import java.util.ArrayList;
+
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
@@ -30,6 +32,8 @@ public class Dynamite extends BlockEntity implements RaytraceCallback {
   private Sprite sprite;
   private RaytraceUtil raytrace;
   private int shockWavePower;
+  private ArrayList<Block> visitedBlocks;
+  private ArrayList<Entity> visitedEntities;
   
   public Dynamite() throws SlickException {
     super();
@@ -44,6 +48,9 @@ public class Dynamite extends BlockEntity implements RaytraceCallback {
     addComponent(sprite);
     this.timer = TIME_TO_EXPLOSION;
     this.raytrace = new RaytraceUtil(this);
+    this.visitedBlocks = new ArrayList<Block>();
+    this.visitedEntities = new ArrayList<Entity>();
+    this.solid = true;
   }
   
   @Override
@@ -92,6 +99,12 @@ public class Dynamite extends BlockEntity implements RaytraceCallback {
   public void applyDamage(int x, int y, int distance) throws SlickException {
     Block block = this.getLevel().getBlockForPosition(x, y);
     
+    if (this.visitedBlocks.contains(block)) {
+      return;
+    } else {
+      this.visitedBlocks.add(block);
+    }
+    
     if (block != null && block.isHarvestable()) {
       int hardness = block.asHarvestableBlock().getHardness();
       
@@ -103,6 +116,11 @@ public class Dynamite extends BlockEntity implements RaytraceCallback {
       }
     } else {
       Entity attackedEntity = this.getLevel().getEntityForTilePosition(x, y);
+      if (this.visitedEntities.contains(attackedEntity)) {
+        return;
+      } else {
+        this.visitedEntities.add(attackedEntity);
+      }
       if (attackedEntity != null) {
         Damage damage = new Damage(shockWavePower);
         if (BlockEntity.class.isInstance(attackedEntity)) {

@@ -65,7 +65,7 @@ public class MessageBoxInterface extends Interface implements TimerInterface {
     messageBox.draw(gr);
     gr.pushTransform();
     gr.translate(messageBox.getX() + INNER_TEXT_PADDING, messageBox.getY() + INNER_TEXT_PADDING);
-    InterfaceManager.shared().drawTextWithShadow(0, 0, currentTextToDisplay);
+    InterfaceManager.shared().drawTextWithOutline(0, 0, currentTextToDisplay);
     if (this.currentState == STATE_WAITING_FOR_INPUT_TO_GO_TO_THE_NEXT_MESSAGE) {
       getAnimatedArrow().draw(messageBox.getWidth() - INNER_TEXT_PADDING * 3, messageBox.getHeight() - INNER_TEXT_PADDING * 3);
     }

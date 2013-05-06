@@ -10,6 +10,7 @@ import org.newdawn.slick.util.Log;
 import com.macbury.unamed.intefrace.InGameInterface;
 
 public class ImagesManager {
+  private static final int WINDOW_SKIN_SPLIT = 32;
   private static int MAX_BREAKING_BLOCK_SIZE = 9;
   public static ImagesManager sharedInstance = null;
   private HashMap<String, Image> imagesCache;
@@ -34,7 +35,7 @@ public class ImagesManager {
     this.hotBarCellSpriteSheet = getSpriteSheet("hud/hotbar_cell.png", InGameInterface.HOTBAR_CELL_SIZE, InGameInterface.HOTBAR_CELL_SIZE);
     this.shadowMapSpriteSheet  = getSpriteSheet("effects/shadowmap.png", Core.TILE_SIZE, Core.TILE_SIZE);
     this.inventorySpriteSheet  = getSpriteSheet("hud/items.png", Core.TILE_SIZE, Core.TILE_SIZE);
-    this.windowSpriteSheet     = getSpriteSheet("hud/window-skin.png", 8, 8);
+    this.windowSpriteSheet     = getSpriteSheet("hud/windows.png", WINDOW_SKIN_SPLIT, WINDOW_SKIN_SPLIT);
     buildItemsCache();
   }
   

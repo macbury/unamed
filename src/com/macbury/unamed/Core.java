@@ -21,6 +21,7 @@ import com.macbury.unamed.block.Sand;
 import com.macbury.unamed.entity.Entity;
 import com.macbury.unamed.entity.Monster;
 import com.macbury.unamed.intefrace.InterfaceManager;
+import com.macbury.unamed.intefrace.developerconsole.DeveloperConsole;
 import com.macbury.unamed.inventory.InventoryManager;
 import com.macbury.unamed.level.Level;
 import com.macbury.unamed.scenes.GameplayScene;
@@ -42,13 +43,15 @@ public class Core extends StateBasedGame {
   public static final int MAX_FPS     = 60;
   public final static int TILE_SIZE   = 32;
   public final static int SHADOW_SIZE = 22;
-  public static final int ACTION_KEY  = Input.KEY_Z;
-  public static final int CANCEL_KEY  = Input.KEY_X;
+  public static final int ACTION_KEY  = Input.KEY_X;
+  public static final int CANCEL_KEY  = Input.KEY_Z;
   private static Core coreInstance;
   public static String title            = "Unamed";
   public static final String DUNGON_FILE_NAME = "my.dungeon";
   public static final int WINDOW_WIDTH  = 1280;
   public static final int WINDOW_HEIGHT = 720;
+  public static final int FONT_SIZE = 18;
+  public static final int FONT_SIZE_CENTER_Y = FONT_SIZE / 2;
   
   private UnicodeFont font;
   private GeneratingWorldState generatingWorldState;
@@ -69,7 +72,7 @@ public class Core extends StateBasedGame {
   
   public UnicodeFont getFont() throws SlickException {
     if (font == null) {
-      font = new UnicodeFont("/res/fonts/advocut-webfont.ttf", 20, false, false);
+      font = new UnicodeFont("/res/fonts/VL-Gothic-Regular.ttf", FONT_SIZE, false, false);
       
       font.addAsciiGlyphs();
       font.getEffects().add(new ColorEffect());
@@ -88,10 +91,12 @@ public class Core extends StateBasedGame {
   
   public static void log(Class context, String msg, Throwable error) {
     Logger.getLogger(context).info(msg, error);
+    DeveloperConsole.shared().print(msg);
   }
   
   public static void log(Class context, String msg) {
     Logger.getLogger(context).info(msg);
+    DeveloperConsole.shared().print(msg);
   }
 
   @Override

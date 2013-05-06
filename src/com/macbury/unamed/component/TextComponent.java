@@ -9,6 +9,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import com.macbury.unamed.Core;
 import com.macbury.unamed.entity.HUDComponentInterface;
+import com.macbury.unamed.intefrace.InterfaceManager;
 
 public class TextComponent extends PositionBasedComponent implements HUDComponentInterface {
   private String text;
@@ -41,8 +42,9 @@ public class TextComponent extends PositionBasedComponent implements HUDComponen
   public void onHUDRender(GameContainer gc, StateBasedGame sb, Graphics gr) throws SlickException {
     UnicodeFont font = Core.instance().getFont();
     int cx = (int) (this.getX() - this.getText().length() * 4);
-    font.drawString(cx + 2, getY() + 2, getText(), Color.black);
-    font.drawString(cx, getY(), getText(), getColor());
+    //font.drawString(cx + 2, getY() + 2, getText(), Color.black);
+    //font.drawString(cx, getY(), getText(), getColor());
+    InterfaceManager.shared().drawTextWithOutline((int)cx, (int)getY(), getText(), getColor());
   }
 
   public String getText() {

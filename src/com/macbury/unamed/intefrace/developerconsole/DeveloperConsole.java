@@ -18,6 +18,7 @@ import com.macbury.unamed.intefrace.Interface;
 import com.macbury.unamed.intefrace.InterfaceManager;
 
 public class DeveloperConsole extends Interface implements KeyListener {
+  private static DeveloperConsole shared;
   public final static Color consoleColor = new Color(0,0,0,0.7f);
   private static final float CONSOLE_HEIGHT = 320.0f;
   private static final float LINE_HEIGHT = 24;
@@ -26,6 +27,14 @@ public class DeveloperConsole extends Interface implements KeyListener {
   ArrayList<String> commandsLog;
   ArrayList<String> executedCommands;
   public ArrayList<ConsoleCommand> commands;
+  
+  public static DeveloperConsole shared() {
+    if (shared == null) {
+      shared = new DeveloperConsole();
+    }
+    return shared;
+  }
+  
   public DeveloperConsole() {
     commandsLog      = new ArrayList<String>();
     executedCommands = new ArrayList<String>(); 

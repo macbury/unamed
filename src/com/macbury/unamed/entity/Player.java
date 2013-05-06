@@ -92,11 +92,11 @@ public class Player extends Character implements TimerInterface {
       Input input    = gc.getInput();
 
       if (!tileMovement.isMoving()) {
-        if (input.isKeyDown(Core.CANCEL_KEY)) {
+        if (input.isKeyDown(Core.ACTION_KEY)) {
           attackOrHarvestElementInFrontOfMe();
         }
         
-        if(input.isKeyDown(Core.ACTION_KEY)) {
+        if(input.isKeyDown(Core.CANCEL_KEY)) {
           if (!this.placeActionTimer.running()) {
             placeOrUseElementInFrontOfMe();
             this.placeActionTimer.start();

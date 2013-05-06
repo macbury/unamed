@@ -7,6 +7,8 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
+import com.macbury.unamed.intefrace.InterfaceManager;
+
 public class AnimatedSprite extends RenderComponent {
   public final static int SPRITE_TILE_WIDTH  = 32;
   public final static int SPRITE_TILE_HEIGHT = 32;
@@ -35,7 +37,10 @@ public class AnimatedSprite extends RenderComponent {
   @Override
   public void update(GameContainer gc, StateBasedGame sb, int delta)
       throws SlickException {
-    currentAnimation.update(delta);
+    if (InterfaceManager.shared().isNormalGameplay()) {
+      currentAnimation.update(delta);
+    }
+    
   }
 
   @Override

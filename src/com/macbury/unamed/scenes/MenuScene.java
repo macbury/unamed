@@ -70,7 +70,7 @@ public class MenuScene extends BasicGameState implements MenuListManagerInterfac
     Core.instance().getMainScreenImage().draw();
     //ShaderManager.shared().blurShader.unbind();
     
-    menuManager.setY((int) (Core.WINDOW_HEIGHT - menuManager.getBoxHeight() - 20));
+    menuManager.setY((int) (Core.WINDOW_HEIGHT - menuManager.getBoxVerticalHeight() - 20));
     menuManager.setX(Core.WINDOW_WIDTH - 340);
     
     menuManager.render(gc, sg, gr);

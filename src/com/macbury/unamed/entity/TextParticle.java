@@ -8,6 +8,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import com.macbury.unamed.Timer;
 import com.macbury.unamed.TimerInterface;
 import com.macbury.unamed.component.TextComponent;
+import com.macbury.unamed.intefrace.InterfaceManager;
 import com.macbury.unamed.level.Level;
 
 public class TextParticle extends ReusableEntity implements TimerInterface  {
@@ -27,6 +28,7 @@ public class TextParticle extends ReusableEntity implements TimerInterface  {
     textComponent = new TextComponent();
     addComponent(textComponent);
     destroyTimer.start();
+    destroyTimer.setIsPausableEvent(true);
     this.bootstrap = true;
   } 
   
@@ -34,30 +36,32 @@ public class TextParticle extends ReusableEntity implements TimerInterface  {
   public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
     super.update(gc, sb, delta);
     destroyTimer.update(delta);
-    if (bootstrap) {
-      bootstrap = false;
-      xx = getX();
-      yy = getY();
-      zz = 2;
+    if (InterfaceManager.shared().isNormalGameplay()) {
+      if (bootstrap) {
+        bootstrap = false;
+        xx = getX();
+        yy = getY();
+        zz = 2;
+        
+        xa = (float) (Level.shared().random.nextGaussian() * 0.3);
+        ya = (float) (Level.shared().random.nextGaussian() * 0.2);
+        za = (float) (Level.shared().random.nextFloat() * 0.7 + 2);
+      }
       
-      xa = (float) (Level.shared().random.nextGaussian() * 0.3);
-      ya = (float) (Level.shared().random.nextGaussian() * 0.2);
-      za = (float) (Level.shared().random.nextFloat() * 0.7 + 2);
+      xx += xa * delta * SPEED;
+      yy += ya * delta * SPEED;
+      zz += za * delta * SPEED;
+      if (zz < 0) {
+        zz = 0;
+        za *= -0.5;
+        xa *= 0.6;
+        ya *= 0.6;
+      }
+      za -= 0.15 * delta * SPEED;
+      this.setX(xx);
+      this.setY(yy);
+      this.textComponent.setY(-zz);
     }
-    
-    xx += xa * delta * SPEED;
-    yy += ya * delta * SPEED;
-    zz += za * delta * SPEED;
-    if (zz < 0) {
-      zz = 0;
-      za *= -0.5;
-      xa *= 0.6;
-      ya *= 0.6;
-    }
-    za -= 0.15 * delta * SPEED;
-    this.setX(xx);
-    this.setY(yy);
-    this.textComponent.setY(-zz);
   }
 
   @Override

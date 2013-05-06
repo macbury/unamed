@@ -30,7 +30,6 @@ public class GameMenuInterface extends Interface implements MenuListManagerInter
     menuManager.setMenuListener(this);
     mainMenuList = new MenuList();
     
-    mainMenuList.add("Inventory", MENU_INVENTORY);
     mainMenuList.add("Continue", MENU_CONTINUE);
     mainMenuList.add("Save", MENU_SAVE);
     
@@ -39,7 +38,7 @@ public class GameMenuInterface extends Interface implements MenuListManagerInter
     menuManager.pushList(mainMenuList);
     
     menuManager.setX((int) (Core.WINDOW_WIDTH / 2 - menuManager.getWidth() / 2));
-    menuManager.setY((int) (Core.WINDOW_HEIGHT / 2 - menuManager.getBoxHeight() / 2));
+    menuManager.setY((int) (Core.WINDOW_HEIGHT / 2 - menuManager.getBoxVerticalHeight() / 2));
   }
   
   @Override
@@ -87,9 +86,6 @@ public class GameMenuInterface extends Interface implements MenuListManagerInter
       return;
     }
     switch (item.getId()) {
-      case MENU_INVENTORY:
-        InterfaceManager.shared().push(new InventoryInterface());
-      break;
       case MENU_SAVE:
         LevelLoader ll = new LevelLoader(Level.shared());
         ll.save();

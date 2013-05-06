@@ -110,7 +110,7 @@ public class InGameInterface extends Interface{
         int textY = HOTBAR_CELL_SIZE - countTextHeight - HOTBAR_CELL_TEXT_PADDING;
         
         font.drawString(textX, textY, countText);
-        drawTextWithShadow(textX, textY, countText);
+        InterfaceManager.shared().drawTextWithOutline(textX, textY, countText);
       }
       
       x += HOTBAR_CELL_SIZE + HOTBAR_PADDING;
@@ -120,9 +120,6 @@ public class InGameInterface extends Interface{
     //hotBarImage.drawCentered(gc.getWidth()/2, gc.getHeight() - hotBarImage.getHeight() - 10);
   }
 
-  private void drawTextWithShadow(int textX, int textY, String text) throws SlickException {
-    InterfaceManager.shared().drawTextWithShadow(textX, textY, text);
-  }
 
 
   @Override
@@ -130,6 +127,10 @@ public class InGameInterface extends Interface{
     Input input = gc.getInput();
     if (input.isKeyPressed(Input.KEY_ESCAPE)) {
       InterfaceManager.shared().push(new GameMenuInterface());
+    }
+    
+    if (input.isKeyPressed(InventoryInterface.TOGGLE_KEY)) {
+      InterfaceManager.shared().push(new InventoryInterface());
     }
     
     if (this.fpsMap != null) {

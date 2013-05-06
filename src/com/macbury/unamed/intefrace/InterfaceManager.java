@@ -50,7 +50,7 @@ public class InterfaceManager extends Stack<Interface> implements TimerInterface
   }
 
   public InterfaceManager() throws SlickException {
-    this.developerConsole  = new DeveloperConsole();
+    this.developerConsole  = DeveloperConsole.shared();
     this.messageBox        = new MessageBoxInterface();
     this.blockInputTimer   = new Timer(INTERFACE_KEYBOARD_TIMEOUT, this);
     blockInputTimer.stop();
@@ -171,10 +171,9 @@ public class InterfaceManager extends Stack<Interface> implements TimerInterface
     push(messageBox);
   }
   
-  public void drawTextWithShadow(int textX, int textY, String text) throws SlickException {
-    UnicodeFont font = Core.instance().getFont();
-    font.drawString(textX+2, textY+2, text, Color.black);
-    font.drawString(textX, textY, text);
+  
+  public void drawTextWithOutline(int textX, int textY, String text) throws SlickException {
+    drawTextWithOutline(textX, textY,text, Color.white);
   }
 
   @Override
@@ -185,5 +184,25 @@ public class InterfaceManager extends Stack<Interface> implements TimerInterface
     input.clearKeyPressedRecord();
     input.clearMousePressedRecord();
     input.resume();
+  }
+
+  public void drawTextWithOutline(int textX, int textY, String text, Color color) throws SlickException {
+    UnicodeFont font = Core.instance().getFont();
+    int padding = 1;
+    font.drawString(textX+padding, textY+padding, text, Color.black);
+    font.drawString(textX, textY+padding, text, Color.black);
+    font.drawString(textX-padding, textY+padding, text, Color.black);
+    font.drawString(textX-padding, textY, text, Color.black);
+    font.drawString(textX-padding, textY-padding, text, Color.black);
+    font.drawString(textX, textY-padding, text, Color.black);
+    font.drawString(textX+padding, textY-padding, text, Color.black);
+    font.drawString(textX+padding, textY, text, Color.black);
+    
+    font.drawString(textX, textY, text, color);
+    
+  }
+
+  public boolean isNormalGameplay() {
+    return !this.shouldBlockGamePlay();
   }
 }
