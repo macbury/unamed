@@ -7,7 +7,8 @@ import com.macbury.unamed.attack.AttackBase;
 
 public abstract class WeaponItem extends InventoryItem {
   public WeaponItem() {
-    // TODO Auto-generated constructor stub
+    super();
+    this.setItemType(InventoryItemType.Weapon);
   }
 
   @Override

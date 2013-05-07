@@ -7,7 +7,11 @@ import com.macbury.unamed.entity.Player;
 
 public class CopperItem extends InventoryItem {
 
-
+  public CopperItem() {
+    super();
+    this.setItemType(InventoryItemType.Resource);
+  }
+  
   @Override
   public String getKey() {
     return "Copper";

@@ -7,6 +7,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.macbury.unamed.Core;
+import com.macbury.unamed.inventory.InventoryItemType;
 import com.macbury.unamed.inventory.InventoryManager;
 
 public class InventoryInterface extends Interface implements MenuListManagerInterface {
@@ -19,11 +20,13 @@ public class InventoryInterface extends Interface implements MenuListManagerInte
   private static final int MENU_CRAFTING  = 4;
   private static final int MENU_MAP       = 5;
   private static final int HOTBAR_HEIGHT  = 80;
+  private static final int MENU_WEAPONS = 0;
   private MenuListManager selectActionManager;
   private MenuList actionList;
   private MenuListManager itemListManager;
   
   int currentMenu = MENU_RESOURCE;
+  private MessageBox hotbarWindow;
   
   public InventoryInterface() throws SlickException {
     selectActionManager = new MenuListManager();
@@ -34,6 +37,7 @@ public class InventoryInterface extends Interface implements MenuListManagerInte
     actionList.add("Resources", MENU_RESOURCE);
     actionList.add("Items", MENU_ITEMS);
     actionList.add("Equipment", MENU_EQUIPMENT);
+    actionList.add("Weapons", MENU_WEAPONS);
     actionList.add("Crafting", MENU_CRAFTING);
     actionList.add("Map", MENU_MAP);
     
@@ -56,17 +60,19 @@ public class InventoryInterface extends Interface implements MenuListManagerInte
     int itemsWidth = Core.WINDOW_WIDTH - 2 * WINDOW_PADDING;
     
     itemListManager.setWidth(itemsWidth);
-    itemListManager.setHeight(Core.WINDOW_HEIGHT - itemListManager.getY() - WINDOW_PADDING - HOTBAR_HEIGHT);
+    itemListManager.setHeight(Core.WINDOW_HEIGHT - itemListManager.getY() - WINDOW_PADDING * 2 - HOTBAR_HEIGHT);
     
+    hotbarWindow = new MessageBox(WINDOW_PADDING, itemListManager.getY() + itemListManager.getHeight() + WINDOW_PADDING, Core.WINDOW_WIDTH - 2 * WINDOW_PADDING, HOTBAR_HEIGHT);
     updateActionScreen();
   }
 
   @Override
   public void render(GameContainer gc, StateBasedGame sb, Graphics gr) throws SlickException {
     selectActionManager.render(gc, sb, gr);
-    if (currentMenu == MENU_RESOURCE) {
+    hotbarWindow.draw(gr);
+    //if (currentMenu == MENU_RESOURCE) {
       itemListManager.render(gc, sb, gr);
-    }
+  //  }
   }
 
   @Override
@@ -76,9 +82,9 @@ public class InventoryInterface extends Interface implements MenuListManagerInte
       this.close();
     }
     
-    if (currentMenu == MENU_RESOURCE) {
+    //if (currentMenu == MENU_RESOURCE) {
       itemListManager.update(gc, sb, delta);
-    }
+   // }
     
     selectActionManager.update(gc, sb, delta);
   }
@@ -117,11 +123,19 @@ public class InventoryInterface extends Interface implements MenuListManagerInte
 
   private void updateActionScreen() throws SlickException {
     if (currentMenu == MENU_RESOURCE) {
-      itemListManager.clear();
-      
-      itemListManager.pushList(InventoryManager.shared().getItemsListForMenu());
+      itemListManager.setList(InventoryManager.shared().getItemTypes(InventoryItemType.Resource));
+    }
+    if (currentMenu == MENU_ITEMS) {
+      itemListManager.setList(InventoryManager.shared().getItemTypes(InventoryItemType.Item));
     }
     
+    if (currentMenu == MENU_WEAPONS) {
+      itemListManager.setList(InventoryManager.shared().getItemTypes(InventoryItemType.Weapon));
+    }
+    
+    if (currentMenu == MENU_EQUIPMENT) {
+      itemListManager.setList(InventoryManager.shared().getItemTypes(InventoryItemType.Equipment));
+    }
   }
 
   @Override

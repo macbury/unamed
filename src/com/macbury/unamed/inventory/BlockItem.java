@@ -21,11 +21,12 @@ public class BlockItem extends InventoryItem {
   }
   
   public BlockItem() {
-   
+   this.setItemType(InventoryItemType.Resource);
   }
   
   public BlockItem(Class blockType) {
     this.blockType = blockType;
+    this.setItemType(InventoryItemType.Resource);
   }
   
   @Override

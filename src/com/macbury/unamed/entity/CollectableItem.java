@@ -143,7 +143,7 @@ public class CollectableItem extends ReusableEntity implements TimerInterface {
       this.imageSprite.setImage(image);
     }
     
-    
+    this.imageSprite.reset();
     this.hideTimer = new Timer(LIFE_TIME, this);
     this.hideTimer.setIsPausableEvent(true);
     this.hideTimer.start();

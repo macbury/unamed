@@ -15,11 +15,11 @@ public class ImagesManager {
   public static ImagesManager sharedInstance = null;
   private HashMap<String, Image> imagesCache;
   private HashMap<String, SpriteSheet> spriteSheetCache;
-  private SpriteSheet hotBarCellSpriteSheet;
   private SpriteSheet shadowMapSpriteSheet;
   private SpriteSheet inventorySpriteSheet;
   public  SpriteSheet windowSpriteSheet;
   public Image iconDynamite;
+  public SpriteSheet iconsSpriteSheet;
   
   public static ImagesManager shared() throws SlickException {
     if (ImagesManager.sharedInstance == null) {
@@ -32,7 +32,7 @@ public class ImagesManager {
   public ImagesManager() throws SlickException {
     this.imagesCache           = new HashMap<>();
     this.spriteSheetCache      = new HashMap<>();
-    this.hotBarCellSpriteSheet = getSpriteSheet("hud/hotbar_cell.png", InGameInterface.HOTBAR_CELL_SIZE, InGameInterface.HOTBAR_CELL_SIZE);
+    this.iconsSpriteSheet      = getSpriteSheet("hud/items.png", Core.TILE_SIZE, Core.TILE_SIZE);
     this.shadowMapSpriteSheet  = getSpriteSheet("effects/shadowmap.png", Core.TILE_SIZE, Core.TILE_SIZE);
     this.inventorySpriteSheet  = getSpriteSheet("hud/items.png", Core.TILE_SIZE, Core.TILE_SIZE);
     this.windowSpriteSheet     = getSpriteSheet("hud/windows.png", WINDOW_SKIN_SPLIT, WINDOW_SKIN_SPLIT);
@@ -72,10 +72,6 @@ public class ImagesManager {
   public Image getDestroyBlockEffectForProgress(float progress) throws SlickException {
     SpriteSheet sheet = getSpriteSheet("effects/breaking_block_animation.png", 32, 32);
     return sheet.getSprite(Math.round(MAX_BREAKING_BLOCK_SIZE * progress), 0);
-  }
-  
-  public SpriteSheet getHotBarCellSpriteSheet() {
-    return hotBarCellSpriteSheet;
   }
 
   public SpriteSheet getShadowMapSpriteSheet() {

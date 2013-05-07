@@ -6,7 +6,12 @@ import org.newdawn.slick.geom.Vector2f;
 import com.macbury.unamed.entity.Player;
 
 public class CoalItem extends InventoryItem {
-
+  
+  public CoalItem() {
+    super();
+    this.setItemType(InventoryItemType.Resource);
+  }
+  
   @Override
   public String getKey() {
     // TODO Auto-generated method stub

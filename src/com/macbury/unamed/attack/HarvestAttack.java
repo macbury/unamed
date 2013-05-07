@@ -32,7 +32,7 @@ public class HarvestAttack extends AttackBase {
     TextParticle.spawnTextFor("-"+player.currentHarvestPower(), usableEntity, COLOR_HARVEST);
 
     DigEffectEntity punchEntity = (DigEffectEntity) Level.shared().getUsedEntity(DigEffectEntity.class);
-    punchEntity.setAnimationByItem(InventoryManager.shared().getCurrentHotBarItem());
+    punchEntity.setAnimationByItem(InventoryManager.shared().getHarvest());
     Level.shared().addEntity(punchEntity);
     punchEntity.setTilePosition(usableEntity.getTileX(), usableEntity.getTileY());
     

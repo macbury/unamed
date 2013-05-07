@@ -9,6 +9,11 @@ import com.macbury.unamed.level.Level;
 
 public class DynamiteItem extends InventoryItem {
 
+  public DynamiteItem() {
+    super();
+    this.setItemType(InventoryItemType.Item);
+  }
+  
   @Override
   public String getKey() {
     return "DynamiteItem";

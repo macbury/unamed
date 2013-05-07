@@ -11,7 +11,11 @@ import com.macbury.unamed.level.Level;
 
 public class TorchItem extends InventoryItem {
 
-
+  public TorchItem() {
+    super();
+    this.setItemType(InventoryItemType.Item);
+  }
+  
   @Override
   public boolean place(Vector2f tilePos) throws SlickException {
     if(haveItems()) {

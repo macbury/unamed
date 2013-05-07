@@ -5,7 +5,7 @@ import org.newdawn.slick.SlickException;
 
 import com.macbury.unamed.Core;
 
-public class MenuItem {
+public class MenuItem implements Comparable<MenuItem> {
   String name;
   int    id;
   
@@ -28,5 +28,10 @@ public class MenuItem {
 
   public int getWidth() throws SlickException {
     return Core.instance().getFont().getWidth(getName());
+  }
+
+  @Override
+  public int compareTo(MenuItem other) {
+    return this.getName().compareTo(other.getName());    
   }
 }

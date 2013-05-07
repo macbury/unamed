@@ -15,6 +15,7 @@ public abstract class InventoryItem {
   public static final int STANDARD_HARVEST_POWER = 1;
   public static final int INFINITY_COUNT = -666;
   protected int elementCount = 0;
+  protected InventoryItemType itemType = InventoryItemType.Resource;
 
   public InventoryItem() {
     this.elementCount = 1;
@@ -89,4 +90,14 @@ public abstract class InventoryItem {
     }
     return item;
   }
+  
+  
+  public InventoryItemType getItemType() {
+    return itemType;
+  }
+
+  public void setItemType(InventoryItemType itemType) {
+    this.itemType = itemType;
+  }
+
 }

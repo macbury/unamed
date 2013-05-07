@@ -75,7 +75,7 @@ public class MessageBoxInterface extends Interface implements TimerInterface {
   private Animation getAnimatedArrow() throws SlickException {
     if(arrowAnimation == null) {
       SpriteSheet window       = ImagesManager.shared().windowSpriteSheet;
-      SpriteSheet arrow        = new SpriteSheet(window.getSubImage(96, 64, 94, 94), 16, 16);
+      SpriteSheet arrow        = new SpriteSheet(window.getSubImage(0, 32, 32, 32), 16, 16);
       arrowAnimation           = new Animation(new Image[] {arrow.getSprite(0, 0), arrow.getSprite(1, 0), arrow.getSprite(0, 1), arrow.getSprite(1, 1)}, 100);
       arrowAnimation.setAutoUpdate(false);
     }

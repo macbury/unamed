@@ -1,6 +1,7 @@
 package com.macbury.unamed.inventory;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 import org.newdawn.slick.Image;
@@ -22,10 +23,13 @@ public class InventoryManager extends ArrayList<InventoryItem> {
   public final static int MIN_HOTBAR_INVENTORY_INDEX = 1;
   public final static int MAX_HOTBAR_INVENTORY_INDEX = 10;
   
-  public int currentHotBarInventoryIndex = 0;
   private SpriteSheet spriteSheet;
   private HashMap<String, Image> itemImageCache;
   
+  private WeaponItem    weapon;
+  private PickItem      harvest;
+  private InventoryItem place;
+
   private PunchAttack defaultAttack;
   
   public static InventoryManager shared() throws SlickException {
@@ -38,51 +42,38 @@ public class InventoryManager extends ArrayList<InventoryItem> {
   public InventoryManager() throws SlickException {
     super();
     
-    this.setSpriteSheet(ImagesManager.shared().getHotBarCellSpriteSheet());
+    this.setSpriteSheet(ImagesManager.shared().iconsSpriteSheet);
     this.itemImageCache = new HashMap<>();
     InventoryManager.shared = this;
     defaultAttack = new PunchAttack();
   }
   
+  public WeaponItem getWeapon() {
+    return weapon;
+  }
+
+  public void setWeapon(WeaponItem weapon) {
+    this.weapon = weapon;
+  }
+  
   public void update(int delta) throws SlickException {
-    if (WeaponItem.class.isInstance(getCurrentHotBarItem())) {
-      WeaponItem item = (WeaponItem)getCurrentHotBarItem();
-      item.update(delta);
-    } else {
-      defaultAttack.update(delta);
+    defaultAttack.update(delta);
+    if (haveWeapon()) {
+      getWeapon().update(delta);
     }
   }
   
-  public InventoryItem getCurrentHotBarItem() {
-    return this.getItem(currentHotBarInventoryIndex);
+  private boolean haveWeapon() {
+    return getWeapon() != null;
   }
   
-  public void setInventoryIndex(int index) {
-    SoundManager.shared().cursor.playAsSoundEffect(1.0f, 1.0f, false);
-    index = Math.min(index, MAX_HOTBAR_INVENTORY_INDEX);
-    index = Math.max(index, MIN_HOTBAR_INVENTORY_INDEX);
-    index -= 1;
-    
-    if (WeaponItem.class.isInstance(this.getItem(index)) && this.getCurrentHotBarItem() != getItem(index)) {
-      WeaponItem item = (WeaponItem)this.getItem(index);
-      item.reset();
-    } else {
-      defaultAttack.getAttackTimer().restart();
-    }
-    this.currentHotBarInventoryIndex = index;
-  }
   
   public AttackBase getCurrentAttack() {
-    if (WeaponItem.class.isInstance(this.getItem(this.currentHotBarInventoryIndex))) {
-      WeaponItem item = (WeaponItem)getCurrentHotBarItem();
-      return item.getAttack();
+    if (haveWeapon()) {
+      return getWeapon().getAttack();
     } else {
       return defaultAttack;
     }
-  }
-
-  public int getCurrentHotBarIndex() {
-    return this.currentHotBarInventoryIndex;
   }
 
   public InventoryItem getItem(int i) {
@@ -126,19 +117,19 @@ public class InventoryManager extends ArrayList<InventoryItem> {
       BlockItem blockItem = (BlockItem) item;
       return BlockResources.shared().imageForBlockClass(blockItem.blockType);
     } else if (RockSwordItem.class.isInstance(item)) {
-      return getOrLoadInventoryItemImage(RockSwordItem.class, 2, 3);
+      return getOrLoadInventoryItemImage(RockSwordItem.class, 1, 4);
     } else if (RockPickItem.class.isInstance(item)) {
-      return getOrLoadInventoryItemImage(RockPickItem.class, 1, 3);
+      return getOrLoadInventoryItemImage(RockPickItem.class, 1, 6);
     } else if (CopperPickItem.class.isInstance(item)) {
-      return getOrLoadInventoryItemImage(CopperPickItem.class, 1, 3);
+      return getOrLoadInventoryItemImage(CopperPickItem.class, 0, 6);
     } else if (DynamiteItem.class.isInstance(item)) {
-      return getOrLoadInventoryItemImage(DynamiteItem.class, 0, 3);
+      return getOrLoadInventoryItemImage(DynamiteItem.class, 14, 4);
     } else if (CopperItem.class.isInstance(item)) {
-      return getOrLoadInventoryItemImage(CopperItem.class, 1, 2);
+      return getOrLoadInventoryItemImage(CopperItem.class, 6, 1);
     } else if (CoalItem.class.isInstance(item)) {
-      return getOrLoadInventoryItemImage(CoalItem.class, 1, 1);
+      return getOrLoadInventoryItemImage(CoalItem.class, 7, 0);
     } if (TorchItem.class.isInstance(item)) {
-      return getOrLoadInventoryItemImage(TorchItem.class, 2, 0);
+      return getOrLoadInventoryItemImage(TorchItem.class, 12, 6);
     }
     
     throw new SlickException("No image for inventory item: " +item.getClass().getName());    
@@ -147,15 +138,40 @@ public class InventoryManager extends ArrayList<InventoryItem> {
   public MenuList getItemsListForMenu() {
     MenuList list = new MenuList();
     
-    int i = 0;
-    
     for (InventoryItem item : this) {
       list.add(new InventoryItemMenuItem(item));
-      i++;
     }
     
     return list;
   }
-  
+
+  public PickItem getHarvest() {
+    return harvest;
+  }
+
+  public void setHarvest(PickItem harvest) {
+    this.harvest = harvest;
+  }
+
+  public InventoryItem getPlace() {
+    return place;
+  }
+
+  public void setPlace(InventoryItem place) {
+    this.place = place;
+  }
+
+  public MenuList getItemTypes(InventoryItemType typ) {
+    MenuList list = new MenuList();
+    
+    for (InventoryItem item : this) {
+      if (item.getItemType() == typ) {
+        list.add(new InventoryItemMenuItem(item));
+      }
+      
+    }
+    Collections.sort(list);
+    return list;
+  }
   
 }

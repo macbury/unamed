@@ -347,4 +347,9 @@ public class MenuListManager extends ArrayList<MenuList> {
   public void setColumns(int columns) {
     this.columns = columns;
   }
+
+  public void setList(MenuList resourceItems) {
+    this.clear();
+    this.pushList(resourceItems);
+  }
 }

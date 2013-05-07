@@ -35,7 +35,7 @@ public class InventorySerializer extends Serializer<InventoryManager> {
       itemCount--;
     }
     
-    manager.setInventoryIndex(currentHotBarIndex);
+   // manager.setInventoryIndex(currentHotBarIndex);
     
     return manager;
   }
@@ -44,7 +44,7 @@ public class InventorySerializer extends Serializer<InventoryManager> {
   public void write(Kryo kryo, Output out, InventoryManager inventory) {
     Core.log(this.getClass(),"Saving inventory");
     out.writeInt(inventory.size());
-    out.writeInt(inventory.getCurrentHotBarIndex());
+   // out.writeInt(inventory.getCurrentHotBarIndex());
     for (InventoryItem inventoryItem : inventory) {
       inventoryItem.writeTo(kryo, out);
     }

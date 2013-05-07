@@ -7,42 +7,26 @@ import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.macbury.unamed.Core;
-import com.macbury.unamed.InputManager;
 import com.macbury.unamed.SoundManager;
 import com.macbury.unamed.Timer;
 import com.macbury.unamed.TimerInterface;
 import com.macbury.unamed.attack.HarvestAttack;
-import com.macbury.unamed.attack.PunchAttack;
 import com.macbury.unamed.block.Block;
-import com.macbury.unamed.block.Cobblestone;
-import com.macbury.unamed.block.Dirt;
 import com.macbury.unamed.block.HarvestableBlock;
 import com.macbury.unamed.block.LiquidBlock;
 import com.macbury.unamed.block.PassableBlock;
-import com.macbury.unamed.block.Rock;
-import com.macbury.unamed.block.Sand;
-import com.macbury.unamed.combat.Damage;
-import com.macbury.unamed.component.CharacterAnimation;
-import com.macbury.unamed.component.HealthComponent;
-import com.macbury.unamed.component.HitBox;
 import com.macbury.unamed.component.KeyboardMovement;
 import com.macbury.unamed.component.Light;
-import com.macbury.unamed.component.Sprite;
-import com.macbury.unamed.component.TextComponent;
-import com.macbury.unamed.component.TileBasedMovement;
 import com.macbury.unamed.intefrace.InterfaceManager;
-import com.macbury.unamed.inventory.BlockItem;
 import com.macbury.unamed.inventory.InventoryItem;
 import com.macbury.unamed.inventory.InventoryManager;
-import com.macbury.unamed.inventory.TorchItem;
-import com.macbury.unamed.level.Level;
 import com.macbury.unamed.npc.PlayerTriggers;
 
 public class Player extends Character implements TimerInterface {
   //public final static int  FOG_OF_WAR_RADIUS = 10;
   private static final int LIGHT_POWER                = 10;
   
-  final static short MAX_PLACING_TIME                   = 250;
+  final static short MAX_PLACING_TIME                 = 250;
   public static final short MAX_TAKING_TIME           = 300;
   private static final short START_HEALTH             = 24;
   private static final float PLAYER_REGENERATE_FACTOR = 0.45f;
@@ -51,6 +35,8 @@ public class Player extends Character implements TimerInterface {
   
   private HarvestAttack harvestAttack;
   private Timer placeActionTimer;
+
+  private Timer actionTimer;
   
   public void setKeyboardEnabled(boolean enabled) {
     this.keyboardMovement.enabled = enabled;
@@ -61,7 +47,6 @@ public class Player extends Character implements TimerInterface {
     this.getHealth().setRegenerateFactor(PLAYER_REGENERATE_FACTOR);
     this.getHealth().setMaxHelath(START_HEALTH);
 
-    
     Light light = new Light();
     light.setLightPower(LIGHT_POWER);
     light.updateLight();
@@ -73,14 +58,17 @@ public class Player extends Character implements TimerInterface {
     keyboardMovement = new KeyboardMovement();
     addComponent(keyboardMovement);
     
-    harvestAttack = new HarvestAttack();
+    actionTimer      = new Timer((short)250, this);
+    actionTimer.stop();
+    actionTimer.setIsPausableEvent(true);
+    harvestAttack    = new HarvestAttack();
     placeActionTimer = new Timer(MAX_PLACING_TIME, this);
-
   }
 
   @Override
   public void update(GameContainer gc, StateBasedGame sb, int delta) throws SlickException {
     super.update(gc, sb, delta);
+    actionTimer.update(delta);
     if (InterfaceManager.shared().shouldBlockGamePlay()) {
       return;
     }
@@ -102,30 +90,6 @@ public class Player extends Character implements TimerInterface {
             this.placeActionTimer.start();
           }
         }
-      }
-      
-      InventoryManager inventory = InventoryManager.shared();
-      
-      if (input.isKeyPressed(Input.KEY_0)) {
-        inventory.setInventoryIndex(10);
-      } else if (input.isKeyPressed(Input.KEY_1)) {
-        inventory.setInventoryIndex(1);
-      } else if (input.isKeyPressed(Input.KEY_2)) {
-        inventory.setInventoryIndex(2);
-      } else if (input.isKeyPressed(Input.KEY_3)) {
-        inventory.setInventoryIndex(3);
-      } else if (input.isKeyPressed(Input.KEY_4)) {
-        inventory.setInventoryIndex(4);
-      } else if (input.isKeyPressed(Input.KEY_5)) {
-        inventory.setInventoryIndex(5);
-      } else if (input.isKeyPressed(Input.KEY_6)) {
-        inventory.setInventoryIndex(6);
-      } else if (input.isKeyPressed(Input.KEY_7)) {
-        inventory.setInventoryIndex(7);
-      } else if (input.isKeyPressed(Input.KEY_8)) {
-        inventory.setInventoryIndex(8);
-      } else if (input.isKeyPressed(Input.KEY_9)) {
-        inventory.setInventoryIndex(9);
       }
     }
     
@@ -152,7 +116,10 @@ public class Player extends Character implements TimerInterface {
     }
     
     if (entityInFront != null) {
-      if (Monster.class.isInstance(entityInFront)) {
+      if (PlayerTriggers.class.isInstance(entityInFront) && !actionTimer.running()) {
+        ((PlayerTriggers) entityInFront).onActionButton(this);
+        actionTimer.restart();
+      } else if (Monster.class.isInstance(entityInFront)) {
         InventoryManager.shared().getCurrentAttack().attack(this, entityInFront);
       } else if (BlockEntity.class.isInstance(entityInFront)) {
         harvestAttack.attack(this, entityInFront);
@@ -172,9 +139,7 @@ public class Player extends Character implements TimerInterface {
     } else if( PassableBlock.class.isInstance(blockInFront) ) {
       Entity entityInFront       = this.getLevel().getEntityForTilePosition((int)frontTilePosition.x, (int)frontTilePosition.y);
       
-      if (PlayerTriggers.class.isInstance(entityInFront)) {
-        ((PlayerTriggers) entityInFront).onActionButton(this);
-      } else if (CollectableItem.class.isInstance(entityInFront)) {
+      if (CollectableItem.class.isInstance(entityInFront)) {
         CollectableItem item = (CollectableItem) entityInFront;
         item.lootBy(this);
       } else if (BlockEntity.class.isInstance(entityInFront)) {
@@ -193,7 +158,7 @@ public class Player extends Character implements TimerInterface {
   }
   
   private void placeCurrentInventoryItemInFront(Vector2f frontTilePosition) throws SlickException {
-    InventoryItem currentItem = InventoryManager.shared().getCurrentHotBarItem();
+    InventoryItem currentItem = InventoryManager.shared().getPlace();
     
     if (currentItem != null) {
       if (currentItem.place(frontTilePosition)) {
@@ -207,7 +172,7 @@ public class Player extends Character implements TimerInterface {
   }
   
   public int currentHarvestPower() throws SlickException {
-    InventoryItem currentItem = InventoryManager.shared().getCurrentHotBarItem();
+    InventoryItem currentItem = InventoryManager.shared().getHarvest();
     
     if (currentItem == null) {
       return InventoryItem.STANDARD_HARVEST_POWER;

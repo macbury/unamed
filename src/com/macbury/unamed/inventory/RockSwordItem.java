@@ -10,6 +10,8 @@ public class RockSwordItem extends WeaponItem {
   private SwordAttack attack;
 
   public RockSwordItem() {
+    super();
+    this.setItemType(InventoryItemType.Weapon);
     attack = new SwordAttack();
     attack.setPower(SWORD_POWER);
     attack.setAttackSpeed(SWORD_SPEED);
