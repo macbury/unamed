@@ -7,6 +7,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.macbury.unamed.Core;
+import com.macbury.unamed.inventory.InventoryItem;
 import com.macbury.unamed.inventory.InventoryItemType;
 import com.macbury.unamed.inventory.InventoryManager;
 
@@ -140,8 +141,12 @@ public class InventoryInterface extends Interface implements MenuListManagerInte
 
   @Override
   public void onSelectItem(MenuItem item, MenuList currentMenuList) throws SlickException {
-    // TODO Auto-generated method stub
-    
+    if (InventoryItemMenuItem.class.isInstance(item)) {
+      InventoryItemMenuItem menuItem = (InventoryItemMenuItem) item;
+      InventoryItem inventoryItem    = menuItem.getItem();
+      InventoryManager.shared().setItemByItsType(inventoryItem);
+      Core.log(this.getClass(), "Setting item: " +item.getName());
+    }
   }
 
   @Override

@@ -11,6 +11,8 @@ import com.macbury.unamed.Core;
 import com.macbury.unamed.inventory.BlockItem;
 import com.macbury.unamed.inventory.InventoryItem;
 import com.macbury.unamed.inventory.InventoryManager;
+import com.macbury.unamed.inventory.PickItem;
+import com.macbury.unamed.inventory.WeaponItem;
 
 public class InventorySerializer extends Serializer<InventoryManager> {
 
@@ -25,8 +27,11 @@ public class InventorySerializer extends Serializer<InventoryManager> {
       e.printStackTrace();
     }
     
-    int itemCount = input.readInt();
-    int currentHotBarIndex = input.readInt();
+    int itemCount      = input.readInt();
+    int weaponIndex    = input.readInt();
+    int itemIndex      = input.readInt();
+    int equipmentIndex = input.readInt();
+    //Sint currentHotBarIndex = input.readInt();
     
     while(itemCount > 0) {
       InventoryItem item = InventoryItem.loadFrom(kryo, input);
@@ -35,6 +40,9 @@ public class InventorySerializer extends Serializer<InventoryManager> {
       itemCount--;
     }
     
+    manager.setWeapon((WeaponItem) manager.getItem(weaponIndex));
+    manager.setPlace(manager.getItem(itemIndex));
+    manager.setHarvest((PickItem) manager.getItem(equipmentIndex));
    // manager.setInventoryIndex(currentHotBarIndex);
     
     return manager;
@@ -44,6 +52,9 @@ public class InventorySerializer extends Serializer<InventoryManager> {
   public void write(Kryo kryo, Output out, InventoryManager inventory) {
     Core.log(this.getClass(),"Saving inventory");
     out.writeInt(inventory.size());
+    out.writeInt(inventory.indexOf(inventory.getWeapon()));
+    out.writeInt(inventory.indexOf(inventory.getPlace()));
+    out.writeInt(inventory.indexOf(inventory.getHarvest()));
    // out.writeInt(inventory.getCurrentHotBarIndex());
     for (InventoryItem inventoryItem : inventory) {
       inventoryItem.writeTo(kryo, out);

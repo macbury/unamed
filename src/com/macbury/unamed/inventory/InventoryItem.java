@@ -6,6 +6,7 @@ import org.newdawn.slick.geom.Vector2f;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import com.macbury.unamed.Core;
 import com.macbury.unamed.entity.CollectableItem;
 import com.macbury.unamed.entity.Entity;
 import com.macbury.unamed.entity.Player;
@@ -46,9 +47,14 @@ public abstract class InventoryItem {
     }
   }
   
-  public void popItem() {
+  public void popItem() throws SlickException {
     if (!isInfinity()) {
       this.elementCount--;
+    }
+    
+    if (!haveItems()) {
+      Core.log(getClass(), "Dont have " + getName() + " removing");
+      InventoryManager.shared().remove(this);
     }
   }
   

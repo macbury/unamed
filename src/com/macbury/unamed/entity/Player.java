@@ -162,9 +162,9 @@ public class Player extends Character implements TimerInterface {
     
     if (currentItem != null) {
       if (currentItem.place(frontTilePosition)) {
-        if (!currentItem.haveItems()) {
-          InventoryManager.shared().remove(currentItem);
-        }
+        //if (!currentItem.haveItems()) {
+          
+       // }
       } else {
         SoundManager.shared().cancelSound.playAsSoundEffect(1.0f, 1.0f, false);
       }

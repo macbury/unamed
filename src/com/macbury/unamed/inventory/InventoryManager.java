@@ -8,6 +8,7 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 
+import com.macbury.unamed.Core;
 import com.macbury.unamed.ImagesManager;
 import com.macbury.unamed.SoundManager;
 import com.macbury.unamed.attack.AttackBase;
@@ -173,5 +174,39 @@ public class InventoryManager extends ArrayList<InventoryItem> {
     Collections.sort(list);
     return list;
   }
+
+  public void setItemByItsType(InventoryItem inventoryItem) {
+    if (inventoryItem.getItemType() == InventoryItemType.Weapon) {
+      Core.log(getClass(), "Setting " + inventoryItem.getName() + " as weapon");
+      setWeapon((WeaponItem) inventoryItem);
+    } else if (inventoryItem.getItemType() == InventoryItemType.Equipment) {
+      Core.log(getClass(), "Setting " + inventoryItem.getName() + " as equipment");
+      setHarvest((PickItem) inventoryItem);
+    } else {
+      Core.log(getClass(), "Setting " + inventoryItem.getName() + " as normal item");
+      setPlace(inventoryItem);
+    }
+  }
+
+  @Override
+  public boolean remove(Object o) {
+    if (getWeapon() == o) {
+      Core.log(getClass(), "Removing weapon");
+      setWeapon(null);
+    }
+    
+    if (getHarvest() == o) {
+      Core.log(getClass(), "Removing equipment");
+      setHarvest(null);
+    }
+    
+    if (getPlace() == o) {
+      Core.log(getClass(), "Removing place");
+      setPlace(null);
+    }
+    
+    return super.remove(o);
+  }
+  
   
 }

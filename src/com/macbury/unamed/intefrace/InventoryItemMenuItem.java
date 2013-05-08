@@ -9,6 +9,14 @@ import com.macbury.unamed.inventory.InventoryManager;
 
 public class InventoryItemMenuItem extends MenuItem {
   InventoryItem item;
+  public InventoryItem getItem() {
+    return item;
+  }
+
+  public void setItem(InventoryItem item) {
+    this.item = item;
+  }
+
   public InventoryItemMenuItem(InventoryItem item) {
     super(item.getName(), 0);
     this.item = item;

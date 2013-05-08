@@ -245,7 +245,11 @@ public class MenuListManager extends ArrayList<MenuList> {
   }
 
   private MenuItem getCurrentSelectedMenuItem() {
-    return this.currentMenuList.get(currentItemIndex);
+    try{
+      return this.currentMenuList.get(currentItemIndex);
+    } catch (IndexOutOfBoundsException e) {
+      return null;
+    }
   }
 
   public void popList() throws SlickException {
